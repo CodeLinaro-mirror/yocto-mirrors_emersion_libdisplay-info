@@ -43,16 +43,22 @@ di_info_get_edid(const struct di_info *info)
 char *
 di_info_get_product_name(const struct di_info *info)
 {
-	char name[64];
+	char name[64], serial[32];
 	const struct di_edid_vendor_product *edid_vendor_product;
 
 	edid_vendor_product = di_edid_get_vendor_product(info->edid);
 
+	if (edid_vendor_product->serial != 0) {
+		snprintf(serial, sizeof(serial), " 0x%X" PRIu32,
+			 edid_vendor_product->serial);
+	} else {
+		serial[0] = '\0';
+	}
+
 	/* TODO: use strings from Detailed Timing Descriptors, if any */
-	snprintf(name, sizeof(name), "%.3s 0x%X" PRIu16 " 0x%X" PRIu32,
+	snprintf(name, sizeof(name), "%.3s 0x%X" PRIu16 "%s",
 		 edid_vendor_product->manufacturer,
-		 edid_vendor_product->product,
-		 edid_vendor_product->serial);
+		 edid_vendor_product->product, serial);
 
 	return strdup(name);
 }
