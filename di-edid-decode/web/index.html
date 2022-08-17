@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>libdisplay-info</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<h1>libdisplay-info</h1>
+
+		<p>
+			This webapp parses EDID files via
+			<a href="https://gitlab.freedesktop.org/emersion/libdisplay-info">libdisplay-info</a>.
+		</p>
+
+		<noscript>
+			<p>JavaScript is required.</p>
+		</noscript>
+
+		<p id="status">Loading...</p>
+
+		<div id="app">
+			<p>Select an EDID file:</p>
+			<input type="file" id="file-input">
+			<pre id="output"></pre>
+		</div>
+
+		<script src="main.js"></script>
+		<script src="di-edid-decode.js" async></script>
+	</body>
+</html>

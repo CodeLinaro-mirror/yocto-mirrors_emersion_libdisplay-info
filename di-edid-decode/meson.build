@@ -9,3 +9,11 @@ di_edid_decode = executable(
 	dependencies: [di_dep, math],
 	install: true,
 )
+
+if target_machine.system() == 'emscripten'
+	fs = import('fs')
+
+	foreach filename : ['index.html', 'main.js', 'style.css']
+		fs.copyfile('web' / filename)
+	endforeach
+endif
