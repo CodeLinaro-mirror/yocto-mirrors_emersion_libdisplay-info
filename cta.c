@@ -18,6 +18,10 @@
  * Exclusive upper bound for the detailed timing definitions in the CTA block.
  */
 #define CTA_DTD_END 127
+/**
+ * Number of bytes in a CTA short audio descriptor.
+ */
+#define CTA_SAD_SIZE 3
 
 static void
 add_failure(struct di_edid_cta *cta, const char fmt[], ...)
@@ -80,6 +84,242 @@ parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block *video,
 		*svd_ptr = svd;
 		assert(video->svds_len < EDID_CTA_MAX_VIDEO_BLOCK_ENTRIES);
 		video->svds[video->svds_len++] = svd_ptr;
+	}
+
+	return true;
+}
+
+static bool
+parse_sad_format(struct di_edid_cta *cta, const uint8_t data[static CTA_SAD_SIZE],
+		 enum di_cta_audio_format *format)
+{
+	uint8_t code, code_ext;
+
+	code = get_bit_range(data[0], 6, 3);
+	switch (code) {
+	case 0x0:
+		add_failure_until(cta, 3,
+				  "Audio Data Block: Audio Format Code 0x00 is reserved.");
+		return false;
+	case 0x1:
+		*format = DI_CTA_AUDIO_FORMAT_LPCM;
+		break;
+	case 0x2:
+		*format = DI_CTA_AUDIO_FORMAT_AC3;
+		break;
+	case 0x3:
+		*format = DI_CTA_AUDIO_FORMAT_MPEG1;
+		break;
+	case 0x4:
+		*format = DI_CTA_AUDIO_FORMAT_MP3;
+		break;
+	case 0x5:
+		*format = DI_CTA_AUDIO_FORMAT_MPEG2;
+		break;
+	case 0x6:
+		*format = DI_CTA_AUDIO_FORMAT_AAC_LC;
+		break;
+	case 0x7:
+		*format = DI_CTA_AUDIO_FORMAT_DTS;
+		break;
+	case 0x8:
+		*format = DI_CTA_AUDIO_FORMAT_ATRAC;
+		break;
+	case 0x9:
+		*format = DI_CTA_AUDIO_FORMAT_ONE_BIT_AUDIO;
+		break;
+	case 0xA:
+		*format = DI_CTA_AUDIO_FORMAT_ENHANCED_AC3;
+		break;
+	case 0xB:
+		*format = DI_CTA_AUDIO_FORMAT_DTS_HD;
+		break;
+	case 0xC:
+		*format = DI_CTA_AUDIO_FORMAT_MAT;
+		break;
+	case 0xD:
+		*format = DI_CTA_AUDIO_FORMAT_DST;
+		break;
+	case 0xE:
+		*format = DI_CTA_AUDIO_FORMAT_WMA_PRO;
+		break;
+	case 0xF:
+		code_ext = get_bit_range(data[2], 7, 3);
+		switch (code_ext) {
+		case 0x04:
+			*format = DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC;
+			break;
+		case 0x05:
+			*format = DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC_V2;
+			break;
+		case 0x06:
+			*format = DI_CTA_AUDIO_FORMAT_MPEG4_AAC_LC;
+			break;
+		case 0x07:
+			*format = DI_CTA_AUDIO_FORMAT_DRA;
+			break;
+		case 0x08:
+			*format = DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC_MPEG_SURROUND;
+			break;
+		case 0x0A:
+			*format = DI_CTA_AUDIO_FORMAT_MPEG4_AAC_LC_MPEG_SURROUND;
+			break;
+		case 0x0B:
+			*format = DI_CTA_AUDIO_FORMAT_MPEGH_3D;
+			break;
+		case 0x0C:
+			*format = DI_CTA_AUDIO_FORMAT_AC4;
+			break;
+		case 0x0D:
+			*format = DI_CTA_AUDIO_FORMAT_LPCM_3D;
+			break;
+		default:
+			add_failure_until(cta, 3,
+					  "Audio Data Block: Unknown Audio Ext Format 0x%02x.",
+					  code_ext);
+			return false;
+		}
+		break;
+	default:
+		add_failure_until(cta, 3,
+				  "Audio Data Block: Unknown Audio Format 0x%02x.",
+				  code);
+		return false;
+	}
+
+	return true;
+}
+
+static bool
+parse_sad(struct di_edid_cta *cta, struct di_cta_audio_block *audio,
+	  const uint8_t data[static CTA_SAD_SIZE])
+{
+	enum di_cta_audio_format format;
+	struct di_cta_sad *sad;
+	struct di_cta_sad_priv *priv;
+	uint8_t max_channels_lo, mpegh_3d_level;
+
+	if (!parse_sad_format(cta, data, &format))
+		return true;
+
+	priv = calloc(1, sizeof(*priv));
+	if (!priv)
+		return false;
+
+	sad = &priv->base;
+	sad->format = format;
+
+	/* Parse byte 1 */
+	switch (format) {
+	case DI_CTA_AUDIO_FORMAT_LPCM_3D:
+		max_channels_lo = (uint8_t) (get_bit_range(data[0], 2, 0) |
+					     (get_bit_range(data[0], 7, 7) << 3));
+		break;
+	case DI_CTA_AUDIO_FORMAT_MPEGH_3D:
+		sad->mpegh_3d = &priv->mpegh_3d;
+
+		mpegh_3d_level = get_bit_range(data[0], 2, 0);
+		switch (mpegh_3d_level) {
+		case DI_CTA_SAD_MPEGH_3D_LEVEL_UNSPECIFIED:
+		case DI_CTA_SAD_MPEGH_3D_LEVEL_1:
+		case DI_CTA_SAD_MPEGH_3D_LEVEL_2:
+		case DI_CTA_SAD_MPEGH_3D_LEVEL_3:
+		case DI_CTA_SAD_MPEGH_3D_LEVEL_4:
+		case DI_CTA_SAD_MPEGH_3D_LEVEL_5:
+			priv->mpegh_3d.level = mpegh_3d_level;
+			break;
+		default:
+			add_failure_until(cta, 3,
+					  "Unknown MPEG-H 3D Audio Level 0x%02x.",
+					  mpegh_3d_level);
+			break;
+		}
+		break;
+	case DI_CTA_AUDIO_FORMAT_AC4:
+		if (get_bit_range(data[0], 2, 0) != 0)
+			add_failure_until(cta, 3, "Bits F10-F12 must be 0.");
+		break;
+	default:
+		sad->max_channels = get_bit_range(data[0], 2, 0) + 1;
+		break;
+	}
+	if (format != DI_CTA_AUDIO_FORMAT_LPCM_3D && has_bit(data[0], 7))
+		add_failure_until(cta, 3, "Audio Data Block: Bit F17 must be 0.");
+
+	/* Parse byte 2 */
+	priv->supported_sample_rates.has_192_khz = has_bit(data[1], 6);
+	priv->supported_sample_rates.has_176_4_khz = has_bit(data[1], 5);
+	priv->supported_sample_rates.has_96_khz = has_bit(data[1], 4);
+	priv->supported_sample_rates.has_88_2_khz = has_bit(data[1], 3);
+	priv->supported_sample_rates.has_48_khz = has_bit(data[1], 2);
+	priv->supported_sample_rates.has_44_1_khz = has_bit(data[1], 1);
+	priv->supported_sample_rates.has_32_khz = has_bit(data[1], 0);
+	sad->supported_sample_rates = &priv->supported_sample_rates;
+	if (format == DI_CTA_AUDIO_FORMAT_LPCM_3D)
+		sad->max_channels = max_channels_lo
+				    | (get_bit_range(data[1], 7, 7) << 4);
+	else if (has_bit(data[1], 7))
+		add_failure_until(cta, 3, "Audio Data Block: Bit F27 must be 0.");
+	/* TODO: some sample rates are forbidden with some formats */
+
+	/* Parse byte 3 */
+	switch (format) {
+	case DI_CTA_AUDIO_FORMAT_LPCM:
+	case DI_CTA_AUDIO_FORMAT_LPCM_3D:
+		priv->supported_sample_sizes.has_24_bits = has_bit(data[2], 2);
+		priv->supported_sample_sizes.has_20_bits = has_bit(data[2], 1);
+		priv->supported_sample_sizes.has_16_bits = has_bit(data[2], 0);
+		sad->supported_sample_sizes = &priv->supported_sample_sizes;
+		break;
+	case DI_CTA_AUDIO_FORMAT_AC3:
+	case DI_CTA_AUDIO_FORMAT_MPEG1:
+	case DI_CTA_AUDIO_FORMAT_MP3:
+	case DI_CTA_AUDIO_FORMAT_MPEG2:
+	case DI_CTA_AUDIO_FORMAT_AAC_LC:
+	case DI_CTA_AUDIO_FORMAT_DTS:
+	case DI_CTA_AUDIO_FORMAT_ATRAC:
+		sad->max_bitrate_kbs = data[2] * 8;
+		break;
+	case DI_CTA_AUDIO_FORMAT_MPEGH_3D:
+		priv->mpegh_3d.low_complexity_profile = has_bit(data[2], 0);
+		priv->mpegh_3d.baseline_profile = has_bit(data[2], 1);
+		break;
+	case DI_CTA_AUDIO_FORMAT_ONE_BIT_AUDIO:
+	case DI_CTA_AUDIO_FORMAT_ENHANCED_AC3:
+	case DI_CTA_AUDIO_FORMAT_DTS_HD:
+	case DI_CTA_AUDIO_FORMAT_MAT:
+	case DI_CTA_AUDIO_FORMAT_DST:
+	case DI_CTA_AUDIO_FORMAT_WMA_PRO:
+	case DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC:
+	case DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC_V2:
+	case DI_CTA_AUDIO_FORMAT_MPEG4_AAC_LC:
+	case DI_CTA_AUDIO_FORMAT_DRA:
+	case DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC_MPEG_SURROUND:
+	case DI_CTA_AUDIO_FORMAT_MPEG4_AAC_LC_MPEG_SURROUND:
+	case DI_CTA_AUDIO_FORMAT_AC4:
+		break; /* TODO */
+	}
+	if ((format == DI_CTA_AUDIO_FORMAT_LPCM || format == DI_CTA_AUDIO_FORMAT_WMA_PRO) &&
+	    get_bit_range(data[2], 7, 3) != 0)
+		add_failure_until(cta, 3, "Audio Data Block: Bits F33-F37 must be 0.");
+
+	assert(audio->sads_len < EDID_CTA_MAX_AUDIO_BLOCK_ENTRIES);
+	audio->sads[audio->sads_len++] = priv;
+	return true;
+}
+
+static bool
+parse_audio_block(struct di_edid_cta *cta, struct di_cta_audio_block *audio,
+		  const uint8_t *data, size_t size)
+{
+	size_t i;
+
+	if (size % 3 != 0)
+		add_failure(cta, "Broken CTA-861 audio block length %d.", size);
+
+	for (i = 0; i + 3 <= size; i += 3) {
+		if (!parse_sad(cta, audio, &data[i]))
+			return false;
 	}
 
 	return true;
@@ -219,12 +459,18 @@ destroy_data_block(struct di_cta_data_block *data_block)
 {
 	size_t i;
 	struct di_cta_video_block *video;
+	struct di_cta_audio_block *audio;
 
 	switch (data_block->tag) {
 	case DI_CTA_DATA_BLOCK_VIDEO:
 		video = &data_block->video;
 		for (i = 0; i < video->svds_len; i++)
 			free(video->svds[i]);
+		break;
+	case DI_CTA_DATA_BLOCK_AUDIO:
+		audio = &data_block->audio;
+		for (i = 0; i < audio->sads_len; i++)
+			free(audio->sads[i]);
 		break;
 	default:
 		break; /* Nothing to do */
@@ -248,6 +494,8 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 	switch (raw_tag) {
 	case 1:
 		tag = DI_CTA_DATA_BLOCK_AUDIO;
+		if (!parse_audio_block(cta, &data_block->audio, data, size))
+			goto error;
 		break;
 	case 2:
 		tag = DI_CTA_DATA_BLOCK_VIDEO;
@@ -502,6 +750,15 @@ di_cta_data_block_get_svds(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return (const struct di_cta_svd *const *) block->video.svds;
+}
+
+const struct di_cta_sad *const *
+di_cta_data_block_get_sads(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_AUDIO) {
+		return NULL;
+	}
+	return (const struct di_cta_sad *const *) block->audio.sads;
 }
 
 const struct di_cta_colorimetry_block *

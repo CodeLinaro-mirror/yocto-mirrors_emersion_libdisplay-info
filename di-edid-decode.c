@@ -574,6 +574,134 @@ printf_cta_svds(const struct di_cta_svd *const *svds)
 	}
 }
 
+static const char *
+cta_audio_format_name(enum di_cta_audio_format format)
+{
+	switch (format) {
+	case DI_CTA_AUDIO_FORMAT_LPCM:
+		return "Linear PCM";
+	case DI_CTA_AUDIO_FORMAT_AC3:
+		return "AC-3";
+	case DI_CTA_AUDIO_FORMAT_MPEG1:
+		return "MPEG 1 (Layers 1 & 2)";
+	case DI_CTA_AUDIO_FORMAT_MP3:
+		return "MPEG 1 Layer 3 (MP3)";
+	case DI_CTA_AUDIO_FORMAT_MPEG2:
+		return "MPEG2 (multichannel)";
+	case DI_CTA_AUDIO_FORMAT_AAC_LC:
+		return "AAC LC";
+	case DI_CTA_AUDIO_FORMAT_DTS:
+		return "DTS";
+	case DI_CTA_AUDIO_FORMAT_ATRAC:
+		return "ATRAC";
+	case DI_CTA_AUDIO_FORMAT_ONE_BIT_AUDIO:
+		return "One Bit Audio";
+	case DI_CTA_AUDIO_FORMAT_ENHANCED_AC3:
+		return "Enhanced AC-3 (DD+)";
+	case DI_CTA_AUDIO_FORMAT_DTS_HD:
+		return "DTS-HD";
+	case DI_CTA_AUDIO_FORMAT_MAT:
+		return "MAT (MLP)";
+	case DI_CTA_AUDIO_FORMAT_DST:
+		return "DST";
+	case DI_CTA_AUDIO_FORMAT_WMA_PRO:
+		return "WMA Pro";
+	case DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC:
+		return "MPEG-4 HE AAC";
+	case DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC_V2:
+		return "MPEG-4 HE AAC v2";
+	case DI_CTA_AUDIO_FORMAT_MPEG4_AAC_LC:
+		return "MPEG-4 AAC LC";
+	case DI_CTA_AUDIO_FORMAT_DRA:
+		return "DRA";
+	case DI_CTA_AUDIO_FORMAT_MPEG4_HE_AAC_MPEG_SURROUND:
+		return "MPEG-4 HE AAC + MPEG Surround";
+	case DI_CTA_AUDIO_FORMAT_MPEG4_AAC_LC_MPEG_SURROUND:
+		return "MPEG-4 AAC LC + MPEG Surround";
+	case DI_CTA_AUDIO_FORMAT_MPEGH_3D:
+		return "MPEG-H 3D Audio";
+	case DI_CTA_AUDIO_FORMAT_AC4:
+		return "AC-4";
+	case DI_CTA_AUDIO_FORMAT_LPCM_3D:
+		return "L-PCM 3D Audio";
+	}
+	abort();
+}
+
+static const char *
+cta_sad_mpegh_3d_level_name(enum di_cta_sad_mpegh_3d_level level)
+{
+	switch (level) {
+	case DI_CTA_SAD_MPEGH_3D_LEVEL_UNSPECIFIED:
+		return "Unspecified";
+	case DI_CTA_SAD_MPEGH_3D_LEVEL_1:
+		return "Level 1";
+	case DI_CTA_SAD_MPEGH_3D_LEVEL_2:
+		return "Level 2";
+	case DI_CTA_SAD_MPEGH_3D_LEVEL_3:
+		return "Level 3";
+	case DI_CTA_SAD_MPEGH_3D_LEVEL_4:
+		return "Level 4";
+	case DI_CTA_SAD_MPEGH_3D_LEVEL_5:
+		return "Level 5";
+	}
+	abort();
+}
+
+static void
+print_cta_sads(const struct di_cta_sad *const *sads)
+{
+	size_t i;
+	const struct di_cta_sad *sad;
+
+	for (i = 0; sads[i] != NULL; i++) {
+		sad = sads[i];
+
+		printf("    %s:\n", cta_audio_format_name(sad->format));
+		if (sad->max_channels != 0)
+			printf("      Max channels: %d\n", sad->max_channels);
+
+		if (sad->mpegh_3d)
+			printf("      MPEG-H 3D Audio Level: %s\n",
+			       cta_sad_mpegh_3d_level_name(sad->mpegh_3d->level));
+
+		printf("      Supported sample rates (kHz):");
+		if (sad->supported_sample_rates->has_192_khz)
+			printf(" 192");
+		if (sad->supported_sample_rates->has_176_4_khz)
+			printf(" 176.4");
+		if (sad->supported_sample_rates->has_96_khz)
+			printf(" 96");
+		if (sad->supported_sample_rates->has_88_2_khz)
+			printf(" 88.2");
+		if (sad->supported_sample_rates->has_48_khz)
+			printf(" 48");
+		if (sad->supported_sample_rates->has_44_1_khz)
+			printf(" 44.1");
+		if (sad->supported_sample_rates->has_32_khz)
+			printf(" 32");
+		printf("\n");
+
+		if (sad->supported_sample_sizes) {
+			printf("      Supported sample sizes (bits):");
+			if (sad->supported_sample_sizes->has_24_bits)
+				printf(" 24");
+			if (sad->supported_sample_sizes->has_20_bits)
+				printf(" 20");
+			if (sad->supported_sample_sizes->has_16_bits)
+				printf(" 16");
+			printf("\n");
+		}
+
+		if (sad->max_bitrate_kbs != 0)
+			printf("      Maximum bit rate: %d kb/s\n", sad->max_bitrate_kbs);
+		if (sad->mpegh_3d && sad->mpegh_3d->low_complexity_profile)
+			printf("      Supports MPEG-H 3D Audio Low Complexity Profile\n");
+		if (sad->mpegh_3d && sad->mpegh_3d->baseline_profile)
+			printf("      Supports MPEG-H 3D Audio Baseline Profile\n");
+	}
+}
+
 static uint8_t
 encode_max_luminance(float max)
 {
@@ -698,6 +826,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_data_block *data_block;
 	enum di_cta_data_block_tag data_block_tag;
 	const struct di_cta_svd *const *svds;
+	const struct di_cta_sad *const *sads;
 	const struct di_cta_video_cap_block *video_cap;
 	const struct di_cta_colorimetry_block *colorimetry;
 	const struct di_cta_hdr_static_metadata_block *hdr_static_metadata;
@@ -732,6 +861,10 @@ print_cta(const struct di_edid_cta *cta)
 		case DI_CTA_DATA_BLOCK_VIDEO:
 			svds = di_cta_data_block_get_svds(data_block);
 			printf_cta_svds(svds);
+			break;
+		case DI_CTA_DATA_BLOCK_AUDIO:
+			sads = di_cta_data_block_get_sads(data_block);
+			print_cta_sads(sads);
 			break;
 		case DI_CTA_DATA_BLOCK_VIDEO_CAP:
 			video_cap = di_cta_data_block_get_video_cap(data_block);
