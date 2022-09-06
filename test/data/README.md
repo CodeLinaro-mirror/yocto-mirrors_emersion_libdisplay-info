@@ -38,12 +38,13 @@ project:
 
 name | source
 ---- | ------
-amazon-fire-tv-48 | display
-ayaneo-wxga	  | display
-cvt		  | handcrafted
-goldstar-e2441	  | display
-hp-5dq99aa-hdmi	  | display
-qemu		  | generated
+amazon-fire-tv-48	| display
+ayaneo-wxga		| display
+cvt			| handcrafted
+goldstar-e2441		| display
+hp-5dq99aa-hdmi		| display
+jdi-lpm135m467-edp	| display
+qemu			| generated
 
 [linuxhw/EDID]: https://github.com/linuxhw/EDID
 [edid-decode]: https://git.linuxtv.org/edid-decode.git

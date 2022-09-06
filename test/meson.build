@@ -25,6 +25,7 @@ test_cases = [
 	'goldstar-ite6604-hdmi',
 	'hitachi-55r6+',
 	'hp-5dq99aa-hdmi',
+	'jdi-lpm135m467-edp',
 	'lenovo-t27p10',
 	'msi-mag321curv-dp',
 	'panasonic-mei96a2-dp',
