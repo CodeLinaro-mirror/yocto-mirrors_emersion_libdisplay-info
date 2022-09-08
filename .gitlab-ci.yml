@@ -1,4 +1,4 @@
-.templates_sha: &templates_sha 3f37cc0e461f5b0c815409bf6f55759f26a74e9c
+.templates_sha: &templates_sha d5aa3941aa03c2f716595116354fb81eb8012acb
 
 include:
   - project: 'freedesktop/ci-templates'
@@ -7,6 +7,9 @@ include:
   - project: 'freedesktop/ci-templates'
     ref: *templates_sha
     file: '/templates/alpine.yml'
+  - project: 'freedesktop/ci-templates'
+    ref: *templates_sha
+    file: '/templates/freebsd.yml'
 
 # When updating a prepare-container-* step, make sure to bump
 # FDO_DISTRIBUTION_TAG, otherwise the container won't get rebuilt.
@@ -14,7 +17,7 @@ include:
 # $ git push -f -o ci.variable="FDO_FORCE_REBUILD=1"
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
-  FDO_DISTRIBUTION_TAG: '2022-08-15.0'
+  FDO_DISTRIBUTION_TAG: '2022-00-08.0'
   MESON_FLAGS: '--fatal-meson-warnings -Dwerror=true'
 
 stages:
@@ -55,6 +58,14 @@ prepare-container-alpine:
     FDO_DISTRIBUTION_PACKAGES: |
       build-base clang compiler-rt meson make git gcovr py3-pygments
 
+prepare-container-freebsd:
+  extends:
+    - .prepare-container
+    - .fdo.container-build@freebsd
+  variables:
+    FDO_DISTRIBUTION_PACKAGES: |
+      meson git
+
 .build:
   stage: "Build and test"
   artifacts:
@@ -87,5 +98,14 @@ build-alpine-clang:
     - .fdo.distribution-image@alpine
   script:
     - CC=clang meson setup build/ $MESON_FLAGS -Db_sanitize=address,undefined -Db_lundef=false
+    - ninja -C build/
+    - ninja -C build/ test
+
+build-freebsd:
+  extends:
+    - .build
+    - .fdo.distribution-image@freebsd
+  script:
+    - meson setup build/ $MESON_FLAGS
     - ninja -C build/
     - ninja -C build/ test
