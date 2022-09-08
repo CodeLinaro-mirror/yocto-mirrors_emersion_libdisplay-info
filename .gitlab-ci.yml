@@ -8,7 +8,7 @@ include:
     ref: *templates_sha
     file: '/templates/alpine.yml'
 
-# When updating the prepare-container step, make sure to bump
+# When updating a prepare-container-* step, make sure to bump
 # FDO_DISTRIBUTION_TAG, otherwise the container won't get rebuilt.
 # To force a rebuild of the container, use:
 # $ git push -f -o ci.variable="FDO_FORCE_REBUILD=1"
@@ -32,7 +32,7 @@ check-mr:
       when: always
     - when: never
 
-prepare-container:
+prepare-container-alpine:
   extends: .fdo.container-build@alpine@x86_64
   stage: "Prepare container"
   variables:
@@ -49,7 +49,7 @@ prepare-container:
   rules:
     - when: on_success
 
-build-gcc:
+build-alpine-gcc:
   extends: .fdo.distribution-image@alpine
   stage: "Build and test"
   script:
@@ -69,7 +69,7 @@ build-gcc:
   rules:
     - when: on_success
 
-build-clang:
+build-alpine-clang:
   extends: .fdo.distribution-image@alpine
   stage: "Build and test"
   script:
