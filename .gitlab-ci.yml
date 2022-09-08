@@ -15,6 +15,7 @@ include:
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
   FDO_DISTRIBUTION_TAG: '2022-08-15.0'
+  MESON_FLAGS: '--fatal-meson-warnings -Dwerror=true'
 
 stages:
   - "Contribution checks"
@@ -32,12 +33,9 @@ check-mr:
       when: always
     - when: never
 
-prepare-container-alpine:
-  extends: .fdo.container-build@alpine@x86_64
+.prepare-container:
   stage: "Prepare container"
   variables:
-    FDO_DISTRIBUTION_PACKAGES: |
-      build-base clang compiler-rt meson make git gcovr py3-pygments
     FDO_DISTRIBUTION_EXEC: |
       git clone git://linuxtv.org/edid-decode.git
       cd edid-decode
@@ -49,38 +47,45 @@ prepare-container-alpine:
   rules:
     - when: on_success
 
-build-alpine-gcc:
-  extends: .fdo.distribution-image@alpine
+prepare-container-alpine:
+  extends:
+    - .prepare-container
+    - .fdo.container-build@alpine@x86_64
+  variables:
+    FDO_DISTRIBUTION_PACKAGES: |
+      build-base clang compiler-rt meson make git gcovr py3-pygments
+
+.build:
   stage: "Build and test"
+  artifacts:
+    when: always
+    paths:
+      - build/meson-logs/
+    reports:
+      junit: build/meson-logs/testlog.junit.xml
+  rules:
+    - when: on_success
+
+build-alpine-gcc:
+  extends:
+    - .build
+    - .fdo.distribution-image@alpine
   script:
-    - CC=gcc meson setup build/ --fatal-meson-warnings -Dwerror=true -Db_coverage=true
+    - CC=gcc meson setup build/ $MESON_FLAGS -Db_coverage=true
     - ninja -C build/
     - ninja -C build/ test
     - ninja -C build/ -j1 coverage-xml coverage-html
   artifacts:
-    when: always
-    paths:
-      - build/meson-logs/
     reports:
-      junit: build/meson-logs/testlog.junit.xml
       coverage_report:
         coverage_format: cobertura
         path: build/meson-logs/coverage.xml
-  rules:
-    - when: on_success
 
 build-alpine-clang:
-  extends: .fdo.distribution-image@alpine
-  stage: "Build and test"
+  extends:
+    - .build
+    - .fdo.distribution-image@alpine
   script:
-    - CC=clang meson setup build/ --fatal-meson-warnings -Dwerror=true -Db_sanitize=address,undefined -Db_lundef=false
+    - CC=clang meson setup build/ $MESON_FLAGS -Db_sanitize=address,undefined -Db_lundef=false
     - ninja -C build/
     - ninja -C build/ test
-  artifacts:
-    when: always
-    paths:
-      - build/meson-logs/
-    reports:
-      junit: build/meson-logs/testlog.junit.xml
-  rules:
-    - when: on_success
