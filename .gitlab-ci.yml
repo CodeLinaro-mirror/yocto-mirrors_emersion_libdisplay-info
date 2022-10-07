@@ -69,6 +69,9 @@ build-gcc:
         path: build/meson-logs/coverage.xml
   rules:
     - when: on_success
+  environment:
+    name: coverage
+    url: https://emersion.${CI_PAGES_DOMAIN}/-/libdisplay-info/-/jobs/${CI_JOB_ID}/artifacts/build/meson-logs/coveragereport/index.html
 
 build-clang:
   extends: .fdo.distribution-image@alpine
