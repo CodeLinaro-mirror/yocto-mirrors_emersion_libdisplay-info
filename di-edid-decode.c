@@ -277,7 +277,11 @@ print_detailed_timing_def(const struct di_edid_detailed_timing_def *def)
 	hbl = def->horiz_blank - 2 * def->horiz_border;
 	vbl = def->vert_blank - 2 * def->vert_border;
 	horiz_total = def->horiz_video + hbl;
-	vert_total = def->vert_video + vbl;
+	if (def->interlaced)
+		vert_total = def->vert_video / 2 + def->vert_blank +
+			def->vert_sync_pulse + 0.5;
+	else
+		vert_total = def->vert_video + vbl;
 	refresh = (double) def->pixel_clock_hz / (horiz_total * vert_total);
 	horiz_freq_hz = (double) def->pixel_clock_hz / horiz_total;
 

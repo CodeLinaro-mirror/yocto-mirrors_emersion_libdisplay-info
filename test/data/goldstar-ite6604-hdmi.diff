@@ -84,7 +84,7 @@
                   Hfront   88 Hsync  44 Hback  148 Hpol P
                   Vfront    4 Vsync   5 Vback   36 Vpol P
 -    DTD 6:  1920x1080i  60.000000 Hz  16:9     33.750 kHz     74.250000 MHz (708 mm x 398 mm)
-+    DTD 6:  1920x540  i  60.053381 Hz  32:9     33.750 kHz     74.250000 MHz (708 mm x 398 mm)
++    DTD 6:  1920x1080 i  60.053381 Hz  16:9     33.750 kHz     74.250000 MHz (708 mm x 398 mm)
                   Hfront   88 Hsync  44 Hback  148 Hpol P
 -                 Vfront    2 Vsync   5 Vback   15 Vpol P Vfront +0.5 Odd Field
 -                 Vfront    2 Vsync   5 Vback   15 Vpol P Vback  +0.5 Even Field

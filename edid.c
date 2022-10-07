@@ -403,6 +403,9 @@ _di_edid_parse_detailed_timing_def(const uint8_t data[static EDID_BYTE_DESCRIPTO
 	flags = data[17];
 
 	def->interlaced = has_bit(flags, 7);
+	if (def->interlaced) {
+		def->vert_video *= 2;
+	}
 
 	stereo_hi = get_bit_range(flags, 6, 5);
 	stereo_lo = get_bit_range(flags, 0, 0);
