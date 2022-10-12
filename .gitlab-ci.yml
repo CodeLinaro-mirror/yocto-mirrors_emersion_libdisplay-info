@@ -58,6 +58,7 @@ build-gcc:
     - ninja -C build/
     - ninja -C build/ test
     - ninja -C build/ -j1 coverage-xml coverage-html
+    - echo "Coverage report can be browsed at $CI_JOB_URL/artifacts/file/build/meson-logs/coveragereport/index.html"
   artifacts:
     when: always
     paths:
