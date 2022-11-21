@@ -1,0 +1,53 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$ref": "#/$defs/edid",
+	"$defs": {
+		"uint16": {
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 65535
+		},
+		"uint32": {
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 4294967295
+		},
+		"display_info": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"edid": { "$ref": "#/$defs/edid" }
+			}
+		},
+		"edid": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"version": { "type": "integer" },
+				"revision": { "type": "integer" },
+				"vendor_product": { "$ref": "#/$defs/edid_vendor_product" }
+			},
+			"required": [
+				"version",
+				"revision",
+				"vendor_product"
+			]
+		},
+		"edid_vendor_product": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"manufacturer": { "type": "string" },
+				"product": { "$ref": "#/$defs/uint16" },
+				"serial": { "$ref": "#/$defs/uint32" },
+				"model_year": { "type": "integer" },
+				"manufacture_week": { "type": "integer" },
+				"manufacture_year": { "type": "integer" }
+			},
+			"required": [
+				"manufacturer",
+				"product"
+			]
+		}
+	}
+}

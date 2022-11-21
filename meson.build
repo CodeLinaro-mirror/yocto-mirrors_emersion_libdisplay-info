@@ -85,4 +85,5 @@ di_dep = declare_dependency(
 meson.override_dependency('libdisplay-info', di_dep)
 
 subdir('di-edid-decode')
+subdir('tool')
 subdir('test')
