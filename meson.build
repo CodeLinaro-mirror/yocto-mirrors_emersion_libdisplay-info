@@ -18,7 +18,7 @@ else
 	pnp_ids = files('/usr/share/hwdata/pnp.ids')
 endif
 
-gen_search_table = find_program('tool/gen-search-table.py')
+gen_search_table = find_program('script/gen-search-table.py')
 pnp_id_table = custom_target(
 	'pnp-id-table.c',
 	command: [ gen_search_table, pnp_ids, '@OUTPUT@', 'pnp_id_table' ],
