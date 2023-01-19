@@ -1006,7 +1006,7 @@ print_cta(const struct di_edid_cta *cta)
 			print_cta_vesa_transfer_characteristics(transfer_characteristics);
 			break;
 		case DI_CTA_DATA_BLOCK_AUDIO:
-			sads = di_cta_data_block_get_sads(data_block);
+			sads = di_cta_data_block_get_audio(data_block)->sads;
 			print_cta_sads(sads);
 			break;
 		case DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP:

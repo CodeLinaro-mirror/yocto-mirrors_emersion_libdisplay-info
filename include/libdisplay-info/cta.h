@@ -343,15 +343,22 @@ struct di_cta_sad {
 	const struct di_cta_sad_wma_pro *wma_pro;
 };
 
+
 /**
- * Get an array of short audio descriptors from a CTA data block.
+ * Audio Data Block, defined in section 7.5.2.
+ */
+struct di_cta_audio_block {
+	/* Short audio descriptors. The array is NULL-terminated. */
+	const struct di_cta_sad *const *sads;
+};
+
+/**
+ * Get the audio from a CTA data block.
  *
  * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_AUDIO.
- *
- * The returned array is NULL-terminated.
  */
-const struct di_cta_sad *const *
-di_cta_data_block_get_sads(const struct di_cta_data_block *data_block);
+const struct di_cta_audio_block *
+di_cta_data_block_get_audio(const struct di_cta_data_block *data_block);
 
 /**
  * Indicates which speakers are present. See figure 6 for the meaning of the

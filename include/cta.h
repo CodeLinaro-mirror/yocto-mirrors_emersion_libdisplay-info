@@ -134,7 +134,8 @@ struct di_cta_sad_priv {
 	struct di_cta_sad_wma_pro wma_pro;
 };
 
-struct di_cta_audio_block {
+struct di_cta_audio_block_priv {
+	struct di_cta_audio_block audio;
 	/* NULL-terminated */
 	struct di_cta_sad_priv *sads[EDID_CTA_MAX_AUDIO_BLOCK_ENTRIES + 1];
 	size_t sads_len;
@@ -181,7 +182,7 @@ struct di_cta_data_block {
 	/* Used for DI_CTA_DATA_BLOCK_YCBCR420 */
 	struct di_cta_video_block ycbcr420;
 	/* used for DI_CTA_DATA_BLOCK_AUDIO */
-	struct di_cta_audio_block audio;
+	struct di_cta_audio_block_priv audio;
 	/* Used for DI_CTA_DATA_BLOCK_SPEAKER_ALLOC */
 	struct di_cta_speaker_alloc_block speaker_alloc;
 	/* Used for DI_CTA_DATA_BLOCK_VIDEO_CAP */

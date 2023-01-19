@@ -228,7 +228,7 @@ parse_sad_format(struct di_edid_cta *cta, uint8_t code, uint8_t code_ext,
 }
 
 static bool
-parse_sad(struct di_edid_cta *cta, struct di_cta_audio_block *audio,
+parse_sad(struct di_edid_cta *cta, struct di_cta_audio_block_priv *audio,
 	  const uint8_t data[static CTA_SAD_SIZE])
 {
 	enum di_cta_audio_format format;
@@ -505,7 +505,7 @@ parse_sad(struct di_edid_cta *cta, struct di_cta_audio_block *audio,
 }
 
 static bool
-parse_audio_block(struct di_edid_cta *cta, struct di_cta_audio_block *audio,
+parse_audio_block(struct di_edid_cta *cta, struct di_cta_audio_block_priv *audio,
 		  const uint8_t *data, size_t size)
 {
 	size_t i;
@@ -518,6 +518,7 @@ parse_audio_block(struct di_edid_cta *cta, struct di_cta_audio_block *audio,
 			return false;
 	}
 
+	audio->audio.sads = (const struct di_cta_sad *const *) audio->sads;
 	return true;
 }
 
@@ -1597,7 +1598,7 @@ destroy_data_block(struct di_cta_data_block *data_block)
 {
 	size_t i;
 	struct di_cta_video_block *video;
-	struct di_cta_audio_block *audio;
+	struct di_cta_audio_block_priv *audio;
 	struct di_cta_infoframe_block_priv *infoframe;
 	struct di_cta_speaker_location_block *speaker_location;
 	struct di_cta_video_format_pref_block *vfpdb;
@@ -1988,13 +1989,13 @@ di_cta_data_block_get_svrs(const struct di_cta_data_block *block)
 	return (const struct di_cta_svr *const *) block->video_format_pref.svrs;
 }
 
-const struct di_cta_sad *const *
-di_cta_data_block_get_sads(const struct di_cta_data_block *block)
+const struct di_cta_audio_block *
+di_cta_data_block_get_audio(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_AUDIO) {
 		return NULL;
 	}
-	return (const struct di_cta_sad *const *) block->audio.sads;
+	return &block->audio.audio;
 }
 
 const struct di_cta_speaker_alloc_block *
