@@ -102,17 +102,17 @@ struct di_cta_hdr_static_metadata_block_priv {
 	struct di_cta_hdr_static_metadata_descriptors descriptors;
 };
 
-struct di_cta_hdr_dynamic_metadata_block_type3 {
+struct di_cta_hdr_dynamic_metadata_type3 {
 	uint8_t unused;
 };
 
 struct di_cta_hdr_dynamic_metadata_block_priv {
 	struct di_cta_hdr_dynamic_metadata_block base;
-	struct di_cta_hdr_dynamic_metadata_block_type1 type1;
-	struct di_cta_hdr_dynamic_metadata_block_type2 type2;
-	struct di_cta_hdr_dynamic_metadata_block_type3 type3;
-	struct di_cta_hdr_dynamic_metadata_block_type4 type4;
-	struct di_cta_hdr_dynamic_metadata_block_type256 type256;
+	struct di_cta_hdr_dynamic_metadata_type1 type1;
+	struct di_cta_hdr_dynamic_metadata_type2 type2;
+	struct di_cta_hdr_dynamic_metadata_type3 type3;
+	struct di_cta_hdr_dynamic_metadata_type4 type4;
+	struct di_cta_hdr_dynamic_metadata_type256 type256;
 };
 
 struct di_cta_video_block {

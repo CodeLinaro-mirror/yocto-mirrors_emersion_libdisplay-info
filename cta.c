@@ -968,11 +968,11 @@ parse_hdr_dynamic_metadata_block(struct di_edid_cta *cta,
 				 const uint8_t *data, size_t size)
 {
 	struct di_cta_hdr_dynamic_metadata_block *base;
-	struct di_cta_hdr_dynamic_metadata_block_type1 *type1;
-	struct di_cta_hdr_dynamic_metadata_block_type2 *type2;
-	struct di_cta_hdr_dynamic_metadata_block_type3 *type3;
-	struct di_cta_hdr_dynamic_metadata_block_type4 *type4;
-	struct di_cta_hdr_dynamic_metadata_block_type256 *type256;
+	struct di_cta_hdr_dynamic_metadata_type1 *type1;
+	struct di_cta_hdr_dynamic_metadata_type2 *type2;
+	struct di_cta_hdr_dynamic_metadata_type3 *type3;
+	struct di_cta_hdr_dynamic_metadata_type4 *type4;
+	struct di_cta_hdr_dynamic_metadata_type256 *type256;
 	size_t length;
 	int type;
 

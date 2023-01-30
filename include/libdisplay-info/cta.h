@@ -749,13 +749,13 @@ const struct di_cta_hdr_static_metadata_block *
 di_cta_data_block_get_hdr_static_metadata(const struct di_cta_data_block *block);
 
 /* Additional HDR Dynamic Metadata Type 1 information */
-struct di_cta_hdr_dynamic_metadata_block_type1 {
+struct di_cta_hdr_dynamic_metadata_type1 {
 	uint8_t type_1_hdr_metadata_version;
 };
 
 /* Additional HDR Dynamic Metadata Type 2 (ETSI TS 103 433-1) information.
  * Defined in ETSI TS 103 433-1 Annex G.2 HDR Dynamic Metadata Data Block. */
-struct di_cta_hdr_dynamic_metadata_block_type2 {
+struct di_cta_hdr_dynamic_metadata_type2 {
 	uint8_t ts_103_433_spec_version;
 	bool ts_103_433_1_capable;
 	bool ts_103_433_2_capable;
@@ -763,15 +763,15 @@ struct di_cta_hdr_dynamic_metadata_block_type2 {
 };
 
 /* Additional HDR Dynamic Metadata Type 3 information */
-struct di_cta_hdr_dynamic_metadata_block_type3;
+struct di_cta_hdr_dynamic_metadata_type3;
 
 /* Additional HDR Dynamic Metadata Type 4 information */
-struct di_cta_hdr_dynamic_metadata_block_type4 {
+struct di_cta_hdr_dynamic_metadata_type4 {
 	uint8_t type_4_hdr_metadata_version;
 };
 
 /* Additional HDR Dynamic Metadata Type 256 information */
-struct di_cta_hdr_dynamic_metadata_block_type256 {
+struct di_cta_hdr_dynamic_metadata_type256 {
 	uint8_t graphics_overlay_flag_version;
 };
 
@@ -780,15 +780,15 @@ struct di_cta_hdr_dynamic_metadata_block_type256 {
  */
 struct di_cta_hdr_dynamic_metadata_block {
 	/* non-NULL if Dynamic Metadata Type 1 is supported. */
-	const struct di_cta_hdr_dynamic_metadata_block_type1 *type1;
+	const struct di_cta_hdr_dynamic_metadata_type1 *type1;
 	/* non-NULL if Dynamic Metadata Type 2 is supported. */
-	const struct di_cta_hdr_dynamic_metadata_block_type2 *type2;
+	const struct di_cta_hdr_dynamic_metadata_type2 *type2;
 	/* non-NULL if Dynamic Metadata Type 3 is supported. */
-	const struct di_cta_hdr_dynamic_metadata_block_type3 *type3;
+	const struct di_cta_hdr_dynamic_metadata_type3 *type3;
 	/* non-NULL if Dynamic Metadata Type 4 is supported. */
-	const struct di_cta_hdr_dynamic_metadata_block_type4 *type4;
+	const struct di_cta_hdr_dynamic_metadata_type4 *type4;
 	/* non-NULL if Dynamic Metadata Type 256 (0x0100) is supported. */
-	const struct di_cta_hdr_dynamic_metadata_block_type256 *type256;
+	const struct di_cta_hdr_dynamic_metadata_type256 *type256;
 };
 
 /**
