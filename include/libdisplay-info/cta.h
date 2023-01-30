@@ -884,14 +884,14 @@ di_cta_data_block_get_vesa_transfer_characteristics(const struct di_cta_data_blo
 /**
  * CTA YCbCr 4:2:0 Capability Map block, defined in section 7.5.11.
  */
-struct di_cta_ycbcr420_cap_map;
+struct di_cta_ycbcr420_cap_map_block;
 
 /**
  * Returns true if the SVD in regular Video Data Blocks at index `svd_index`
  * supports YCbCr 4:2:0 subsampling.
  */
 bool
-di_cta_ycbcr420_cap_map_supported(const struct di_cta_ycbcr420_cap_map *cap_map,
+di_cta_ycbcr420_cap_map_supported(const struct di_cta_ycbcr420_cap_map_block *cap_map,
 				  size_t svd_index);
 
 /**
@@ -899,7 +899,7 @@ di_cta_ycbcr420_cap_map_supported(const struct di_cta_ycbcr420_cap_map *cap_map,
  *
  * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP.
  */
-const struct di_cta_ycbcr420_cap_map *
+const struct di_cta_ycbcr420_cap_map_block *
 di_cta_data_block_get_ycbcr420_cap_map(const struct di_cta_data_block *block);
 
 enum di_cta_hdmi_audio_3d_channels {

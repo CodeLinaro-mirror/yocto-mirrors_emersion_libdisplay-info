@@ -642,7 +642,7 @@ print_cta_sads(const struct di_cta_sad *const *sads)
 
 static void
 print_ycbcr420_cap_map(const struct di_edid_cta *cta,
-		       const struct di_cta_ycbcr420_cap_map *map)
+		       const struct di_cta_ycbcr420_cap_map_block *map)
 {
 	const struct di_cta_data_block *const *data_blocks;
 	const struct di_cta_data_block *data_block;
@@ -902,7 +902,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_hdr_dynamic_metadata_block *hdr_dynamic_metadata;
 	const struct di_cta_vesa_transfer_characteristics_block *transfer_characteristics;
 	const struct di_cta_sad *const *sads;
-	const struct di_cta_ycbcr420_cap_map *ycbcr420_cap_map;
+	const struct di_cta_ycbcr420_cap_map_block *ycbcr420_cap_map;
 	const struct di_cta_infoframe_block *infoframe;
 	const struct di_cta_svr *const *svrs;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;

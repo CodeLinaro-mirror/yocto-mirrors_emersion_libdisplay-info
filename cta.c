@@ -1153,7 +1153,7 @@ parse_video_format_pref_block(struct di_edid_cta *cta,
 
 static void
 parse_ycbcr420_cap_map(struct di_edid_cta *cta,
-		       struct di_cta_ycbcr420_cap_map *ycbcr420_cap_map,
+		       struct di_cta_ycbcr420_cap_map_block *ycbcr420_cap_map,
 		       const uint8_t *data, size_t size)
 {
 	if (size == 0) {
@@ -2056,7 +2056,7 @@ di_cta_data_block_get_vesa_display_device(const struct di_cta_data_block *block)
 }
 
 bool
-di_cta_ycbcr420_cap_map_supported(const struct di_cta_ycbcr420_cap_map *cap_map,
+di_cta_ycbcr420_cap_map_supported(const struct di_cta_ycbcr420_cap_map_block *cap_map,
 				  size_t svd_index)
 {
 	size_t byte, bit;
@@ -2073,7 +2073,7 @@ di_cta_ycbcr420_cap_map_supported(const struct di_cta_ycbcr420_cap_map *cap_map,
 	return cap_map->svd_bitmap[byte] & (1 << bit);
 }
 
-const struct di_cta_ycbcr420_cap_map *
+const struct di_cta_ycbcr420_cap_map_block *
 di_cta_data_block_get_ycbcr420_cap_map(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP) {

@@ -149,7 +149,7 @@ struct di_cta_audio_block_priv {
 	size_t sads_len;
 };
 
-struct di_cta_ycbcr420_cap_map {
+struct di_cta_ycbcr420_cap_map_block {
 	bool all;
 	uint8_t svd_bitmap[EDID_CTA_MAX_YCBCR420_CAP_MAP_BLOCK_ENTRIES];
 };
@@ -206,7 +206,7 @@ struct di_cta_data_block {
 	/* Used for DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC */
 	struct di_cta_vesa_transfer_characteristics_block vesa_transfer_characteristics;
 	/* Used for DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP */
-	struct di_cta_ycbcr420_cap_map ycbcr420_cap_map;
+	struct di_cta_ycbcr420_cap_map_block ycbcr420_cap_map;
 	/* Used for DI_CTA_DATA_BLOCK_HDMI_AUDIO */
 	struct di_cta_hdmi_audio_block_priv hdmi_audio;
 	/* Used for DI_CTA_DATA_BLOCK_INFOFRAME */
