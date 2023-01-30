@@ -115,7 +115,15 @@ struct di_cta_hdr_dynamic_metadata_block_priv {
 	struct di_cta_hdr_dynamic_metadata_type256 type256;
 };
 
-struct di_cta_video_block {
+struct di_cta_video_block_priv {
+	struct di_cta_video_block base;
+	/* NULL-terminated */
+	struct di_cta_svd *svds[EDID_CTA_MAX_VIDEO_BLOCK_ENTRIES + 1];
+	size_t svds_len;
+};
+
+struct di_cta_ycbcr420_video_block_priv {
+	struct di_cta_ycbcr420_video_block base;
 	/* NULL-terminated */
 	struct di_cta_svd *svds[EDID_CTA_MAX_VIDEO_BLOCK_ENTRIES + 1];
 	size_t svds_len;
@@ -178,9 +186,9 @@ struct di_cta_data_block {
 	enum di_cta_data_block_tag tag;
 
 	/* Used for DI_CTA_DATA_BLOCK_VIDEO */
-	struct di_cta_video_block video;
+	struct di_cta_video_block_priv video;
 	/* Used for DI_CTA_DATA_BLOCK_YCBCR420 */
-	struct di_cta_video_block ycbcr420;
+	struct di_cta_ycbcr420_video_block_priv ycbcr420;
 	/* used for DI_CTA_DATA_BLOCK_AUDIO */
 	struct di_cta_audio_block_priv audio;
 	/* Used for DI_CTA_DATA_BLOCK_SPEAKER_ALLOC */

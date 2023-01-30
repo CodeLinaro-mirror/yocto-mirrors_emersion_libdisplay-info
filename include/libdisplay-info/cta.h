@@ -811,25 +811,37 @@ struct di_cta_svd {
 };
 
 /**
- * Get an array of short video descriptors from a CTA data block.
- *
- * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_VIDEO.
- *
- * The returned array is NULL-terminated.
+ * Video Data Block, defined in section 7.5.1.
  */
-const struct di_cta_svd *const *
-di_cta_data_block_get_svds(const struct di_cta_data_block *block);
+struct di_cta_video_block {
+	/* Short video descriptors. The array is NULL-terminated. */
+	const struct di_cta_svd *const *svds;
+};
 
 /**
- * Get an array of short video descriptors which only allow YCbCr 4:2:0 sampling
- * mode from a CTA data block.
+ * Get the video from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_VIDEO.
+ */
+const struct di_cta_video_block *
+di_cta_data_block_get_video(const struct di_cta_data_block *block);
+
+/**
+ * Video Data Block, defined in section 7.5.1.
+ */
+struct di_cta_ycbcr420_video_block {
+	/* Short video descriptors which only allow YCbCr 4:2:0 sampling mode.
+	 * The array is NULL-terminated. */
+	const struct di_cta_svd *const *svds;
+};
+
+/**
+ * Get the YCbCr video from a CTA data block.
  *
  * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_YCBCR420.
- *
- * The returned array is NULL-terminated.
  */
-const struct di_cta_svd *const *
-di_cta_data_block_get_ycbcr420_svds(const struct di_cta_data_block *block);
+const struct di_cta_ycbcr420_video_block *
+di_cta_data_block_get_ycbcr420_video(const struct di_cta_data_block *block);
 
 enum di_cta_vesa_transfer_characteristics_usage {
 	/* White transfer characteristic */

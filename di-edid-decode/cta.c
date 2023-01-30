@@ -659,7 +659,7 @@ print_ycbcr420_cap_map(const struct di_edid_cta *cta,
 		if (tag != DI_CTA_DATA_BLOCK_VIDEO)
 			continue;
 
-		svds = di_cta_data_block_get_svds(data_block);
+		svds = di_cta_data_block_get_video(data_block)->svds;
 		for (j = 0; svds[j] != NULL; j++) {
 			if (di_cta_ycbcr420_cap_map_supported(map, svd_index))
 				printf_cta_svd(svds[j]);
@@ -937,11 +937,11 @@ print_cta(const struct di_edid_cta *cta)
 
 		switch (data_block_tag) {
 		case DI_CTA_DATA_BLOCK_VIDEO:
-			svds = di_cta_data_block_get_svds(data_block);
+			svds = di_cta_data_block_get_video(data_block)->svds;
 			printf_cta_svds(svds);
 			break;
 		case DI_CTA_DATA_BLOCK_YCBCR420:
-			svds = di_cta_data_block_get_ycbcr420_svds(data_block);
+			svds = di_cta_data_block_get_ycbcr420_video (data_block)->svds;
 			printf_cta_svds(svds);
 			break;
 		case DI_CTA_DATA_BLOCK_SPEAKER_ALLOC:

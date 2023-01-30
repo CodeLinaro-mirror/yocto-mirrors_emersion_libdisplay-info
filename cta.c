@@ -92,7 +92,7 @@ parse_svd(struct di_edid_cta *cta, uint8_t raw, const char *prefix)
 }
 
 static bool
-parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block *video,
+parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block_priv *video,
 		  const uint8_t *data, size_t size)
 {
 	size_t i;
@@ -109,12 +109,13 @@ parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block *video,
 		video->svds[video->svds_len++] = svd;
 	}
 
+	video->base.svds = (const struct di_cta_svd *const *)video->svds;
 	return true;
 }
 
 static bool
 parse_ycbcr420_block(struct di_edid_cta *cta,
-		     struct di_cta_video_block *ycbcr420,
+		     struct di_cta_ycbcr420_video_block_priv *ycbcr420,
 		     const uint8_t *data, size_t size)
 {
 	size_t i;
@@ -131,6 +132,7 @@ parse_ycbcr420_block(struct di_edid_cta *cta,
 		ycbcr420->svds[ycbcr420->svds_len++] = svd;
 	}
 
+	ycbcr420->base.svds = (const struct di_cta_svd *const *)ycbcr420->svds;
 	return true;
 }
 
@@ -1597,12 +1599,13 @@ static void
 destroy_data_block(struct di_cta_data_block *data_block)
 {
 	size_t i;
-	struct di_cta_video_block *video;
+	struct di_cta_video_block_priv *video;
 	struct di_cta_audio_block_priv *audio;
 	struct di_cta_infoframe_block_priv *infoframe;
 	struct di_cta_speaker_location_block *speaker_location;
 	struct di_cta_video_format_pref_block *vfpdb;
 	struct di_cta_hdmi_audio_block_priv *hdmi_audio;
+	struct di_cta_ycbcr420_video_block_priv *ycbcr420;
 
 	switch (data_block->tag) {
 	case DI_CTA_DATA_BLOCK_VIDEO:
@@ -1611,9 +1614,9 @@ destroy_data_block(struct di_cta_data_block *data_block)
 			free(video->svds[i]);
 		break;
 	case DI_CTA_DATA_BLOCK_YCBCR420:
-		video = &data_block->ycbcr420;
-		for (i = 0; i < video->svds_len; i++)
-			free(video->svds[i]);
+		ycbcr420 = &data_block->ycbcr420;
+		for (i = 0; i < ycbcr420->svds_len; i++)
+			free(ycbcr420->svds[i]);
 		break;
 	case DI_CTA_DATA_BLOCK_AUDIO:
 		audio = &data_block->audio;
@@ -1962,22 +1965,22 @@ di_cta_data_block_get_tag(const struct di_cta_data_block *block)
 	return block->tag;
 }
 
-const struct di_cta_svd *const *
-di_cta_data_block_get_svds(const struct di_cta_data_block *block)
+const struct di_cta_video_block *
+di_cta_data_block_get_video(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_VIDEO) {
 		return NULL;
 	}
-	return (const struct di_cta_svd *const *) block->video.svds;
+	return &block->video.base;
 }
 
-const struct di_cta_svd *const *
-di_cta_data_block_get_ycbcr420_svds(const struct di_cta_data_block *block)
+const struct di_cta_ycbcr420_video_block *
+di_cta_data_block_get_ycbcr420_video(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_YCBCR420) {
 		return NULL;
 	}
-	return (const struct di_cta_svd *const *) block->ycbcr420.svds;
+	return &block->ycbcr420.base;
 }
 
 const struct di_cta_svr *const *
