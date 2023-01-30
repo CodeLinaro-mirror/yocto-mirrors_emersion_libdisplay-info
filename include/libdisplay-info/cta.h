@@ -100,6 +100,14 @@ const struct di_edid_cta_flags *
 di_edid_cta_get_flags(const struct di_edid_cta *cta);
 
 /**
+ * Get a list of EDID detailed timing definitions.
+ *
+ * The returned array is NULL-terminated.
+ */
+const struct di_edid_detailed_timing_def *const *
+di_edid_cta_get_detailed_timing_defs(const struct di_edid_cta *cta);
+
+/**
  * CTA data block, defined in section 7.4.
  */
 struct di_cta_data_block;
@@ -1122,14 +1130,6 @@ di_cta_data_block_get_speaker_locations(const struct di_cta_data_block *block);
  */
 const struct di_displayid_type_i_ii_vii_timing *
 di_cta_data_block_get_did_type_vii_timing(const struct di_cta_data_block *block);
-
-/**
- * Get a list of EDID detailed timing definitions.
- *
- * The returned array is NULL-terminated.
- */
-const struct di_edid_detailed_timing_def *const *
-di_edid_cta_get_detailed_timing_defs(const struct di_edid_cta *cta);
 
 enum di_cta_svr_type {
 	/* reference contains a VIC */
