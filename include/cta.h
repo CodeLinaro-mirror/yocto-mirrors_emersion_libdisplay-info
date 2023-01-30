@@ -98,8 +98,8 @@ struct di_edid_cta {
 
 struct di_cta_hdr_static_metadata_block_priv {
 	struct di_cta_hdr_static_metadata_block base;
-	struct di_cta_hdr_static_metadata_block_eotfs eotfs;
-	struct di_cta_hdr_static_metadata_block_descriptors descriptors;
+	struct di_cta_hdr_static_metadata_eotfs eotfs;
+	struct di_cta_hdr_static_metadata_descriptors descriptors;
 };
 
 struct di_cta_hdr_dynamic_metadata_block_type3 {

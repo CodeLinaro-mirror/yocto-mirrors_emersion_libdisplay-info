@@ -704,7 +704,7 @@ di_cta_data_block_get_colorimetry(const struct di_cta_data_block *block);
  * Supported Electro-Optical Transfer Functions for a CTA HDR static metadata
  * block.
  */
-struct di_cta_hdr_static_metadata_block_eotfs {
+struct di_cta_hdr_static_metadata_eotfs {
 	/* Traditional gamma - SDR luminance range */
 	bool traditional_sdr;
 	/* Traditional gamma - HDR luminance range */
@@ -718,7 +718,7 @@ struct di_cta_hdr_static_metadata_block_eotfs {
 /**
  * Supported static metadata descriptors for a CTA HDR static metadata block.
  */
-struct di_cta_hdr_static_metadata_block_descriptors {
+struct di_cta_hdr_static_metadata_descriptors {
 	/* Static Metadata Type 1 */
 	bool type1;
 };
@@ -734,9 +734,9 @@ struct di_cta_hdr_static_metadata_block {
 	/* Desired content min luminance (cd/m²), zero if unset */
 	float desired_content_min_luminance;
 	/* Supported EOFTs */
-	const struct di_cta_hdr_static_metadata_block_eotfs *eotfs;
+	const struct di_cta_hdr_static_metadata_eotfs *eotfs;
 	/* Supported descriptors */
-	const struct di_cta_hdr_static_metadata_block_descriptors *descriptors;
+	const struct di_cta_hdr_static_metadata_descriptors *descriptors;
 };
 
 /**
