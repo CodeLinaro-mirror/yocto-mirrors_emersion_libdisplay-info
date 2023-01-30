@@ -83,182 +83,182 @@ printf_cta_svds(const struct di_cta_svd *const *svds)
 }
 
 static const char *
-vesa_dddb_interface_type_name(enum di_cta_vesa_dddb_interface_type type)
+vesa_display_device_interface_type_name(enum di_cta_vesa_display_device_interface_type type)
 {
 	switch (type) {
-	case DI_CTA_VESA_DDDB_INTERFACE_VGA:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_VGA:
 		return "Analog (15HD/VGA)";
-	case DI_CTA_VESA_DDDB_INTERFACE_NAVI_V:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_NAVI_V:
 		return "Analog (VESA NAVI-V (15HD))";
-	case DI_CTA_VESA_DDDB_INTERFACE_NAVI_D:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_NAVI_D:
 		return "Analog (VESA NAVI-D)";
-	case DI_CTA_VESA_DDDB_INTERFACE_LVDS:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_LVDS:
 		return "LVDS";
-	case DI_CTA_VESA_DDDB_INTERFACE_RSDS:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_RSDS:
 		return "RSDS";
-	case DI_CTA_VESA_DDDB_INTERFACE_DVI_D:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_D:
 		return "DVI-D";
-	case DI_CTA_VESA_DDDB_INTERFACE_DVI_I_ANALOG:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_I_ANALOG:
 		return "DVI-I analog";
-	case DI_CTA_VESA_DDDB_INTERFACE_DVI_I_DIGITAL:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_I_DIGITAL:
 		return "DVI-I digital";
-	case DI_CTA_VESA_DDDB_INTERFACE_HDMI_A:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_HDMI_A:
 		return "HDMI-A";
-	case DI_CTA_VESA_DDDB_INTERFACE_HDMI_B:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_HDMI_B:
 		return "HDMI-B";
-	case DI_CTA_VESA_DDDB_INTERFACE_MDDI:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_MDDI:
 		return "MDDI";
-	case DI_CTA_VESA_DDDB_INTERFACE_DISPLAYPORT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DISPLAYPORT:
 		return "DisplayPort";
-	case DI_CTA_VESA_DDDB_INTERFACE_IEEE_1394:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_IEEE_1394:
 		return "IEEE-1394";
-	case DI_CTA_VESA_DDDB_INTERFACE_M1_ANALOG:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_M1_ANALOG:
 		return "M1 analog";
-	case DI_CTA_VESA_DDDB_INTERFACE_M1_DIGITAL:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_M1_DIGITAL:
 		return "M1 digital";
 	}
 	abort(); /* unreachable */
 }
 
 static const char *
-vesa_dddb_content_protection_name(enum di_cta_vesa_dddb_content_protection cp)
+vesa_display_device_content_protection_name(enum di_cta_vesa_display_device_content_protection cp)
 {
 	switch (cp) {
-	case DI_CTA_VESA_DDDB_CONTENT_PROTECTION_NONE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_CONTENT_PROTECTION_NONE:
 		return "None";
-	case DI_CTA_VESA_DDDB_CONTENT_PROTECTION_HDCP:
+	case DI_CTA_VESA_DISPLAY_DEVICE_CONTENT_PROTECTION_HDCP:
 		return "HDCP";
-	case DI_CTA_VESA_DDDB_CONTENT_PROTECTION_DTCP:
+	case DI_CTA_VESA_DISPLAY_DEVICE_CONTENT_PROTECTION_DTCP:
 		return "DTCP";
-	case DI_CTA_VESA_DDDB_CONTENT_PROTECTION_DPCP:
+	case DI_CTA_VESA_DISPLAY_DEVICE_CONTENT_PROTECTION_DPCP:
 		return "DPCP";
 	}
 	abort(); /* unreachable */
 }
 
 static const char *
-vesa_dddb_default_orientation_name(enum di_cta_vesa_dddb_default_orientation orientation)
+vesa_display_device_default_orientation_name(enum di_cta_vesa_display_device_default_orientation orientation)
 {
 	switch (orientation) {
-	case DI_CTA_VESA_DDDB_DEFAULT_ORIENTATION_LANDSCAPE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_DEFAULT_ORIENTATION_LANDSCAPE:
 		return "Landscape";
-	case DI_CTA_VESA_DDDB_DEFAULT_ORIENTATION_PORTAIT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_DEFAULT_ORIENTATION_PORTAIT:
 		return "Portrait";
-	case DI_CTA_VESA_DDDB_DEFAULT_ORIENTATION_UNFIXED:
+	case DI_CTA_VESA_DISPLAY_DEVICE_DEFAULT_ORIENTATION_UNFIXED:
 		return "Not Fixed";
-	case DI_CTA_VESA_DDDB_DEFAULT_ORIENTATION_UNDEFINED:
+	case DI_CTA_VESA_DISPLAY_DEVICE_DEFAULT_ORIENTATION_UNDEFINED:
 		return "Undefined";
 	}
 	abort(); /* unreachable */
 }
 
 static const char *
-vesa_dddb_rotation_cap_name(enum di_cta_vesa_dddb_rotation_cap rot)
+vesa_display_device_rotation_cap_name(enum di_cta_vesa_display_device_rotation_cap rot)
 {
 	switch (rot) {
-	case DI_CTA_VESA_DDDB_ROTATION_CAP_NONE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_ROTATION_CAP_NONE:
 		return "None";
-	case DI_CTA_VESA_DDDB_ROTATION_CAP_90DEG_CLOCKWISE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_ROTATION_CAP_90DEG_CLOCKWISE:
 		return "Can rotate 90 degrees clockwise";
-	case DI_CTA_VESA_DDDB_ROTATION_CAP_90DEG_COUNTERCLOCKWISE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_ROTATION_CAP_90DEG_COUNTERCLOCKWISE:
 		return "Can rotate 90 degrees counterclockwise";
-	case DI_CTA_VESA_DDDB_ROTATION_CAP_90DEG_EITHER:
+	case DI_CTA_VESA_DISPLAY_DEVICE_ROTATION_CAP_90DEG_EITHER:
 		return "Can rotate 90 degrees in either direction";
 	}
 	abort(); /* unreachable */
 }
 
 static const char *
-vesa_dddb_zero_pixel_location_name(enum di_cta_vesa_dddb_zero_pixel_location loc)
+vesa_display_device_zero_pixel_location_name(enum di_cta_vesa_display_device_zero_pixel_location loc)
 {
 	switch (loc) {
-	case DI_CTA_VESA_DDDB_ZERO_PIXEL_UPPER_LEFT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_ZERO_PIXEL_UPPER_LEFT:
 		return "Upper Left";
-	case DI_CTA_VESA_DDDB_ZERO_PIXEL_UPPER_RIGHT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_ZERO_PIXEL_UPPER_RIGHT:
 		return "Upper Right";
-	case DI_CTA_VESA_DDDB_ZERO_PIXEL_LOWER_LEFT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_ZERO_PIXEL_LOWER_LEFT:
 		return "Lower Left";
-	case DI_CTA_VESA_DDDB_ZERO_PIXEL_LOWER_RIGHT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_ZERO_PIXEL_LOWER_RIGHT:
 		return "Lower Right";
 	}
 	abort(); /* unreachable */
 }
 
 static const char *
-vesa_dddb_scan_direction_name(enum di_cta_vesa_dddb_scan_direction dir)
+vesa_display_device_scan_direction_name(enum di_cta_vesa_display_device_scan_direction dir)
 {
 	switch (dir) {
-	case DI_CTA_VESA_DDDB_SCAN_DIRECTION_UNDEFINED:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SCAN_DIRECTION_UNDEFINED:
 		return "Not defined";
-	case DI_CTA_VESA_DDDB_SCAN_DIRECTION_FAST_LONG_SLOW_SHORT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SCAN_DIRECTION_FAST_LONG_SLOW_SHORT:
 		return "Fast Scan is on the Major (Long) Axis and Slow Scan is on the Minor Axis";
-	case DI_CTA_VESA_DDDB_SCAN_DIRECTION_FAST_SHORT_SLOW_LONG:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SCAN_DIRECTION_FAST_SHORT_SLOW_LONG:
 		return "Fast Scan is on the Minor (Short) Axis and Slow Scan is on the Major Axis";
 	}
 	abort(); /* unreachable */
 }
 
 static const char *
-vesa_dddb_subpixel_layout_name(enum di_cta_vesa_dddb_subpixel_layout subpixel)
+vesa_display_device_subpixel_layout_name(enum di_cta_vesa_display_device_subpixel_layout subpixel)
 {
 	switch (subpixel) {
-	case DI_CTA_VESA_DDDB_SUBPIXEL_UNDEFINED:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_UNDEFINED:
 		return "Not defined";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_RGB_VERT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_RGB_VERT:
 		return "RGB vertical stripes";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_RGB_HORIZ:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_RGB_HORIZ:
 		return "RGB horizontal stripes";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_EDID_CHROM_VERT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_EDID_CHROM_VERT:
 		return "Vertical stripes using primary order";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_EDID_CHROM_HORIZ:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_EDID_CHROM_HORIZ:
 		return "Horizontal stripes using primary order";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_QUAD_RGGB:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_QUAD_RGGB:
 		return "Quad sub-pixels, red at top left";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_QUAD_GBRG:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_QUAD_GBRG:
 		return "Quad sub-pixels, red at bottom left";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_DELTA_RGB:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_DELTA_RGB:
 		return "Delta (triad) RGB sub-pixels";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_MOSAIC:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_MOSAIC:
 		return "Mosaic";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_QUAD_ANY:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_QUAD_ANY:
 		return "Quad sub-pixels, RGB + 1 additional color";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_FIVE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_FIVE:
 		return "Five sub-pixels, RGB + 2 additional colors";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_SIX:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_SIX:
 		return "Six sub-pixels, RGB + 3 additional colors";
-	case DI_CTA_VESA_DDDB_SUBPIXEL_CLAIRVOYANTE_PENTILE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_CLAIRVOYANTE_PENTILE:
 		return "Clairvoyante, Inc. PenTile Matrix (tm) layout";
 	}
 	abort(); /* unreachable */
 }
 
 static const char *
-vesa_dddb_dithering_type_name(enum di_cta_vesa_dddb_dithering_type dithering)
+vesa_display_device_dithering_type_name(enum di_cta_vesa_display_device_dithering_type dithering)
 {
 	switch (dithering) {
-	case DI_CTA_VESA_DDDB_DITHERING_NONE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_DITHERING_NONE:
 		return "None";
-	case DI_CTA_VESA_DDDB_DITHERING_SPACIAL:
+	case DI_CTA_VESA_DISPLAY_DEVICE_DITHERING_SPACIAL:
 		return "Spacial";
-	case DI_CTA_VESA_DDDB_DITHERING_TEMPORAL:
+	case DI_CTA_VESA_DISPLAY_DEVICE_DITHERING_TEMPORAL:
 		return "Temporal";
-	case DI_CTA_VESA_DDDB_DITHERING_SPATIAL_AND_TEMPORAL:
+	case DI_CTA_VESA_DISPLAY_DEVICE_DITHERING_SPATIAL_AND_TEMPORAL:
 		return "Spatial and Temporal";
 	}
 	abort(); /* unreachable */
 }
 
 static const char *
-vesa_dddb_frame_rate_conversion_name(enum di_cta_vesa_dddb_frame_rate_conversion conv)
+vesa_display_device_frame_rate_conversion_name(enum di_cta_vesa_display_device_frame_rate_conversion conv)
 {
 	switch (conv) {
-	case DI_CTA_VESA_DDDB_FRAME_RATE_CONVERSION_NONE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_FRAME_RATE_CONVERSION_NONE:
 		return "None";
-	case DI_CTA_VESA_DDDB_FRAME_RATE_CONVERSION_SINGLE_BUFFERING:
+	case DI_CTA_VESA_DISPLAY_DEVICE_FRAME_RATE_CONVERSION_SINGLE_BUFFERING:
 		return "Single Buffering";
-	case DI_CTA_VESA_DDDB_FRAME_RATE_CONVERSION_DOUBLE_BUFFERING:
+	case DI_CTA_VESA_DISPLAY_DEVICE_FRAME_RATE_CONVERSION_DOUBLE_BUFFERING:
 		return "Double Buffering";
-	case DI_CTA_VESA_DDDB_FRAME_RATE_CONVERSION_ADVANCED:
+	case DI_CTA_VESA_DISPLAY_DEVICE_FRAME_RATE_CONVERSION_ADVANCED:
 		return "Advanced Frame Rate Conversion";
 	}
 	abort(); /* unreachable */
@@ -271,29 +271,29 @@ truncate_chromaticity_coord(float coord)
 }
 
 static const char *
-vesa_dddb_resp_time_transition_name(enum di_cta_vesa_dddb_resp_time_transition t)
+vesa_display_device_resp_time_transition_name(enum di_cta_vesa_display_device_resp_time_transition t)
 {
 	switch (t) {
-	case DI_CTA_VESA_DDDB_RESP_TIME_BLACK_TO_WHITE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_RESP_TIME_BLACK_TO_WHITE:
 		return "Black -> White";
-	case DI_CTA_VESA_DDDB_RESP_TIME_WHITE_TO_BLACK:
+	case DI_CTA_VESA_DISPLAY_DEVICE_RESP_TIME_WHITE_TO_BLACK:
 		return "White -> Black";
 	}
 	abort(); /* unreachable */
 }
 
 static void
-print_cta_vesa_dddb(const struct di_cta_vesa_dddb *dddb)
+print_cta_vesa_display_device(const struct di_cta_vesa_display_device_block *dddb)
 {
 	size_t i;
 
 	printf("    Interface Type: %s",
-	       vesa_dddb_interface_type_name(dddb->interface_type));
+	       vesa_display_device_interface_type_name(dddb->interface_type));
 	if (dddb->num_channels != 0) {
 		const char *kind;
 		switch (dddb->interface_type) {
-		case DI_CTA_VESA_DDDB_INTERFACE_LVDS:
-		case DI_CTA_VESA_DDDB_INTERFACE_RSDS:
+		case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_LVDS:
+		case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_RSDS:
 			kind = "lanes";
 			break;
 		default:
@@ -308,7 +308,7 @@ print_cta_vesa_dddb(const struct di_cta_vesa_dddb *dddb)
 	       dddb->interface_version, dddb->interface_release);
 
 	printf("    Content Protection Support: %s\n",
-	       vesa_dddb_content_protection_name(dddb->content_protection));
+	       vesa_display_device_content_protection_name(dddb->content_protection));
 
 	printf("    Minimum Clock Frequency: %d MHz\n", dddb->min_clock_freq_mhz);
 	printf("    Maximum Clock Frequency: %d MHz\n", dddb->max_clock_freq_mhz);
@@ -316,19 +316,19 @@ print_cta_vesa_dddb(const struct di_cta_vesa_dddb *dddb)
 	       dddb->native_horiz_pixels, dddb->native_vert_pixels);
 	printf("    Aspect Ratio: %.2f\n", dddb->aspect_ratio);
 	printf("    Default Orientation: %s\n",
-	       vesa_dddb_default_orientation_name(dddb->default_orientation));
+	       vesa_display_device_default_orientation_name(dddb->default_orientation));
 	printf("    Rotation Capability: %s\n",
-	       vesa_dddb_rotation_cap_name(dddb->rotation_cap));
+	       vesa_display_device_rotation_cap_name(dddb->rotation_cap));
 	printf("    Zero Pixel Location: %s\n",
-	       vesa_dddb_zero_pixel_location_name(dddb->zero_pixel_location));
+	       vesa_display_device_zero_pixel_location_name(dddb->zero_pixel_location));
 	printf("    Scan Direction: %s\n",
-	       vesa_dddb_scan_direction_name(dddb->scan_direction));
+	       vesa_display_device_scan_direction_name(dddb->scan_direction));
 	printf("    Subpixel Information: %s\n",
-	       vesa_dddb_subpixel_layout_name(dddb->subpixel_layout));
+	       vesa_display_device_subpixel_layout_name(dddb->subpixel_layout));
 	printf("    Horizontal and vertical dot/pixel pitch: %.2f x %.2f mm\n",
 	       dddb->horiz_pitch_mm, dddb->vert_pitch_mm);
 	printf("    Dithering: %s\n",
-	       vesa_dddb_dithering_type_name(dddb->dithering_type));
+	       vesa_display_device_dithering_type_name(dddb->dithering_type));
 	printf("    Direct Drive: %s\n", dddb->direct_drive ? "Yes" : "No");
 	printf("    Overdrive %srecommended\n",
 	       dddb->overdrive_not_recommended ? "not " : "");
@@ -345,7 +345,7 @@ print_cta_vesa_dddb(const struct di_cta_vesa_dddb *dddb)
 		printf("    Audio Delay: no information provided\n");
 
 	printf("    Frame Rate/Mode Conversion: %s\n",
-	       vesa_dddb_frame_rate_conversion_name(dddb->frame_rate_conversion));
+	       vesa_display_device_frame_rate_conversion_name(dddb->frame_rate_conversion));
 	if (dddb->frame_rate_range_hz != 0)
 		printf("    Frame Rate Range: %d fps +/- %d fps\n",
 		       dddb->frame_rate_native_hz, dddb->frame_rate_range_hz);
@@ -364,7 +364,7 @@ print_cta_vesa_dddb(const struct di_cta_vesa_dddb *dddb)
 	}
 
 	printf("    Response Time %s: %d ms\n",
-	       vesa_dddb_resp_time_transition_name(dddb->resp_time_transition),
+	       vesa_display_device_resp_time_transition_name(dddb->resp_time_transition),
 	       dddb->resp_time_ms);
 	printf("    Overscan: %d%% x %d%%\n",
 	       dddb->overscan_horiz_pct, dddb->overscan_vert_pct);
@@ -896,7 +896,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_svd *const *svds;
 	const struct di_cta_speaker_alloc_block *speaker_alloc;
 	const struct di_cta_video_cap_block *video_cap;
-	const struct di_cta_vesa_dddb *vesa_dddb;
+	const struct di_cta_vesa_display_device_block *vesa_display_device;
 	const struct di_cta_colorimetry_block *colorimetry;
 	const struct di_cta_hdr_static_metadata_block *hdr_static_metadata;
 	const struct di_cta_hdr_dynamic_metadata_block *hdr_dynamic_metadata;
@@ -967,8 +967,8 @@ print_cta(const struct di_edid_cta *cta)
 							     "CE video formats not supported"));
 			break;
 		case DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE:
-			vesa_dddb = di_cta_data_block_get_vesa_dddb(data_block);
-			print_cta_vesa_dddb(vesa_dddb);
+			vesa_display_device = di_cta_data_block_get_vesa_display_device(data_block);
+			print_cta_vesa_display_device(vesa_display_device);
 			break;
 		case DI_CTA_DATA_BLOCK_COLORIMETRY:
 			colorimetry = di_cta_data_block_get_colorimetry(data_block);

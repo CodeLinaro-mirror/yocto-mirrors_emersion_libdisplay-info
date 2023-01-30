@@ -621,42 +621,42 @@ parse_video_cap_block(struct di_edid_cta *cta,
 }
 
 static bool
-check_vesa_dddb_num_channels(enum di_cta_vesa_dddb_interface_type interface,
+check_vesa_display_device_num_channels(enum di_cta_vesa_display_device_interface_type interface,
 			     uint8_t num_channels)
 {
 	switch (interface) {
-	case DI_CTA_VESA_DDDB_INTERFACE_VGA:
-	case DI_CTA_VESA_DDDB_INTERFACE_NAVI_V:
-	case DI_CTA_VESA_DDDB_INTERFACE_NAVI_D:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_VGA:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_NAVI_V:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_NAVI_D:
 		return num_channels == 0;
-	case DI_CTA_VESA_DDDB_INTERFACE_LVDS:
-	case DI_CTA_VESA_DDDB_INTERFACE_RSDS:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_LVDS:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_RSDS:
 		return true;
-	case DI_CTA_VESA_DDDB_INTERFACE_DVI_D:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_D:
 		return num_channels == 1 || num_channels == 2;
-	case DI_CTA_VESA_DDDB_INTERFACE_DVI_I_ANALOG:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_I_ANALOG:
 		return num_channels == 0;
-	case DI_CTA_VESA_DDDB_INTERFACE_DVI_I_DIGITAL:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_I_DIGITAL:
 		return num_channels == 1 || num_channels == 2;
-	case DI_CTA_VESA_DDDB_INTERFACE_HDMI_A:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_HDMI_A:
 		return num_channels == 1;
-	case DI_CTA_VESA_DDDB_INTERFACE_HDMI_B:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_HDMI_B:
 		return num_channels == 2;
-	case DI_CTA_VESA_DDDB_INTERFACE_MDDI:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_MDDI:
 		return num_channels == 1 || num_channels == 2;
-	case DI_CTA_VESA_DDDB_INTERFACE_DISPLAYPORT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DISPLAYPORT:
 		return num_channels == 1 || num_channels == 2 || num_channels == 4;
-	case DI_CTA_VESA_DDDB_INTERFACE_IEEE_1394:
-	case DI_CTA_VESA_DDDB_INTERFACE_M1_ANALOG:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_IEEE_1394:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_M1_ANALOG:
 		return num_channels == 0;
-	case DI_CTA_VESA_DDDB_INTERFACE_M1_DIGITAL:
+	case DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_M1_DIGITAL:
 		return num_channels == 1 || num_channels == 2;
 	}
 	abort(); /* unreachable */
 }
 
 static void
-parse_vesa_dddb_additional_primary_chromaticity(struct di_cta_vesa_dddb_additional_primary_chromaticity *coords,
+parse_vesa_display_device_additional_primary_chromaticity(struct di_cta_vesa_display_device_additional_primary_chromaticity *coords,
 						uint8_t low,
 						const uint8_t high[static 2])
 {
@@ -665,14 +665,14 @@ parse_vesa_dddb_additional_primary_chromaticity(struct di_cta_vesa_dddb_addition
 	raw_x = (uint16_t) ((high[0] << 2) | get_bit_range(low, 3, 2));
 	raw_y = (uint16_t) ((high[1] << 2) | get_bit_range(low, 1, 0));
 
-	*coords = (struct di_cta_vesa_dddb_additional_primary_chromaticity) {
+	*coords = (struct di_cta_vesa_display_device_additional_primary_chromaticity) {
 		.x = (float) raw_x / 1024,
 		.y = (float) raw_y / 1024,
 	};
 }
 
 static bool
-parse_vesa_dddb(struct di_edid_cta *cta, struct di_cta_vesa_dddb *dddb,
+parse_vesa_display_device(struct di_edid_cta *cta, struct di_cta_vesa_display_device_block *dddb,
 		const uint8_t *data, size_t size)
 {
 	const size_t offset = 2; /* CTA block header */
@@ -692,13 +692,13 @@ parse_vesa_dddb(struct di_edid_cta *cta, struct di_cta_vesa_dddb *dddb,
 		 * type. */
 		switch (num_channels) {
 		case 0x0:
-			dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_VGA;
+			dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_VGA;
 			break;
 		case 0x1:
-			dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_NAVI_V;
+			dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_NAVI_V;
 			break;
 		case 0x2:
-			dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_NAVI_D;
+			dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_NAVI_D;
 			break;
 		default:
 			add_failure(cta,
@@ -709,40 +709,40 @@ parse_vesa_dddb(struct di_edid_cta *cta, struct di_cta_vesa_dddb *dddb,
 		num_channels = 0;
 		break;
 	case 0x1:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_LVDS;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_LVDS;
 		break;
 	case 0x2:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_RSDS;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_RSDS;
 		break;
 	case 0x3:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_DVI_D;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_D;
 		break;
 	case 0x4:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_DVI_I_ANALOG;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_I_ANALOG;
 		break;
 	case 0x5:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_DVI_I_DIGITAL;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DVI_I_DIGITAL;
 		break;
 	case 0x6:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_HDMI_A;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_HDMI_A;
 		break;
 	case 0x7:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_HDMI_B;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_HDMI_B;
 		break;
 	case 0x8:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_MDDI;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_MDDI;
 		break;
 	case 0x9:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_DISPLAYPORT;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_DISPLAYPORT;
 		break;
 	case 0xA:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_IEEE_1394;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_IEEE_1394;
 		break;
 	case 0xB:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_M1_ANALOG;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_M1_ANALOG;
 		break;
 	case 0xC:
-		dddb->interface_type = DI_CTA_VESA_DDDB_INTERFACE_M1_DIGITAL;
+		dddb->interface_type = DI_CTA_VESA_DISPLAY_DEVICE_INTERFACE_M1_DIGITAL;
 		break;
 	default:
 		add_failure(cta,
@@ -751,7 +751,7 @@ parse_vesa_dddb(struct di_edid_cta *cta, struct di_cta_vesa_dddb *dddb,
 		return false;
 	}
 
-	if (check_vesa_dddb_num_channels(dddb->interface_type, num_channels))
+	if (check_vesa_display_device_num_channels(dddb->interface_type, num_channels))
 		dddb->num_channels = num_channels;
 	else
 		add_failure(cta,
@@ -763,10 +763,10 @@ parse_vesa_dddb(struct di_edid_cta *cta, struct di_cta_vesa_dddb *dddb,
 
 	content_protection = data[0x04 - offset];
 	switch (content_protection) {
-	case DI_CTA_VESA_DDDB_CONTENT_PROTECTION_NONE:
-	case DI_CTA_VESA_DDDB_CONTENT_PROTECTION_HDCP:
-	case DI_CTA_VESA_DDDB_CONTENT_PROTECTION_DTCP:
-	case DI_CTA_VESA_DDDB_CONTENT_PROTECTION_DPCP:
+	case DI_CTA_VESA_DISPLAY_DEVICE_CONTENT_PROTECTION_NONE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_CONTENT_PROTECTION_HDCP:
+	case DI_CTA_VESA_DISPLAY_DEVICE_CONTENT_PROTECTION_DTCP:
+	case DI_CTA_VESA_DISPLAY_DEVICE_CONTENT_PROTECTION_DPCP:
 		dddb->content_protection = content_protection;
 		break;
 	default:
@@ -802,19 +802,19 @@ parse_vesa_dddb(struct di_edid_cta *cta, struct di_cta_vesa_dddb *dddb,
 
 	subpixel_layout = data[0x0D - offset];
 	switch (subpixel_layout) {
-	case DI_CTA_VESA_DDDB_SUBPIXEL_UNDEFINED:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_RGB_VERT:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_RGB_HORIZ:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_EDID_CHROM_VERT:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_EDID_CHROM_HORIZ:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_QUAD_RGGB:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_QUAD_GBRG:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_DELTA_RGB:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_MOSAIC:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_QUAD_ANY:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_FIVE:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_SIX:
-	case DI_CTA_VESA_DDDB_SUBPIXEL_CLAIRVOYANTE_PENTILE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_UNDEFINED:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_RGB_VERT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_RGB_HORIZ:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_EDID_CHROM_VERT:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_EDID_CHROM_HORIZ:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_QUAD_RGGB:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_QUAD_GBRG:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_DELTA_RGB:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_MOSAIC:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_QUAD_ANY:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_FIVE:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_SIX:
+	case DI_CTA_VESA_DISPLAY_DEVICE_SUBPIXEL_CLAIRVOYANTE_PENTILE:
 		dddb->subpixel_layout = subpixel_layout;
 		break;
 	default:
@@ -852,13 +852,13 @@ parse_vesa_dddb(struct di_edid_cta *cta, struct di_cta_vesa_dddb *dddb,
 	dddb->bit_depth_display = get_bit_range(data[0x15 - offset], 3, 0) + 1;
 
 	dddb->additional_primary_chromaticities_len = get_bit_range(data[0x17 - offset], 1, 0);
-	parse_vesa_dddb_additional_primary_chromaticity(&dddb->additional_primary_chromaticities[0],
+	parse_vesa_display_device_additional_primary_chromaticity(&dddb->additional_primary_chromaticities[0],
 							get_bit_range(data[0x16 - offset], 7, 4),
 							&data[0x18 - offset]);
-	parse_vesa_dddb_additional_primary_chromaticity(&dddb->additional_primary_chromaticities[1],
+	parse_vesa_display_device_additional_primary_chromaticity(&dddb->additional_primary_chromaticities[1],
 							get_bit_range(data[0x16 - offset], 3, 0),
 							&data[0x1A - offset]);
-	parse_vesa_dddb_additional_primary_chromaticity(&dddb->additional_primary_chromaticities[2],
+	parse_vesa_display_device_additional_primary_chromaticity(&dddb->additional_primary_chromaticities[2],
 							get_bit_range(data[0x17 - offset], 7, 4),
 							&data[0x1C - offset]);
 	if (get_bit_range(data[0x17 - offset], 3, 2) != 0)
@@ -1709,7 +1709,7 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 			break;
 		case 2:
 			tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE;
-			if (!parse_vesa_dddb(cta, &data_block->vesa_dddb,
+			if (!parse_vesa_display_device(cta, &data_block->vesa_display_device,
 					     data, size))
 				goto skip;
 			break;
@@ -2043,13 +2043,13 @@ di_cta_data_block_get_video_cap(const struct di_cta_data_block *block)
 	return &block->video_cap;
 }
 
-const struct di_cta_vesa_dddb *
-di_cta_data_block_get_vesa_dddb(const struct di_cta_data_block *block)
+const struct di_cta_vesa_display_device_block *
+di_cta_data_block_get_vesa_display_device(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE) {
 		return NULL;
 	}
-	return &block->vesa_dddb;
+	return &block->vesa_display_device;
 }
 
 bool
