@@ -450,7 +450,7 @@ print_cta_hdr_dynamic_metadata(const struct di_cta_hdr_dynamic_metadata_block *m
 }
 
 static void
-print_cta_vesa_transfer_characteristics(const struct di_cta_vesa_transfer_characteristics *tf)
+print_cta_vesa_transfer_characteristics(const struct di_cta_vesa_transfer_characteristics_block *tf)
 {
 	size_t i;
 
@@ -900,7 +900,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_colorimetry_block *colorimetry;
 	const struct di_cta_hdr_static_metadata_block *hdr_static_metadata;
 	const struct di_cta_hdr_dynamic_metadata_block *hdr_dynamic_metadata;
-	const struct di_cta_vesa_transfer_characteristics *transfer_characteristics;
+	const struct di_cta_vesa_transfer_characteristics_block *transfer_characteristics;
 	const struct di_cta_sad *const *sads;
 	const struct di_cta_ycbcr420_cap_map *ycbcr420_cap_map;
 	const struct di_cta_infoframe_block *infoframe;

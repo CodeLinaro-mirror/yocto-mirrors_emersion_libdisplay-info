@@ -862,7 +862,7 @@ enum di_cta_vesa_transfer_characteristics_usage {
  * the normalized relative luminance at that input. The first value includes the
  * relative black level luminance.
  */
-struct di_cta_vesa_transfer_characteristics {
+struct di_cta_vesa_transfer_characteristics_block {
 	enum di_cta_vesa_transfer_characteristics_usage usage;
 	uint8_t points_len;
 	float points[32];
@@ -878,7 +878,7 @@ struct di_cta_vesa_transfer_characteristics {
  * Characteristic data block.
  * If such a blob is found, please share it with upstream!
  */
-const struct di_cta_vesa_transfer_characteristics *
+const struct di_cta_vesa_transfer_characteristics_block *
 di_cta_data_block_get_vesa_transfer_characteristics(const struct di_cta_data_block *block);
 
 /**

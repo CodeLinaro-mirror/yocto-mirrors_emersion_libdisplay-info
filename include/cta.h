@@ -204,7 +204,7 @@ struct di_cta_data_block {
 	/* Used for DI_CTA_DATA_BLOCK_HDR_DYNAMIC_METADATA */
 	struct di_cta_hdr_dynamic_metadata_block_priv hdr_dynamic_metadata;
 	/* Used for DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC */
-	struct di_cta_vesa_transfer_characteristics vesa_transfer_characteristics;
+	struct di_cta_vesa_transfer_characteristics_block vesa_transfer_characteristics;
 	/* Used for DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP */
 	struct di_cta_ycbcr420_cap_map ycbcr420_cap_map;
 	/* Used for DI_CTA_DATA_BLOCK_HDMI_AUDIO */

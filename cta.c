@@ -1080,7 +1080,7 @@ parse_hdr_dynamic_metadata_block(struct di_edid_cta *cta,
 
 static bool
 parse_vesa_transfer_characteristics_block(struct di_edid_cta *cta,
-					  struct di_cta_vesa_transfer_characteristics *tf,
+					  struct di_cta_vesa_transfer_characteristics_block *tf,
 					  const uint8_t *data, size_t size)
 {
 	size_t i;
@@ -2124,7 +2124,7 @@ di_edid_cta_get_detailed_timing_defs(const struct di_edid_cta *cta)
 	return (const struct di_edid_detailed_timing_def *const *) cta->detailed_timing_defs;
 }
 
-const struct di_cta_vesa_transfer_characteristics *
+const struct di_cta_vesa_transfer_characteristics_block *
 di_cta_data_block_get_vesa_transfer_characteristics(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC) {
