@@ -1,0 +1,4 @@
+[wrap-git]
+url = https://git.linuxtv.org/edid-decode.git
+revision = 915b0ce5329f417d2c3f84ddab3d443dd0e01b61
+patch_directory = edid-decode
