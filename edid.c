@@ -1367,6 +1367,13 @@ di_edid_get_vendor_product(const struct di_edid *edid)
 	return &edid->vendor_product;
 }
 
+void
+di_edid_set_vendor_product(struct di_edid *edid,
+			   const struct di_edid_vendor_product *vendor_product)
+{
+	edid->vendor_product = *vendor_product;
+}
+
 const struct di_edid_video_input_analog *
 di_edid_get_video_input_analog(const struct di_edid *edid)
 {

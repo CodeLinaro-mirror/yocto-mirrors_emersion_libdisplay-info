@@ -62,6 +62,10 @@ struct di_edid_vendor_product {
 const struct di_edid_vendor_product *
 di_edid_get_vendor_product(const struct di_edid *edid);
 
+void
+di_edid_set_vendor_product(struct di_edid *edid,
+			   const struct di_edid_vendor_product *vendor_product);
+
 /**
  * EDID analog signal level standard.
  */
