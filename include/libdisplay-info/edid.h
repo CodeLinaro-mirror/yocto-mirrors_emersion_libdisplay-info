@@ -24,6 +24,15 @@ struct di_edid;
 void
 di_edid_destroy(struct di_edid *edid);
 
+/*
+ * Duplicate an EDID.
+ *
+ * The caller is responsible for cleaning up the returned struct di_edid via
+ * di_edid_destroy().
+ */
+struct di_edid *
+di_edid_dup(const struct di_edid *edid);
+
 /**
  * Get the EDID version.
  */

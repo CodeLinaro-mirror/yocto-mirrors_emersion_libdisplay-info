@@ -1588,3 +1588,115 @@ di_edid_ext_get_displayid(const struct di_edid_ext *ext)
 	}
 	return &ext->displayid;
 }
+
+static void *
+memdup(const void *ptr, size_t size)
+{
+	void *dst = malloc(size);
+	if (dst == NULL) {
+		return NULL;
+	}
+	memcpy(dst, ptr, size);
+	return dst;
+}
+
+static struct di_edid_display_descriptor *
+dup_display_descriptor(const struct di_edid_display_descriptor *desc)
+{
+	struct di_edid_display_descriptor *copy;
+	size_t i;
+	struct di_edid_standard_timing *standard_timing;
+	struct di_edid_color_point *color_point;
+	struct di_edid_cvt_timing_code *cvt_timing_code;
+
+	copy = memdup(desc, sizeof(*desc));
+	if (copy == NULL) {
+		return NULL;
+	}
+
+	copy->standard_timings_len = 0;
+	copy->color_points_len = 0;
+	copy->cvt_timing_codes_len = 0;
+
+	for (i = 0; i < desc->standard_timings_len; i++) {
+		standard_timing = memdup(desc->standard_timings[i], sizeof(*standard_timing));
+		if (standard_timing == NULL) {
+			goto error;
+		}
+		copy->standard_timings[copy->standard_timings_len++] = standard_timing;
+	}
+
+	for (i = 0; i < desc->color_points_len; i++) {
+		color_point = memdup(desc->color_points[i], sizeof(*color_point));
+		if (color_point == NULL) {
+			goto error;
+		}
+		copy->color_points[copy->color_points_len++] = color_point;
+	}
+
+	for (i = 0; i < desc->cvt_timing_codes_len; i++) {
+		cvt_timing_code = memdup(desc->cvt_timing_codes[i], sizeof(*cvt_timing_code));
+		if (cvt_timing_code == NULL) {
+			goto error;
+		}
+		copy->cvt_timing_codes[copy->cvt_timing_codes_len++] = cvt_timing_code;
+	}
+
+	return copy;
+
+error:
+	destroy_display_descriptor(copy);
+	return NULL;
+}
+
+struct di_edid *
+di_edid_dup(const struct di_edid *edid)
+{
+	struct di_edid *copy;
+	size_t i;
+	struct di_edid_standard_timing *standard_timing;
+	struct di_edid_detailed_timing_def_priv *detailed_timing_def;
+	struct di_edid_display_descriptor *desc;
+
+	copy = memdup(edid, sizeof(*edid));
+	if (copy == NULL) {
+		return NULL;
+	}
+
+	copy->standard_timings_len = 0;
+	copy->detailed_timing_defs_len = 0;
+	copy->display_descriptors_len = 0;
+	copy->exts_len = 0;
+
+	for (i = 0; i < edid->standard_timings_len; i++) {
+		standard_timing = memdup(edid->standard_timings[i], sizeof(*standard_timing));
+		if (standard_timing == NULL) {
+			goto error;
+		}
+		copy->standard_timings[copy->standard_timings_len++] = standard_timing;
+	}
+
+	for (i = 0; i < edid->detailed_timing_defs_len; i++) {
+		detailed_timing_def = memdup(edid->detailed_timing_defs[i], sizeof(*detailed_timing_def));
+		if (detailed_timing_def == NULL) {
+			goto error;
+		}
+		copy->detailed_timing_defs[copy->detailed_timing_defs_len++] = detailed_timing_def;
+	}
+
+	for (i = 0; i < edid->display_descriptors_len; i++) {
+		desc = dup_display_descriptor(edid->display_descriptors[i]);
+		if (desc == NULL) {
+			goto error;
+		}
+		copy->display_descriptors[copy->display_descriptors_len++] = desc;
+	}
+
+	/* TODO: extensions */
+
+	return copy;
+
+error:
+	di_edid_destroy(copy);
+	return NULL;
+}
