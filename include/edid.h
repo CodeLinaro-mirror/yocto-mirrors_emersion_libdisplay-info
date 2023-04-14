@@ -144,12 +144,6 @@ struct di_edid *
 _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file);
 
 /**
- * Destroy an EDID data structure.
- */
-void
-_di_edid_destroy(struct di_edid *edid);
-
-/**
  * Parse an EDID detailed timing definition.
  */
 struct di_edid_detailed_timing_def_priv *

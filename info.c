@@ -43,7 +43,7 @@ di_info_parse_edid(const void *data, size_t size)
 	return info;
 
 err_edid:
-	_di_edid_destroy(edid);
+	di_edid_destroy(edid);
 err_failure_msg_file:
 	memory_stream_cleanup(&failure_msg);
 	return NULL;
@@ -52,7 +52,7 @@ err_failure_msg_file:
 void
 di_info_destroy(struct di_info *info)
 {
-	_di_edid_destroy(info->edid);
+	di_edid_destroy(info->edid);
 	free(info->failure_msg);
 	free(info);
 }

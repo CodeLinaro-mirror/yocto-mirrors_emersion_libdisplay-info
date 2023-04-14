@@ -19,6 +19,12 @@
 struct di_edid;
 
 /**
+ * Destroy an EDID.
+ */
+void
+di_edid_destroy(struct di_edid *edid);
+
+/**
  * Get the EDID version.
  */
 int

@@ -1256,7 +1256,7 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 				       + 0x26 + i * EDID_STANDARD_TIMING_SIZE;
 		if (!parse_standard_timing(edid, standard_timing_data,
 					   &standard_timing)) {
-			_di_edid_destroy(edid);
+			di_edid_destroy(edid);
 			return NULL;
 		}
 		if (standard_timing) {
@@ -1269,7 +1269,7 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 		byte_desc_data = (const uint8_t *) data
 			       + 0x36 + i * EDID_BYTE_DESCRIPTOR_SIZE;
 		if (!parse_byte_descriptor(edid, byte_desc_data)) {
-			_di_edid_destroy(edid);
+			di_edid_destroy(edid);
 			return NULL;
 		}
 	}
@@ -1277,7 +1277,7 @@ _di_edid_parse(const void *data, size_t size, FILE *failure_msg_file)
 	for (i = 0; i < exts_len; i++) {
 		ext_data = (const uint8_t *) data + (i + 1) * EDID_BLOCK_SIZE;
 		if (!parse_ext(edid, ext_data)) {
-			_di_edid_destroy(edid);
+			di_edid_destroy(edid);
 			return NULL;
 		}
 	}
@@ -1314,7 +1314,7 @@ destroy_display_descriptor(struct di_edid_display_descriptor *desc)
 }
 
 void
-_di_edid_destroy(struct di_edid *edid)
+di_edid_destroy(struct di_edid *edid)
 {
 	size_t i;
 	struct di_edid_ext *ext;
