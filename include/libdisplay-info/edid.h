@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 /**
  * EDID data structure.
@@ -32,6 +33,18 @@ di_edid_destroy(struct di_edid *edid);
  */
 struct di_edid *
 di_edid_dup(const struct di_edid *edid);
+
+/**
+ * Format an EDID.
+ *
+ * If buf is NULL, the size of the EDID is returned without writing the EDID.
+ * If buf is not NULL, buf_size must be its capacity in bytes.
+ *
+ * On success, the size of the EDID in bytes is returned. On error, a negative
+ * integer is returned.
+ */
+ssize_t
+di_edid_format(const struct di_edid *edid, void *buf, size_t buf_size);
 
 /**
  * Get the EDID version.

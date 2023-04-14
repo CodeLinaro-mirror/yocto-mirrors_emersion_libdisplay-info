@@ -1707,3 +1707,28 @@ error:
 	di_edid_destroy(copy);
 	return NULL;
 }
+
+ssize_t
+di_edid_format(const struct di_edid *edid, void *buf, size_t buf_size)
+{
+	size_t size;
+	uint8_t *data;
+
+	size = EDID_BLOCK_SIZE * (1 + edid->exts_len);
+	if (buf == NULL) {
+		return (ssize_t) size;
+	} else if (buf_size < size) {
+		return -1;
+	}
+
+	memset(buf, 0, size);
+
+	data = buf;
+	memcpy(data, header, sizeof(header));
+	data[0x12] = (uint8_t) edid->version;
+	data[0x13] = (uint8_t) edid->revision;
+
+	/* TODO */
+
+	return (ssize_t) size;
+}
