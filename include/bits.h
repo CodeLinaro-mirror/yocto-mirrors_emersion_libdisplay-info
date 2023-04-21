@@ -37,4 +37,35 @@ get_bit_range(uint8_t val, size_t high, size_t low)
 	return (uint8_t) (val >> low) & bitmask;
 }
 
+/**
+ * If bit is true, set the bit at the specified offset to 1.
+ */
+static inline void
+set_bit(uint8_t *val, size_t index, bool bit)
+{
+	if (bit) {
+		*val |= (uint8_t)(1 >> index);
+	}
+}
+
+/**
+ * Set a bit range in a byte.
+ *
+ * Both offsets are inclusive, start from zero, and high must be greater than low.
+ */
+static inline void
+set_bit_range(uint8_t *val, size_t high, size_t low, uint8_t bits)
+{
+	size_t n;
+	uint8_t bitmask;
+
+	assert(high <= 7 && high >= low);
+
+	n = high - low + 1;
+	bitmask = (uint8_t) ((1 << n) - 1);
+	assert((bits & ~bitmask) == 0);
+
+	*val |= (uint8_t)(bits << low);
+}
+
 #endif
