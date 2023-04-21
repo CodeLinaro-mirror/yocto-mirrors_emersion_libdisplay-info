@@ -1708,6 +1708,62 @@ error:
 	return NULL;
 }
 
+static bool
+encode_vendor_product(const struct di_edid_vendor_product *vendor_product,
+		      uint8_t data[static EDID_BLOCK_SIZE])
+{
+	size_t i;
+	uint16_t man;
+	char ch;
+	int year;
+
+	for (i = 0; i < 3; i++) {
+		ch = vendor_product->manufacturer[i];
+		if (ch < '@' || ch > '@' + 0x1F) {
+			return false;
+		}
+	}
+
+	man = (uint16_t)((vendor_product->manufacturer[0] - '@') << 10) |
+	      (uint16_t)((vendor_product->manufacturer[1] - '@') << 5) |
+	      (uint16_t)((vendor_product->manufacturer[2] - '@') << 0);
+	data[0x08] = (uint8_t)(man >> 8);
+	data[0x09] = (uint8_t)man;
+
+	data[0x0A] = (uint8_t)vendor_product->product;
+	data[0x0B] = (uint8_t)(vendor_product->product >> 8);
+
+	data[0x0C] = (uint8_t)vendor_product->serial;
+	data[0x0D] = (uint8_t)(vendor_product->serial >> 8);
+	data[0x0E] = (uint8_t)(vendor_product->serial >> 16);
+	data[0x0F] = (uint8_t)(vendor_product->serial >> 24);
+
+	if (vendor_product->manufacture_year != 0 && vendor_product->model_year != 0) {
+		return false;
+	}
+	if (vendor_product->manufacture_week != 0) {
+		if (vendor_product->manufacture_week < 1 ||
+		    vendor_product->manufacture_week > 54 ||
+		    vendor_product->model_year != 0) {
+			return false;
+		}
+		data[0x10] = (uint8_t)vendor_product->manufacture_week;
+	} else {
+		if (vendor_product->model_year != 0) {
+			data[0x10] = 0xFF;
+			year = vendor_product->model_year;
+		} else {
+			year = vendor_product->manufacture_year;
+		}
+		if (year <= 1990 || year >= 1990 + 0xFF) {
+			return false;
+		}
+		data[0x11] = (uint8_t)(year - 1990);
+	}
+
+	return true;
+}
+
 ssize_t
 di_edid_format(const struct di_edid *edid, void *buf, size_t buf_size)
 {
@@ -1727,6 +1783,10 @@ di_edid_format(const struct di_edid *edid, void *buf, size_t buf_size)
 	memcpy(data, header, sizeof(header));
 	data[0x12] = (uint8_t) edid->version;
 	data[0x13] = (uint8_t) edid->revision;
+
+	if (!encode_vendor_product(&edid->vendor_product, data)) {
+		return -1;
+	}
 
 	/* TODO */
 
