@@ -14,7 +14,7 @@
      MAT (MLP):
        Max channels: 8
        Supported sample rates (kHz): 48
-@@ -106,29 +103,9 @@
+@@ -106,29 +103,10 @@
        Hash calculation not required for object audio PCM or channel-based PCM
    Speaker Allocation Data Block:
      FL/FR - Front Left/Right
@@ -31,7 +31,7 @@
 -        HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
 -        HDMI VIC 2:  3840x2160   25.000000 Hz  16:9     56.250 kHz    297.000000 MHz
 -        HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
--  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
+   Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
 -    Version: 1
 -    Maximum TMDS Character Rate: 600 MHz
 -    SCDC Present
@@ -45,7 +45,7 @@
      PT scan behavior: No Data
      IT scan behavior: Always Underscanned
      CE scan behavior: Always Overscanned
-@@ -148,42 +125,12 @@
+@@ -148,42 +126,12 @@
    HDR Dynamic Metadata Data Block:
      HDR Dynamic Metadata Type 4
        Version: 4

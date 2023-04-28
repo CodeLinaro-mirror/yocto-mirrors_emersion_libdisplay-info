@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -102,26 +102,6 @@
+@@ -102,26 +102,7 @@
    Colorimetry Data Block:
      BT2020YCC
      BT2020RGB
@@ -17,7 +17,7 @@
 -        HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
 -        HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
 -        HDMI VIC 4:  4096x2160   24.000000 Hz 256:135   54.000 kHz    297.000000 MHz
--  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
+   Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
 -    Version: 1
 -    Maximum TMDS Character Rate: 600 MHz
 -    SCDC Present
@@ -27,7 +27,7 @@
    HDR Static Metadata Data Block:
      Electro optical transfer functions:
        Traditional gamma - SDR luminance range
-@@ -129,23 +109,6 @@
+@@ -129,23 +110,6 @@
        Hybrid Log-Gamma
      Supported static metadata descriptors:
        Static metadata type 1
@@ -51,7 +51,7 @@
    YCbCr 4:2:0 Capability Map Data Block:
      VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
      VIC 102:  4096x2160   60.000000 Hz 256:135  135.000 kHz    594.000000 MHz
-@@ -156,22 +119,8 @@
+@@ -156,22 +120,8 @@
      DTD 3:  1360x768    60.015162 Hz  85:48    47.712 kHz     85.500000 MHz
                   Hfront   64 Hsync 112 Hback  256 Hpol P
                   Vfront    3 Vsync   6 Vback   18 Vpol P

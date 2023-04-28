@@ -9,7 +9,7 @@
  Checksum: 0x9e
  
  ----------------
-@@ -84,53 +82,11 @@
+@@ -84,53 +82,12 @@
        Supported sample sizes (bits): 24 20 16
    Speaker Allocation Data Block:
      FL/FR - Front Left/Right
@@ -24,7 +24,7 @@
 -        HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
 -        HDMI VIC 2:  3840x2160   25.000000 Hz  16:9     56.250 kHz    297.000000 MHz
 -        HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
--  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
+   Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
 -    Version: 1
 -    Maximum TMDS Character Rate: 600 MHz
 -    SCDC Present
@@ -63,7 +63,7 @@
    HDR Static Metadata Data Block:
      Electro optical transfer functions:
        Traditional gamma - SDR luminance range
-@@ -159,13 +115,12 @@
+@@ -159,13 +116,12 @@
      DTD 3:  2560x1440  119.997589 Hz  16:9    182.996 kHz    497.750000 MHz (708 mm x 399 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
                   Vfront    3 Vsync   5 Vback   77 Vpol P
@@ -78,7 +78,7 @@
    Display Product Type: Standalone display device
    Video Timing Modes Type 1 - Detailed Timings Data Block:
      DTD:  3840x2160  143.962777 Hz  16:9    318.878 kHz   1250.000000 MHz (aspect 16:9, no 3D stereo)
-@@ -183,30 +138,13 @@
+@@ -183,30 +139,13 @@
      DTD:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (aspect 16:9, no 3D stereo)
                 Hfront   48 Hsync  32 Hback   80 Hpol P
                 Vfront    3 Vsync   5 Vback   33 Vpol N

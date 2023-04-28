@@ -108,6 +108,97 @@ parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block *video,
 }
 
 static bool
+parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
+			      struct di_cta_vendor_hdmi_forum_block_priv *priv,
+			      const uint8_t *data, size_t size)
+{
+	const ssize_t offset = -1; /* Spec gives offset relative to header */
+	const char block_name[] = "Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8";
+	struct di_cta_vendor_hdmi_forum_block *block = &priv->base;
+	uint8_t max_frl_rate;
+
+	/* TODO: check size */
+
+	block->version = data[4 + offset];
+	if (block->version != 1) {
+		add_failure(cta, "%s: Unsupported version %d.", block_name, block->version);
+		return false;
+	}
+
+	block->max_tmds_char_rate_mhz = 5 * data[5 + offset];
+	if (block->max_tmds_char_rate_mhz > 0 && block->max_tmds_char_rate_mhz <= 340) {
+		add_failure(cta, "%s: Max TMDS rate is > 0 and <= 340.", block_name);
+		block->max_tmds_char_rate_mhz = 0;
+	}
+
+	block->supports_3d_osd_disparity = has_bit(data[6 + offset], 0);
+	block->supports_3d_dial_view = has_bit(data[6 + offset], 1);
+	block->supports_3d_independent_view = has_bit(data[6 + offset], 2);
+	block->supports_lte_340mcsc_scramble = has_bit(data[6 + offset], 3);
+	block->supports_ccbpci = has_bit(data[6 + offset], 4);
+	block->supports_scdc_read_request = has_bit(data[6 + offset], 6);
+	block->supports_scdc = has_bit(data[6 + offset], 7);
+	if (has_bit(data[6 + offset], 5))
+		add_failure(cta, "%s: Bit 5 of byte 6 is reserved.", block_name);
+
+	block->supports_dc_30bit_420 = has_bit(data[7 + offset], 0);
+	block->supports_dc_36bit_420 = has_bit(data[7 + offset], 1);
+	block->supports_dc_48bit_420 = has_bit(data[7 + offset], 2);
+	if (has_bit(data[7 + offset], 3))
+		add_failure(cta, "%s: Bit 3 of byte 7 is reserved.", block_name);
+
+	max_frl_rate = get_bit_range(data[7 + offset], 7, 4);
+	if (max_frl_rate != 0) {
+		block->frl = &priv->frl;
+		priv->frl.supports_3gbps_3lanes = max_frl_rate >= 1;
+		priv->frl.supports_6gbps_3lanes = max_frl_rate >= 2;
+		priv->frl.supports_6gbps_4lanes = max_frl_rate >= 3;
+		priv->frl.supports_8gbps_4lanes = max_frl_rate >= 4;
+		priv->frl.supports_10gbps_4lanes = max_frl_rate >= 5;
+		priv->frl.supports_12gbps_4lanes = max_frl_rate >= 6;
+		if (max_frl_rate >= 7)
+			add_failure(cta, "%s: Unknown Max Fixed Rate Link (0x%02x).", block_name, max_frl_rate);
+		if (max_frl_rate == 1 && block->max_tmds_char_rate_mhz < 300)
+			add_failure(cta, "%s: Max Fixed Rate Link is 1, but Max TMDS rate < 300.", block_name);
+		if (max_frl_rate >= 2 && block->max_tmds_char_rate_mhz != 600)
+			add_failure(cta, "%s: Max Fixed Rate Link is >= 2, but Max TMDS rate != 600.", block_name);
+	}
+
+	block->supports_fapa_start_location = has_bit(data[8 + offset], 0);
+	block->supports_allm = has_bit(data[8 + offset], 1);
+	block->supports_fva = has_bit(data[8 + offset], 2);
+	block->supports_cnmvrr = has_bit(data[8 + offset], 3);
+	block->supports_cinema_vrr = has_bit(data[8 + offset], 4);
+	block->m_delta = has_bit(data[8 + offset], 5);
+	if (get_bit_range(data[8 + offset], 7, 6) != 0)
+		add_failure(cta, "%s: Bits 6 and 7 of byte 8 are reserved.", block_name);
+
+	block->vrr_min_hz = get_bit_range(data[9 + offset], 5, 0);
+	block->vrr_max_hz = (get_bit_range(data[9 + offset], 7, 6) << 8) | data[10 + offset];
+
+	if (has_bit(data[11 + offset], 7)) {
+		block->dsc = &priv->dsc;
+		priv->dsc.supports_10bpc = has_bit(data[11 + offset], 0);
+		priv->dsc.supports_12bpc = has_bit(data[11 + offset], 1);
+		priv->dsc.supports_all_bpc = has_bit(data[11 + offset], 3);
+		priv->dsc.supports_native_420 = has_bit(data[11 + offset], 6);
+		if (has_bit(data[11 + offset], 2))
+			add_failure(cta, "%s: DSC_16bpc bit is reserved.", block_name);
+		if (get_bit_range(data[11 + offset], 5, 4) != 0)
+			add_failure(cta, "%s: Bits 4 and 5 of byte 11 are reserved.", block_name);
+		priv->dsc.max_slices = get_bit_range(data[12 + offset], 3, 0);
+		priv->dsc.max_frl_rate_gbps = get_bit_range(data[12 + offset], 7, 4);
+		priv->dsc.max_total_chunk_bytes = get_bit_range(data[13 + offset], 5, 0);
+		if (get_bit_range(data[13 + offset], 7, 6) != 0)
+			add_failure(cta, "%s: Bits 6 and 7 of byte 13 are reserved.", block_name);
+	}
+
+	/* TODO: all other bytes are reserved */
+
+	return true;
+}
+
+static bool
 parse_ycbcr420_block(struct di_edid_cta *cta,
 		     struct di_cta_video_block *ycbcr420,
 		     const uint8_t *data, size_t size)
@@ -1258,6 +1349,7 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 	enum di_cta_data_block_tag tag;
 	uint8_t extended_tag;
 	struct di_cta_data_block *data_block;
+	uint32_t ieee_oui;
 
 	data_block = calloc(1, sizeof(*data_block));
 	if (!data_block) {
@@ -1277,7 +1369,26 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		break;
 	case 3:
 		/* Vendor-Specific Data Block */
-		goto skip;
+
+		if (size < 3) {
+			add_failure(cta,
+				    "Vendor-Specific Data Block: Data block length (%zu) is not enough to contain an OUI.",
+				    size);
+			goto skip;
+		}
+
+		ieee_oui = (data[2] << 16) | (data[1] << 8) | data[0];
+		switch (ieee_oui) {
+		case IEEE_OUI_HDMI_FORUM:
+			tag = DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM;
+			if (!parse_vendor_hdmi_forum_block(cta, &data_block->vendor_hdmi_forum,
+							   data, size))
+				goto skip;
+			break;
+		default:
+			goto skip;
+		}
+		break;
 	case 4:
 		tag = DI_CTA_DATA_BLOCK_SPEAKER_ALLOC;
 		if (!parse_speaker_alloc_block(cta, &data_block->speaker_alloc,

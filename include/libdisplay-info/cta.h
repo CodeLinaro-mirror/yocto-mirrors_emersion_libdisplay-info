@@ -165,6 +165,9 @@ enum di_cta_data_block_tag {
 	DI_CTA_DATA_BLOCK_HDMI_EDID_EXT_OVERRIDE,
 	/* HDMI Forum Sink Capability Data Block */
 	DI_CTA_DATA_BLOCK_HDMI_SINK_CAP,
+
+	/* HDMI Forum Vendor-Specific Data Block */
+	DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM = 0x1000,
 };
 
 /**
@@ -923,6 +926,107 @@ struct di_cta_infoframe_block {
  */
 const struct di_cta_infoframe_block *
 di_cta_data_block_get_infoframe(const struct di_cta_data_block *block);
+
+/**
+ * Fixed Rate Link (FRL) support.
+ */
+struct di_cta_vendor_hdmi_forum_block_frl {
+	bool supports_3gbps_3lanes; /* 3 Gbit/s per lane on 3 lanes */
+	bool supports_6gbps_3lanes; /* 6 Gbit/s per lane on 3 lanes */
+	bool supports_6gbps_4lanes; /* 6 Gbit/s per lane on 4 lanes */
+	bool supports_8gbps_4lanes; /* 8 Gbit/s per lane on 4 lanes */
+	bool supports_10gbps_4lanes; /* 10 Gbit/s per lane on 4 lanes */
+	bool supports_12gbps_4lanes; /* 12 Gbit/s per lane on 4 lanes */
+};
+
+/**
+ * Display Stream Compression (DSC) support.
+ */
+struct di_cta_vendor_hdmi_forum_block_dsc {
+	/* Supports Display Stream Compression for 10bpc */
+	bool supports_10bpc;
+	/* Supports Display Stream Compression for 12bpc */
+	bool supports_12bpc;
+	/* Supports Display Stream Compression for any bpc between 1 and 16 */
+	bool supports_all_bpc;
+	/* Supports Display Stream Compression for 4:2:0 pixel encodings */
+	bool supports_native_420;
+	/* Maximum number of horizontal slices, zero if unsupported */
+	int max_slices;
+	/* Maximum FRL_Rate in Gbit/s, zero if unsupported */
+	int max_frl_rate_gbps;
+	/* Maximum total number of bytes in a line of chunks, zero if
+	 * unsupported */
+	int max_total_chunk_bytes;
+};
+
+/**
+ * HDMI Forum vendor-specific data block.
+ *
+ * This block is defined in HDMI 2.1 section 10.3.2.
+ */
+struct di_cta_vendor_hdmi_forum_block {
+	/* Version */
+	int version;
+	/* Maximum TMDS character rate in MHz, zero if unset */
+	int max_tmds_char_rate_mhz;
+	/* Supports 3D OSD disparity indication in HF-VSIF */
+	bool supports_3d_osd_disparity;
+	/* Supports 3D dual view signaling in HF-VSIF */
+	bool supports_3d_dial_view;
+	/* Supports 3D independent view signaling in HF-VSIF */
+	bool supports_3d_independent_view;
+	/* Supports scrambling for TMDS character rates at or below 340 Mcsc */
+	bool supports_lte_340mcsc_scramble;
+	/* Supports Color Content Bits Per Component Indication */
+	bool supports_ccbpci;
+	/* Supports SCDC read request initiation */
+	bool supports_scdc_read_request;
+	/* Supports SCDC */
+	bool supports_scdc;
+	/* Supports 10 bits per component deep color 4:2:0 pixel encoding */
+	bool supports_dc_30bit_420;
+	/* Supports 12 bits per component deep color 4:2:0 pixel encoding */
+	bool supports_dc_36bit_420;
+	/* Supports 16 bits per component deep color 4:2:0 pixel encoding */
+	bool supports_dc_48bit_420;
+	/* Fixed Rate Link (FRL) support, NULL if unsupported */
+	const struct di_cta_vendor_hdmi_forum_block_frl *frl;
+	/* Supports FAPA beginning on the first horizontal Blank Pixel
+	 * immediately following the first Active Video Pixel of a video
+	 * frame/field */
+	bool supports_fapa_start_location;
+	/* Supports Auto Low-Latency Mode */
+	bool supports_allm;
+	/* Supports Fast VActive */
+	bool supports_fva;
+	/* Supports negative M_VRR values when VRR and FVA are enabled */
+	bool supports_cnmvrr;
+	/* Supports fractional and integer media rates that lie below the
+	 * specified VRR_MIN when VRR is enabled and M_CONST is in use */
+	bool supports_cinema_vrr;
+	/* Has a limit on rate-of-change variations in M_VRR values */
+	bool m_delta;
+	/* Lowest frame rate in Hz for Variable Refresh Rate, zero if VRR is
+	 * not supported */
+	int vrr_min_hz;
+	/* Highest frame rate in Hz for Variable Refresh Rate, zero if unset */
+	int vrr_max_hz;
+	/* Display Stream Compression (DSC) support, NULL if VESA DSC 1.2a is
+	 * unsupported */
+	const struct di_cta_vendor_hdmi_forum_block_dsc *dsc;
+};
+
+/**
+ * Get the vendor-specific HDMI Forum information from a CTA data block.
+ *
+ * Note, the HDMI and HDMI Forum vendor-specific data blocks are different.
+ *
+ * Returns NULL if the data block tag is not
+ * DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM.
+ */
+const struct di_cta_vendor_hdmi_forum_block *
+di_cta_data_block_get_vendor_hdmi_forum(const struct di_cta_data_block *block);
 
 /**
  * Get a list of EDID detailed timing definitions.

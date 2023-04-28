@@ -58,6 +58,8 @@
  */
 #define EDID_CTA_INFOFRAME_BLOCK_ENTRIES 61
 
+#define IEEE_OUI_HDMI_FORUM 0xC45DD8
+
 struct di_edid_cta {
 	int revision;
 	struct di_edid_cta_flags flags;
@@ -128,6 +130,12 @@ struct di_cta_infoframe_block_priv {
 	size_t infoframes_len;
 };
 
+struct di_cta_vendor_hdmi_forum_block_priv {
+	struct di_cta_vendor_hdmi_forum_block base;
+	struct di_cta_vendor_hdmi_forum_block_frl frl;
+	struct di_cta_vendor_hdmi_forum_block_dsc dsc;
+};
+
 struct di_cta_data_block {
 	enum di_cta_data_block_tag tag;
 
@@ -155,6 +163,8 @@ struct di_cta_data_block {
 	struct di_cta_ycbcr420_cap_map ycbcr420_cap_map;
 	/* Used for DI_CTA_DATA_BLOCK_INFOFRAME */
 	struct di_cta_infoframe_block_priv infoframe;
+	/* Used for DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM */
+	struct di_cta_vendor_hdmi_forum_block_priv vendor_hdmi_forum;
 };
 
 extern const struct di_cta_video_format _di_cta_video_formats[];

@@ -752,6 +752,8 @@ cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 		return "HDMI Forum EDID Extension Override Data Block";
 	case DI_CTA_DATA_BLOCK_HDMI_SINK_CAP:
 		return "HDMI Forum Sink Capability Data Block";
+	case DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM:
+		return "Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8";
 	}
 	return "Unknown CTA-861 Data Block";
 }
