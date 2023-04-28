@@ -1764,6 +1764,33 @@ encode_vendor_product(const struct di_edid_vendor_product *vendor_product,
 	return true;
 }
 
+static bool
+encode_basic_params_features(const struct di_edid *edid,
+			     uint8_t data[static EDID_BLOCK_SIZE])
+{
+	const struct di_edid_video_input_digital *digital = &edid->video_input_digital;
+	const struct di_edid_screen_size *screen_size = &edid->screen_size;
+
+	set_bit(&data[0x14], 7, edid->is_digital);
+
+	if (edid->is_digital) {
+		if (digital->color_bit_depth != 0) {
+			if (digital->color_bit_depth % 2 != 0 ||
+			    digital->color_bit_depth < 6 ||
+			    digital->color_bit_depth > 16) {
+				return false;
+			}
+			set_bit_range(&data[0x14], 6, 4, (uint8_t)((digital->color_bit_depth - 4) / 2));
+		}
+
+		set_bit_range(&data[0x14], 3, 0, digital->interface);
+	} else {
+		return false; /* TODO */
+	}
+
+	return true;
+}
+
 ssize_t
 di_edid_format(const struct di_edid *edid, void *buf, size_t buf_size)
 {
@@ -1785,6 +1812,9 @@ di_edid_format(const struct di_edid *edid, void *buf, size_t buf_size)
 	data[0x13] = (uint8_t) edid->revision;
 
 	if (!encode_vendor_product(&edid->vendor_product, data)) {
+		return -1;
+	}
+	if (!encode_basic_params_features(edid, data)) {
 		return -1;
 	}
 
