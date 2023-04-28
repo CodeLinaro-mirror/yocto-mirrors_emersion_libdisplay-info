@@ -1,18 +1,6 @@
 --- ref
 +++ di
-@@ -84,11 +84,6 @@
-     Extended HDMI video details:
-       HDMI VICs:
-         HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
--  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
--    Version: 1
--    Maximum TMDS Character Rate: 600 MHz
--    SCDC Present
--    Supports 10-bits/component Deep Color 4:2:0 Pixel Encoding
-   YCbCr 4:2:0 Capability Map Data Block:
-     VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
-   Detailed Timing Descriptors:
-@@ -98,23 +93,12 @@
+@@ -98,23 +98,12 @@
      DTD 4:  2560x1600   59.971589 Hz  16:10    98.713 kHz    268.500000 MHz (597 mm x 336 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
                   Vfront    3 Vsync   6 Vback   37 Vpol N

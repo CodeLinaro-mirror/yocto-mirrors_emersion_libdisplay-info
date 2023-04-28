@@ -38,6 +38,9 @@ test_cases = [
 	'sun-gh19ps-dvi',
 	'tcl-smart-tv-5655',
 	'viewsonic-vp2768-dp',
+	'hisense-55u8k',
+	'philips-4k-2023',
+	'samsung-qn900b-8k',
 ]
 
 test_env = [

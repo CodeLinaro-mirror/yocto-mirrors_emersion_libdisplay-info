@@ -42,9 +42,12 @@ amazon-fire-tv-48	| display
 ayaneo-wxga		| display
 cvt			| handcrafted
 goldstar-e2441		| display
+hisense-55u8k		| display
 hp-5dq99aa-hdmi		| display
 jdi-lpm135m467-edp	| display
+philips-4k-2023		| display
 qemu			| generated
+samsung-qn900b-8k	| display
 
 [linuxhw/EDID]: https://github.com/linuxhw/EDID
 [edid-decode]: https://git.linuxtv.org/edid-decode.git

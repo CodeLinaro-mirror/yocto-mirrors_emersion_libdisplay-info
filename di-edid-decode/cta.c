@@ -1143,6 +1143,137 @@ print_cta_dolby_video(const struct di_cta_dolby_video_block *dv)
 }
 
 static const char *
+max_frl_rate_name(enum di_cta_vendor_hdmi_forum_frl frl)
+{
+	switch (frl) {
+	case DI_CTA_VENDOR_HDMI_FORUM_FRL_3GBPS_3LANES:
+		return "3 Gbps per lane on 3 lanes";
+	case DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_3LANES:
+		return "3 and 6 Gbps per lane on 3 lanes";
+	case DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_4LANES:
+		return "3 and 6 Gbps per lane on 3 lanes, 6 Gbps on 4 lanes";
+	case DI_CTA_VENDOR_HDMI_FORUM_FRL_8GBPS_4LANES:
+		return "3 and 6 Gbps per lane on 3 lanes, 6 and 8 Gbps on 4 lanes";
+	case DI_CTA_VENDOR_HDMI_FORUM_FRL_10GBPS_4LANES:
+		return "3 and 6 Gbps per lane on 3 lanes, 6, 8 and 10 Gbps on 4 lanes";
+	case DI_CTA_VENDOR_HDMI_FORUM_FRL_12GBPS_4LANES:
+		return "3 and 6 Gbps per lane on 3 lanes, 6, 8, 10 and 12 Gbps on 4 lanes";
+	default:
+		return "Not Supported";
+	}
+}
+
+static const char *
+dsc_max_slices_name(enum di_cta_vendor_hdmi_forum_dsc_max_slices max_slice)
+{
+	switch (max_slice) {
+	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_1_340MHZ:
+		return "up to 1 slice and up to (340 MHz/Ksliceadjust) pixel clock per slice";
+	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_2_340MHZ:
+		return "up to 2 slices and up to (340 MHz/Ksliceadjust) pixel clock per slice";
+	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_4_340MHZ:
+		return "up to 4 slices and up to (340 MHz/Ksliceadjust) pixel clock per slice";
+	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_8_340MHZ:
+		return "up to 8 slices and up to (340 MHz/Ksliceadjust) pixel clock per slice";
+	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_8_400MHZ:
+		return "up to 8 slices and up to (400 MHz/Ksliceadjust) pixel clock per slice";
+	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_12_400MHZ:
+		return "up to 12 slices and up to (400 MHz/Ksliceadjust) pixel clock per slice";
+	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_16_400MHZ:
+		return "up to 16 slices and up to (400 MHz/Ksliceadjust) pixel clock per slice";
+	default:
+		return "Not Supported";
+	}
+}
+
+static void
+print_cta_hdmi_forum(const struct di_cta_vendor_hdmi_forum_block *hdmi_forum)
+{
+	const struct di_cta_vendor_hdmi_forum_dsc *dsc;
+
+	printf("    Version: %u\n", hdmi_forum->version);
+	if (hdmi_forum->max_tmds_char_rate_mhz) {
+		printf("    Maximum TMDS Character Rate: %u MHz\n",
+		       hdmi_forum->max_tmds_char_rate_mhz);
+	}
+	if (hdmi_forum->supports_scdc)
+		printf("    SCDC Present\n");
+	if (hdmi_forum->supports_scdc_read_request)
+		printf("    SCDC Read Request Capable\n");
+	if (hdmi_forum->supports_cable_status)
+		printf("    Supports Cable Status\n");
+	if (hdmi_forum->supports_ccbpci)
+		printf("    Supports Color Content Bits Per Component Indication\n");
+	if (hdmi_forum->supports_lte_340mcsc_scramble)
+		printf("    Supports scrambling for <= 340 Mcsc\n");
+	if (hdmi_forum->supports_3d_independent_view)
+		printf("    Supports 3D Independent View signaling\n");
+	if (hdmi_forum->supports_3d_dual_view)
+		printf("    Supports 3D Dual View signaling\n");
+	if (hdmi_forum->supports_3d_osd_disparity)
+		printf("    Supports 3D OSD Disparity signaling\n");
+
+	if (hdmi_forum->max_frl_rate != DI_CTA_VENDOR_HDMI_FORUM_FRL_UNSUPPORTED) {
+		printf("    Max Fixed Rate Link: %s\n",
+		       max_frl_rate_name (hdmi_forum->max_frl_rate));
+	}
+
+	if (hdmi_forum->supports_uhd_vic)
+		printf("    Supports UHD VIC\n");
+	if (hdmi_forum->supports_dc_48bit_420)
+		printf("    Supports 16-bits/component Deep Color 4:2:0 Pixel Encoding\n");
+	if (hdmi_forum->supports_dc_36bit_420)
+		printf("    Supports 12-bits/component Deep Color 4:2:0 Pixel Encoding\n");
+	if (hdmi_forum->supports_dc_30bit_420)
+		printf("    Supports 10-bits/component Deep Color 4:2:0 Pixel Encoding\n");
+	if (hdmi_forum->supports_fapa_end_extended)
+		printf("    Supports FAPA End Extended\n");
+	if (hdmi_forum->supports_qms)
+		printf("    Supports QMS\n");
+	if (hdmi_forum->m_delta)
+		printf("    Supports Mdelta\n");
+	if (hdmi_forum->supports_cinema_vrr)
+		printf("    Supports media rates below VRRmin (CinemaVRR, deprecated)\n");
+	if (hdmi_forum->supports_neg_mvrr)
+		printf("    Supports negative Mvrr values\n");
+	if (hdmi_forum->supports_fva)
+		printf("    Supports Fast Vactive\n");
+	if (hdmi_forum->supports_allm)
+		printf("    Supports Auto Low-Latency Mode\n");
+	if (hdmi_forum->supports_fapa_start_location)
+		printf("    Supports a FAPA in blanking after first active video line\n");
+
+	if (hdmi_forum->vrr_min_hz)
+		printf("    VRRmin: %u Hz\n", hdmi_forum->vrr_min_hz);
+	if (hdmi_forum->vrr_max_hz)
+		printf("    VRRmax: %u Hz\n", hdmi_forum->vrr_max_hz);
+
+	if (hdmi_forum->qms_tfr_max)
+		printf("    Supports QMS TFRmax\n");
+	if (hdmi_forum->qms_tfr_min)
+		printf("    Supports QMS TFRmin\n");
+
+	dsc = hdmi_forum->dsc;
+	if (dsc) {
+		printf("    Supports VESA DSC 1.2a compression\n");
+		if (dsc->supports_native_420)
+			printf("    Supports Compressed Video Transport for 4:2:0 Pixel Encoding\n");
+		if (dsc->supports_all_bpc)
+			printf("    Supports Compressed Video Transport at any valid 1/16th bit bpp\n");
+		if (dsc->supports_12bpc)
+			printf("    Supports 12 bpc Compressed Video Transport\n");
+		if (dsc->supports_10bpc)
+			printf("    Supports 10 bpc Compressed Video Transport\n");
+		printf("    DSC Max Slices: %s\n",
+		       dsc_max_slices_name(dsc->max_slices));
+		printf("    DSC Max Fixed Rate Link: %s\n",
+		       max_frl_rate_name(dsc->max_frl_rate));
+		printf("    Maximum number of bytes in a line of chunks: %u\n",
+		       dsc->max_total_chunk_bytes);
+	}
+}
+
+static const char *
 cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 {
 	switch (tag) {
@@ -1198,6 +1329,8 @@ cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 		return "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46";
 	case DI_CTA_DATA_BLOCK_HDR10PLUS:
 		return "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B";
+	case DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM:
+		return "Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8";
 	}
 	return "Unknown CTA-861 Data Block";
 }
@@ -1244,6 +1377,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_vendor_hdmi_block *vendor_hdmi;
 	const struct di_cta_hdr10plus_block *hdr10plus;
 	const struct di_cta_dolby_video_block *dolby_video;
+	const struct di_cta_vendor_hdmi_forum_block *hdmi_forum;
 	size_t i;
 	int vtdb_index = 0;
 
@@ -1378,6 +1512,10 @@ print_cta(const struct di_edid_cta *cta)
 		case DI_CTA_DATA_BLOCK_DOLBY_VIDEO:
 			dolby_video = di_cta_data_block_get_dolby_video(data_block);
 			print_cta_dolby_video(dolby_video);
+			break;
+		case DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM:
+			hdmi_forum = di_cta_data_block_get_vendor_hdmi_forum(data_block);
+			print_cta_hdmi_forum(hdmi_forum);
 			break;
 		default:
 			break; /* Ignore */

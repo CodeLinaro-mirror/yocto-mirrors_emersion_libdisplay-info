@@ -13,18 +13,7 @@
                   Hfront   88 Hsync  44 Hback  148 Hpol P
                   Vfront    4 Vsync   5 Vback   36 Vpol P
      Display Product Name: 'Philips FTV'
-@@ -84,10 +84,6 @@
-         HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
-         HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
-         HDMI VIC 4:  4096x2160   24.000000 Hz 256:135   54.000 kHz    297.000000 MHz
--  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
--    Version: 1
--    Maximum TMDS Character Rate: 600 MHz
--    SCDC Present
-   YCbCr 4:2:0 Capability Map Data Block:
-     VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
-     VIC  93:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
-@@ -96,33 +92,19 @@
+@@ -96,33 +96,19 @@
      VIC  98:  4096x2160   24.000000 Hz 256:135   54.000 kHz    297.000000 MHz
      VIC 100:  4096x2160   30.000000 Hz 256:135   67.500 kHz    297.000000 MHz
    Video Format Preference Data Block:

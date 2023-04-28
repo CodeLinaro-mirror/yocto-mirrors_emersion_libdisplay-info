@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -110,18 +110,10 @@
+@@ -110,7 +110,6 @@
      DC_Y444
      Maximum TMDS clock: 300 MHz
      Extended HDMI video details:
@@ -8,18 +8,7 @@
        HDMI VICs:
          HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
          HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
-         HDMI VIC 4:  4096x2160   24.000000 Hz 256:135   54.000 kHz    297.000000 MHz
--  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
--    Version: 1
--    Maximum TMDS Character Rate: 600 MHz
--    SCDC Present
--    Supports 12-bits/component Deep Color 4:2:0 Pixel Encoding
--    Supports 10-bits/component Deep Color 4:2:0 Pixel Encoding
--    Supports Auto Low-Latency Mode
-   HDR Static Metadata Data Block:
-     Electro optical transfer functions:
-       Traditional gamma - SDR luminance range
-@@ -141,11 +133,6 @@
+@@ -141,11 +140,6 @@
      Unique Rx, Ry: 0.62500000, 0.33203125
      Unique Gx, Gy: 0.30468750, 0.61328125
      Unique Bx, By: 0.15234375, 0.05078125
@@ -31,7 +20,7 @@
    YCbCr 4:2:0 Capability Map Data Block:
      VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
      VIC 102:  4096x2160   60.000000 Hz 256:135  135.000 kHz    594.000000 MHz
-@@ -156,22 +143,8 @@
+@@ -156,22 +150,8 @@
      DTD 3:  1360x768    60.015162 Hz  85:48    47.712 kHz     85.500000 MHz
                   Hfront   64 Hsync 112 Hback  256 Hpol P
                   Vfront    3 Vsync   6 Vback   18 Vpol P

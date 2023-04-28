@@ -20,31 +20,17 @@
  Checksum: 0x9e
  
  ----------------
-@@ -116,23 +117,6 @@
-         HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
-         HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
-         HDMI VIC 2:  3840x2160   25.000000 Hz  16:9     56.250 kHz    297.000000 MHz
--  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
--    Version: 1
--    Maximum TMDS Character Rate: 600 MHz
--    SCDC Present
--    Supports scrambling for <= 340 Mcsc
--    Max Fixed Rate Link: 3 and 6 Gbps per lane on 3 lanes, 6, 8, 10 and 12 Gbps on 4 lanes
--    Supports UHD VIC
--    Supports 16-bits/component Deep Color 4:2:0 Pixel Encoding
--    Supports 12-bits/component Deep Color 4:2:0 Pixel Encoding
--    Supports 10-bits/component Deep Color 4:2:0 Pixel Encoding
--    Supports QMS
--    Supports Auto Low-Latency Mode
--    VRRmin: 48 Hz
--    VRRmax: 144 Hz
+@@ -130,9 +131,6 @@
+     Supports Auto Low-Latency Mode
+     VRRmin: 48 Hz
+     VRRmax: 144 Hz
 -  Vendor-Specific Data Block (UHD Alliance), OUI 1A-BB-FB:
 -    Filmmaker Mode Content Type: 1
 -    Filmmaker Mode Content Subtype: 1
    Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46:
      Version: 2 (12 bytes)
      Supports YUV422 12 bit
-@@ -158,20 +142,35 @@
+@@ -158,20 +156,35 @@
      BT2020cYCC
      BT2020YCC
      BT2020RGB
@@ -93,7 +79,7 @@
    HDR Static Metadata Data Block:
      Electro optical transfer functions:
        Traditional gamma - SDR luminance range
-@@ -180,13 +179,12 @@
+@@ -180,13 +193,12 @@
        Hybrid Log-Gamma
      Supported static metadata descriptors:
        Static metadata type 1
@@ -108,7 +94,7 @@
    Display Product Type: Standalone display device
    Video Timing Modes Type 1 - Detailed Timings Data Block:
      DTD:  3840x2160  144.000362 Hz  16:9    333.217 kHz   1306.210000 MHz (aspect 16:9, no 3D stereo, preferred)
-@@ -195,37 +193,12 @@
+@@ -195,37 +207,12 @@
      DTD:  2560x1440  144.000766 Hz  16:9    222.193 kHz    586.590000 MHz (aspect 16:9, no 3D stereo)
                 Hfront   40 Hsync  32 Hback    8 Hpol N
                 Vfront    6 Vsync   8 Vback   89 Vpol N
