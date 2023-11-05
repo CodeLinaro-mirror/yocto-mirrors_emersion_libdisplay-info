@@ -1,0 +1,112 @@
+--- ref
++++ di
+@@ -49,8 +49,6 @@
+ ----------------
+ 
+ Block 1, Block Map Extension Block:
+-  Block   2: CTA-861 Extension Block
+-  Block   3: DisplayID Extension Block
+ Checksum: 0x9e
+ 
+ ----------------
+@@ -84,53 +82,11 @@
+       Supported sample sizes (bits): 24 20 16
+   Speaker Allocation Data Block:
+     FL/FR - Front Left/Right
+-  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
+-    Source physical address: 2.0.0.0
+-    DC_36bit
+-    DC_30bit
+-    DC_Y444
+-    Maximum TMDS clock: 300 MHz
+-    Extended HDMI video details:
+-      HDMI VICs:
+-        HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
+-        HDMI VIC 2:  3840x2160   25.000000 Hz  16:9     56.250 kHz    297.000000 MHz
+-        HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
+-  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
+-    Version: 1
+-    Maximum TMDS Character Rate: 600 MHz
+-    SCDC Present
+-    Supports scrambling for <= 340 Mcsc
+-    Max Fixed Rate Link: 3 and 6 Gbps per lane on 3 lanes, 6 Gbps on 4 lanes
+-    Supports 12-bits/component Deep Color 4:2:0 Pixel Encoding
+-    Supports 10-bits/component Deep Color 4:2:0 Pixel Encoding
+-    Supports negative Mvrr values
+-    Supports Fast Vactive
+-    Supports Auto Low-Latency Mode
+-    VRRmin: 48 Hz
+-    VRRmax: 144 Hz
+-    Supports VESA DSC 1.2a compression
+-    Supports Compressed Video Transport for 4:2:0 Pixel Encoding
+-    Supports 12 bpc Compressed Video Transport
+-    Supports 10 bpc Compressed Video Transport
+-    DSC Max Slices: up to 8 slices and up to (340 MHz/Ksliceadjust) pixel clock per slice
+-    DSC Max Fixed Rate Link: 3 and 6 Gbps per lane on 3 lanes, 6 Gbps on 4 lanes
+-    Maximum number of bytes in a line of chunks: 21504
+-  Vendor-Specific Data Block (AMD), OUI 00-00-1A:
+-    Version: 2.11
+-    Minimum Refresh Rate: 48 Hz
+-    Maximum Refresh Rate: 144 Hz
+-    Flags 1.x: 0xe6 (MCCS)
+-    Flags 2.x: 0x04
+-    Maximum luminance: 115 (603.666 cd/m^2)
+-    Minimum luminance: 20 (0.037 cd/m^2)
+-    Maximum luminance (without local dimming): 115 (603.666 cd/m^2)
+-    Minimum luminance (without local dimming): 47 (0.205 cd/m^2)
+   Colorimetry Data Block:
+     xvYCC601
+     xvYCC709
+     BT2020YCC
+     BT2020RGB
+-    Gamut Boundary Description Metadata Profile P0
+   HDR Static Metadata Data Block:
+     Electro optical transfer functions:
+       Traditional gamma - SDR luminance range
+@@ -159,13 +115,12 @@
+     DTD 3:  2560x1440  119.997589 Hz  16:9    182.996 kHz    497.750000 MHz (708 mm x 399 mm)
+                  Hfront   48 Hsync  32 Hback   80 Hpol P
+                  Vfront    3 Vsync   5 Vback   77 Vpol P
+-Checksum: 0x53  Unused space in Extension Block: 1 byte
++Checksum: 0x53
+ 
+ ----------------
+ 
+ Block 3, DisplayID Extension Block:
+   Version: 1.2
+-  Extension Count: 0
+   Display Product Type: Standalone display device
+   Video Timing Modes Type 1 - Detailed Timings Data Block:
+     DTD:  3840x2160  143.962777 Hz  16:9    318.878 kHz   1250.000000 MHz (aspect 16:9, no 3D stereo)
+@@ -183,30 +138,13 @@
+     DTD:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (aspect 16:9, no 3D stereo)
+                Hfront   48 Hsync  32 Hback   80 Hpol P
+                Vfront    3 Vsync   5 Vback   33 Vpol N
+-  Checksum: 0x0d
+ Checksum: 0x90
+ 
+ ----------------
+ 
+-Warnings:
+-
+-Block 2, CTA-861 Extension Block:
+-  Colorimetry Data Block: Set the sRGB colorimetry bit to avoid interop issues.
+-  Video Capability Data Block: IT scan behavior is expected to support underscanned.
+-  Video Capability Data Block: S_PT is equal to S_IT and S_CE, so should be set to 0 instead.
+-  Display Product Serial Number is set, so the Serial Number in the Base EDID should be 0.
+-
+ Failures:
+ 
+ Block 2, CTA-861 Extension Block:
++  Colorimetry Data Block: Reserved bits MD0-MD3 must be 0.
+   Video Capability Data Block: IT video formats are always overscanned, but bit 7 of Byte 3 of the CTA-861 Extension header is set to underscanned.
+-EDID:
+-  Base EDID: Some timings are out of range of the Monitor Ranges:
+-    Vertical Freq: 24.000 - 143.981 Hz (Monitor: 48.000 - 144.000 Hz)
+-    Maximum Clock: 1250.000 MHz (Monitor: 600.000 MHz)
+-  DisplayID: Missing DisplayID Product Identification Data Block.
+-  DisplayID: Missing DisplayID Display Parameters Data Block.
+-  DisplayID: Missing DisplayID Display Interface Features Data Block.
+-  DisplayID: DisplayID expects at least one preferred timing.
+-
+ EDID conformity: FAIL

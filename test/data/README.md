@@ -7,6 +7,7 @@ license:
 name | source | source commit
 ---- | ------ | -------------
 acer-p1276		| ./Analog/Acer/ACR1616/4108C2D271EB		| cff7fe4d44
+dell-g3223q		| ./Digital/Dell/DEL4288/0AB370D11BA2		| 98bc7d6e2c0e
 goldstar-ite6604-hdmi	| ./Digital/Goldstar/GSM7666/FE91A60D5B6E	| cff7fe4d44
 msi-mag321curv-dp	| ./Digital/MSI/MSI3DA2/9BD6EC4AFDBD		| cff7fe4d44
 panasonic-mei96a2-dp	| ./Digital/Panasonic/MEI96A2/7CA47BE65E1E	| cff7fe4d44
