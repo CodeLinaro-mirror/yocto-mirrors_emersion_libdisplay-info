@@ -27,6 +27,10 @@
  * Number of bytes in a HDMI 3D audio descriptor.
  */
 #define CTA_HDMI_AUDIO_3D_DESCRIPTOR_SIZE 4
+/**
+ * IEEE Organizationally unique identifiers
+ */
+#define IEEE_OUI_DOLBY 0x00D046
 
 const struct di_cta_video_format *
 di_cta_video_format_from_vic(uint8_t vic)
@@ -1655,6 +1659,40 @@ destroy_data_block(struct di_cta_data_block *data_block)
 }
 
 static bool
+parse_vendor_specific_video_block(struct di_edid_cta *cta,
+				  enum di_cta_data_block_tag *tag,
+				  struct di_cta_data_block *data_block,
+				  const uint8_t *data, size_t size)
+{
+	uint32_t oui;
+
+	if (size < 3) {
+		add_failure(cta,
+			    "Vendor-Specific Video Data Block: Empty Data Block with length %u.",
+			    size);
+		return false;
+	}
+
+	oui = ((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | data[0];
+
+	data += 3;
+	size -= 3;
+
+	switch (oui) {
+	case IEEE_OUI_DOLBY:
+		*tag = DI_CTA_DATA_BLOCK_DOLBY_VIDEO;
+		break;
+	default:
+		goto skip;
+	}
+
+	return true;
+
+skip:
+	return false;
+}
+
+static bool
 parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size)
 {
 	enum di_cta_data_block_tag tag;
@@ -1812,6 +1850,11 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 			tag = DI_CTA_DATA_BLOCK_HDMI_SINK_CAP;
 			break;
 		case 1: /* Vendor-Specific Video Data Block */
+			if (!parse_vendor_specific_video_block(cta, &tag,
+							       data_block,
+							       data, size))
+				goto skip;
+			break;
 		case 17: /* Vendor-Specific Audio Data Block */
 			goto skip;
 		default:

@@ -41,7 +41,7 @@
    Video Capability Data Block:
      YCbCr quantization: No Data
      RGB quantization: Selectable (via AVI Q)
-@@ -148,43 +125,12 @@
+@@ -148,43 +125,13 @@
    HDR Dynamic Metadata Data Block:
      HDR Dynamic Metadata Type 4
        Version: 4
@@ -49,7 +49,7 @@
 -    Application Version: 1
 -    Full Frame Peak Luminance Index: 0
 -    Peak Luminance Index: 0
--  Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46:
+   Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46:
 -    Version: 2 (12 bytes)
 -    Supports global dimming
 -    DM Version: 3.x

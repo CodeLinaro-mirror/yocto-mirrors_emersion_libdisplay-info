@@ -173,6 +173,9 @@ enum di_cta_data_block_tag {
 	DI_CTA_DATA_BLOCK_HDMI_EDID_EXT_OVERRIDE,
 	/* HDMI Forum Sink Capability Data Block */
 	DI_CTA_DATA_BLOCK_HDMI_SINK_CAP,
+
+	/* Dolby Video Vendor-Specific Data Block */
+	DI_CTA_DATA_BLOCK_DOLBY_VIDEO,
 };
 
 /**
