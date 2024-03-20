@@ -891,6 +891,139 @@ print_cta_hdr10plus(const struct di_cta_hdr10plus_block *hdr10plus)
 	printf("    Peak Luminance Index: %d\n", peak_lum_index);
 }
 
+static double
+pq2nits(double pq)
+{
+	const double m1 = 2610.0 / 16384.0;
+	const double m2 = 128.0 * (2523.0 / 4096.0);
+	const double c1 = 3424.0 / 4096.0;
+	const double c2 = 32.0 * (2413.0 / 4096.0);
+	const double c3 = 32.0 * (2392.0 / 4096.0);
+	double e = pow(pq, 1.0 / m2);
+	double v = e - c1;
+
+	if (v < 0)
+		v = 0;
+	v /= c2 - c3 * e;
+	v = pow(v, 1.0 / m1);
+	return v * 10000.0;
+}
+
+static void
+print_cta_dolby_video(const struct di_cta_dolby_video_block *dv)
+{
+	switch (dv->version) {
+	case DI_CTA_DOLBY_VIDEO_VERSION0:
+		printf("    Version: 0 (22 bytes)\n");
+
+		if (dv->v0->yuv422_12bit)
+			printf("    Supports YUV422 12 bit\n");
+		if (dv->v0->supports_2160p60)
+			printf("    Supports 2160p60\n");
+		if (dv->v0->global_dimming)
+			printf("    Supports global dimming\n");
+
+		printf("    DM Version: %u.%u\n",
+		       dv->v0->dynamic_metadata_version_major,
+		       dv->v0->dynamic_metadata_version_minor);
+
+		printf("    Target Min PQ: %u (%.8f cd/m^2)\n",
+		       dv->v0->target_pq_12b_level_min,
+		       pq2nits(dv->v0->target_pq_12b_level_min / 4095.0));
+		printf("    Target Max PQ: %u (%u cd/m^2)\n",
+		       dv->v0->target_pq_12b_level_min,
+		       (unsigned)pq2nits(dv->v0->target_pq_12b_level_min / 4095.0));
+
+		printf("    Rx, Ry: %.8f, %.8f\n", dv->v0->red_x, dv->v0->red_y);
+		printf("    Gx, Gy: %.8f, %.8f\n", dv->v0->green_x, dv->v0->green_y);
+		printf("    Bx, By: %.8f, %.8f\n", dv->v0->blue_x, dv->v0->blue_y);
+		printf("    Wx, Wy: %.8f, %.8f\n", dv->v0->white_x, dv->v0->white_x);
+		break;
+	case DI_CTA_DOLBY_VIDEO_VERSION1:
+		printf("    Version: 1 (%d bytes)\n", dv->v1->unique_primaries ? 12 : 15);
+
+		if (dv->v1->yuv422_12bit)
+			printf("    Supports YUV422 12 bit\n");
+		if (dv->v1->supports_2160p60)
+			printf("    Supports 2160p60\n");
+		if (dv->v1->global_dimming)
+			printf("    Supports global dimming\n");
+
+		printf("    DM Version: %u.x\n", dv->v1->dynamic_metadata_version);
+
+		switch (dv->v1->colorimetry) {
+		case DI_CTA_DOLBY_VIDEO_COLORIMETRY_P3_D65:
+			printf("    Colorimetry: P3-D65\n");
+			break;
+		case DI_CTA_DOLBY_VIDEO_COLORIMETRY_BT_709:
+			printf("    Colorimetry: ITU-R BT.709\n");
+			break;
+		}
+
+		printf("    Low Latency: %s\n",
+		       dv->v1->mode_low_latency ? "Standard + Low Latency" : "Only Standard");
+
+		printf("    Target Min Luminance: %.8f cd/m^2\n", dv->v1->target_luminance_min);
+		printf("    Target Max Luminance: %u cd/m^2\n", (unsigned)dv->v1->target_luminance_max);
+
+		printf("    %sRx, Ry: %.8f, %.8f\n",
+		       dv->v1->unique_primaries ? "Unique " : "", dv->v1->red_x, dv->v1->red_y);
+		printf("    %sGx, Gy: %.8f, %.8f\n",
+		       dv->v1->unique_primaries ? "Unique " : "", dv->v1->green_x, dv->v1->green_y);
+		printf("    %sBx, By: %.8f, %.8f\n",
+		       dv->v1->unique_primaries ? "Unique " : "", dv->v1->blue_x, dv->v1->blue_y);
+		break;
+	case DI_CTA_DOLBY_VIDEO_VERSION2:
+		printf("    Version: 2 (12 bytes)\n");
+
+		if (dv->v2->yuv422_12bit)
+			printf("    Supports YUV422 12 bit\n");
+		if (dv->v2->backlight_control)
+			printf("    Supports Backlight Control\n");
+		if (dv->v2->global_dimming)
+			printf("    Supports global dimming\n");
+
+		printf("    DM Version: %u.x\n", dv->v2->dynamic_metadata_version);
+
+		printf("    Backlt Min Luma: %u cd/m^2\n", (unsigned)dv->v2->backlight_luminance_min);
+
+		printf("    Interface: ");
+		if (dv->v2->mode_standard && dv->v2->mode_low_latency_hdmi)
+			printf("Standard + Low-Latency + Low-Latency-HDMI\n");
+		else if (dv->v2->mode_low_latency_hdmi)
+			printf("Low-Latency + Low-Latency-HDMI\n");
+		else if (dv->v2->mode_standard)
+			printf("Standard + Low-Latency\n");
+		else
+			printf("Low-Latency\n");
+
+		printf("    Supports 10b 12b 444: ");
+		switch (dv->v2->yuv444) {
+		case DI_CTA_DOLBY_VIDEO_YUV444_NONE:
+			printf("Not supported\n");
+			break;
+		case DI_CTA_DOLBY_VIDEO_YUV444_10_BITS:
+			printf("10 bit\n");
+			break;
+		case DI_CTA_DOLBY_VIDEO_YUV444_12_BITS:
+			printf("12 bit\n");
+			break;
+		}
+
+		printf("    Target Min PQ v2: %u (%.8f cd/m^2)\n",
+		       dv->v2->target_pq_12b_level_min,
+		       pq2nits(dv->v2->target_pq_12b_level_min / 4095.0));
+		printf("    Target Max PQ v2: %u (%u cd/m^2)\n",
+		       dv->v2->target_pq_12b_level_max,
+		       (unsigned)pq2nits(dv->v2->target_pq_12b_level_max / 4095.0));
+
+		printf("    Unique Rx, Ry: %.8f, %.8f\n", dv->v2->red_x, dv->v2->red_y);
+		printf("    Unique Gx, Gy: %.8f, %.8f\n", dv->v2->green_x, dv->v2->green_y);
+		printf("    Unique Bx, By: %.8f, %.8f\n", dv->v2->blue_x, dv->v2->blue_y);
+		break;
+	}
+}
+
 static const char *
 cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 {
@@ -989,6 +1122,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_type_vii_timing_block *type_vii_timing;
 	const struct di_cta_hdmi_audio_block *hdmi_audio;
 	const struct di_cta_hdr10plus_block *hdr10plus;
+	const struct di_cta_dolby_video_block *dolby_video;
 	size_t i;
 	int vtdb_index = 0;
 
@@ -1115,6 +1249,10 @@ print_cta(const struct di_edid_cta *cta)
 		case DI_CTA_DATA_BLOCK_HDR10PLUS:
 			hdr10plus = di_cta_data_block_get_hdr10plus(data_block);
 			print_cta_hdr10plus(hdr10plus);
+			break;
+		case DI_CTA_DATA_BLOCK_DOLBY_VIDEO:
+			dolby_video = di_cta_data_block_get_dolby_video(data_block);
+			print_cta_dolby_video(dolby_video);
 			break;
 		default:
 			break; /* Ignore */

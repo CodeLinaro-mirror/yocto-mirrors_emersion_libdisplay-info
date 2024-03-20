@@ -1715,6 +1715,197 @@ parse_hdr10plus_block(struct di_edid_cta *cta,
 	return true;
 }
 
+static bool
+parse_dolby_video_block(struct di_edid_cta *cta,
+			 struct di_cta_dolby_video_block_priv *dv_priv,
+			 const uint8_t *data, size_t size)
+{
+	struct di_cta_dolby_video_block *dv = &dv_priv->base;
+	struct di_cta_dolby_video_block_v0 *v0 = &dv_priv->v0;
+	struct di_cta_dolby_video_block_v1 *v1 = &dv_priv->v1;
+	struct di_cta_dolby_video_block_v2 *v2 = &dv_priv->v2;
+	int version;
+
+	if (size < 1) {
+		add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
+				 "Empty Data Block with length %u.",
+			    size);
+		return false;
+	}
+	version = get_bit_range(data[0], 7, 5);
+
+	if (version == 0) {
+		dv->version = DI_CTA_DOLBY_VIDEO_VERSION0;
+		dv->v0 = v0;
+
+		if (size < 17) {
+			add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
+					 "Expected length of 17 for Version 0, but got length %u.",
+				    size);
+			return false;
+		}
+
+		v0->global_dimming = has_bit(data[0], 2);
+		v0->supports_2160p60 = has_bit(data[0], 1);
+		v0->yuv422_12bit = has_bit(data[0], 0);
+
+		/* TODO unused: get_bit_range(data[0], 4, 3) */
+
+		v0->dynamic_metadata_version_major = get_bit_range(data[16], 7, 4);
+		v0->dynamic_metadata_version_minor = get_bit_range(data[16], 3, 0);
+
+		v0->target_pq_12b_level_min = data[14] << 4 | get_bit_range(data[13], 7, 4);
+		v0->target_pq_12b_level_max = data[15] << 4 | get_bit_range(data[13], 3, 0);
+
+		v0->red_x = ((data[2] << 4) | get_bit_range(data[1], 7, 4)) / 4096.0;
+		v0->red_y = ((data[3] << 4) | get_bit_range(data[1], 3, 0)) / 4096.0;
+		v0->green_x = ((data[5] << 4) | get_bit_range(data[4], 7, 4)) / 4096.0;
+		v0->green_y = ((data[6] << 4) | get_bit_range(data[4], 3, 0)) / 4096.0;
+		v0->blue_x = ((data[8] << 4) | get_bit_range(data[7], 7, 4)) / 4096.0;
+		v0->blue_y = ((data[9] << 4) | get_bit_range(data[7], 3, 0)) / 4096.0;
+		v0->white_x = ((data[11] << 4) | get_bit_range(data[10], 7, 4)) / 4096.0;
+		v0->white_y = ((data[12] << 4) | get_bit_range(data[10], 3, 0)) / 4096.0;
+	} else if (version == 1) {
+		double lm;
+		double xmin, ymin;
+		double xstep, ystep;
+		int steps;
+
+		dv->version = DI_CTA_DOLBY_VIDEO_VERSION1;
+		dv->v1 = v1;
+
+		if (size < 7) {
+			add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
+					 "Expected length of at least 7 for Version 1, "
+					 "but got length %u.",
+				    size);
+			return false;
+		}
+
+		v1->dynamic_metadata_version = get_bit_range(data[0], 4, 2) + 2;
+		v1->supports_2160p60 = has_bit(data[0], 1);
+		v1->yuv422_12bit = has_bit(data[0], 0);
+		v1->global_dimming = has_bit(data[1], 0);
+
+		v1->colorimetry = has_bit(data[2], 0) ?
+					DI_CTA_DOLBY_VIDEO_COLORIMETRY_P3_D65 :
+					DI_CTA_DOLBY_VIDEO_COLORIMETRY_BT_709;
+
+		if (has_bit(data[3], 0))
+			v1->mode_low_latency = true;
+
+		lm = get_bit_range(data[2], 7, 1) / 127.0;
+		v1->target_luminance_min = lm * lm;
+
+		lm = (get_bit_range(data[1], 7, 1) * 50.0) + 100;
+		v1->target_luminance_max = lm;
+
+		if (size >= 10) {
+			v1->unique_primaries = false;
+			v1->red_x = data[4] / 256.0;
+			v1->red_y = data[5] / 256.0;
+			v1->green_x = data[6] / 256.0;
+			v1->green_y = data[7] / 256.0;
+			v1->blue_x = data[8] / 256.0;
+			v1->blue_y = data[9] / 256.0;
+
+			/* TODO unused: get_bit_range(data[3], 7, 1) */
+		} else {
+			v1->unique_primaries = true;
+			xmin = 0.625;
+			xstep = (0.74609375 - xmin) / 31.0;
+			v1->red_x = xmin + xstep * (data[6] >> 3);
+
+			ymin = 0.25;
+			ystep = (0.37109375 - ymin) / 31.0;
+			steps = (get_bit_range(data[6], 2, 0) << 2) |
+				(get_bit_range(data[5], 0, 0) << 1) |
+				get_bit_range(data[4], 0, 0);
+			v1->red_y = ymin + ystep * steps;
+
+			xstep = 0.49609375 / 127.0;
+			v1->green_x = xstep * get_bit_range(data[4], 7, 1);
+
+			ymin = 0.5;
+			ystep = (0.99609375 - ymin) / 127.0;
+			v1->green_y = ymin + ystep * get_bit_range(data[5], 7, 1);
+
+			xmin = 0.125;
+			xstep = (0.15234375 - xmin) / 7.0;
+			v1->blue_x = xmin + xstep * get_bit_range(data[3], 7, 5);
+
+			ymin = 0.03125;
+			ystep = (0.05859375 - ymin) / 7.0;
+			v1->blue_y = ymin + ystep * get_bit_range(data[3], 4, 2);
+
+			/* TODO unused: get_bit_range(data[3], 1, 1) */
+		}
+	} else if (version == 2) {
+		dv->version = DI_CTA_DOLBY_VIDEO_VERSION2;
+		dv->v2 = v2;
+
+		if (size < 7) {
+			add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
+					 "Expected length of at least 7 for Version 2, "
+					 "but got length %u.",
+				    size);
+			return false;
+		}
+
+		v2->dynamic_metadata_version = get_bit_range(data[0], 4, 2) + 2;
+		v2->backlight_control = has_bit(data[0], 1);
+		v2->yuv422_12bit = has_bit(data[0], 0);
+		v2->global_dimming = has_bit(data[1], 2);
+
+		v2->backlight_luminance_min = 25 + get_bit_range(data[1], 1, 0) * 25;
+
+		switch (get_bit_range(data[2], 1, 0)) {
+		case 0:
+			break;
+		case 1:
+			v2->mode_low_latency_hdmi = true;
+			break;
+		case 2:
+			v2->mode_standard = true;
+			break;
+		case 3:
+			v2->mode_standard = true;
+			v2->mode_low_latency_hdmi = true;
+			break;
+		default:
+			abort(); /* unreachable */
+		}
+
+		v2->yuv444 = (uint8_t)(get_bit_range(data[3], 0, 0) << 1) |
+			     get_bit_range(data[4], 0, 0);
+		switch (v2->yuv444) {
+		case DI_CTA_DOLBY_VIDEO_YUV444_NONE:
+		case DI_CTA_DOLBY_VIDEO_YUV444_10_BITS:
+		case DI_CTA_DOLBY_VIDEO_YUV444_12_BITS:
+			break;
+		default:
+			add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
+					 "Reserved YUV444 mode 0x%02x.",
+				    v2->yuv444);
+			return false;
+		}
+
+		v2->target_pq_12b_level_min = 20 * get_bit_range(data[1], 7, 3);
+		v2->target_pq_12b_level_max = 2055 + 65 * get_bit_range(data[2], 7, 3);
+
+		v2->red_x = 0.625 + get_bit_range(data[5], 7, 3) / 256.0;
+		v2->red_y = 0.25 + get_bit_range(data[6], 7, 3) / 256.0;
+
+		v2->green_x = get_bit_range(data[3], 7, 1) / 256.0;
+		v2->green_y = 0.5 + get_bit_range(data[4], 7, 1) / 256.0;
+
+		v2->blue_x = 0.125 + get_bit_range(data[5], 2, 0) / 256.0;
+		v2->blue_y = 0.03125 + get_bit_range(data[6], 2, 0) / 256.0;
+	}
+
+	return true;
+}
+
 static void
 destroy_data_block(struct di_cta_data_block *data_block)
 {
@@ -1793,6 +1984,9 @@ parse_vendor_specific_video_block(struct di_edid_cta *cta,
 	switch (oui) {
 	case IEEE_OUI_DOLBY:
 		*tag = DI_CTA_DATA_BLOCK_DOLBY_VIDEO;
+		if (!parse_dolby_video_block(cta, &data_block->dolby_video,
+					     data, size))
+			goto skip;
 		break;
 	case IEEE_OUI_HDR10PLUS:
 		*tag = DI_CTA_DATA_BLOCK_HDR10PLUS;
@@ -2290,6 +2484,15 @@ di_cta_data_block_get_hdr10plus(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return &block->hdr10plus;
+}
+
+const struct di_cta_dolby_video_block *
+di_cta_data_block_get_dolby_video(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_DOLBY_VIDEO) {
+		return NULL;
+	}
+	return &block->dolby_video.base;
 }
 
 const struct di_edid_detailed_timing_def *const *

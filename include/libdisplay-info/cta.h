@@ -983,6 +983,135 @@ const struct di_cta_hdr10plus_block *
 di_cta_data_block_get_hdr10plus(const struct di_cta_data_block *block);
 
 /**
+ * Dolby Video Colorimetry
+ */
+enum di_cta_dolby_video_colorimetry {
+	/* BT.709 Colorimetry */
+	DI_CTA_DOLBY_VIDEO_COLORIMETRY_BT_709,
+	/* P3 D65 Colorimetry */
+	DI_CTA_DOLBY_VIDEO_COLORIMETRY_P3_D65,
+};
+
+/**
+ * Dolby Video YUV 4:4:4 support
+ */
+enum di_cta_dolby_video_yuv444 {
+	/* No YUV 4:4:4 support */
+	DI_CTA_DOLBY_VIDEO_YUV444_NONE = 0,
+	/* YUV 4:4:4 support for 10 bit signals */
+	DI_CTA_DOLBY_VIDEO_YUV444_10_BITS = 1,
+	/* YUV 4:4:4 support for 12 bit signals */
+	DI_CTA_DOLBY_VIDEO_YUV444_12_BITS = 2,
+};
+
+/**
+ * Dolby Video Version 0 Data
+ */
+struct di_cta_dolby_video_block_v0 {
+	/* YUV 4:2:2 support for 12 bit signals */
+	bool yuv422_12bit;
+	/* Support for global dimming */
+	bool global_dimming;
+	/* Support for 2160p60 */
+	bool supports_2160p60;
+	/* Supported dynamic metadata version (major) */
+	int dynamic_metadata_version_major;
+	/* Supported dynamic metadata version (minor) */
+	int dynamic_metadata_version_minor;
+	/* Minimum target luminance as a 12 bit PQ signal level */
+	int target_pq_12b_level_min;
+	/* Maximum target luminance as a 12 bit PQ signal level */
+	int target_pq_12b_level_max;
+	/* Primaries */
+	double red_x, red_y, green_x, green_y, blue_x, blue_y, white_x, white_y;
+};
+
+/**
+ * Dolby Video Version 1 Data
+ */
+struct di_cta_dolby_video_block_v1 {
+	/* YUV 4:2:2 support for 12 bit signals */
+	bool yuv422_12bit;
+	/* Support for global dimming */
+	bool global_dimming;
+	/* Support for 2160p60 */
+	bool supports_2160p60;
+	/* Supported dynamic metadata version */
+	int dynamic_metadata_version;
+	/* Supported colorimetry */
+	enum di_cta_dolby_video_colorimetry colorimetry;
+	/* Minimum target luminance in nits */
+	double target_luminance_min;
+	/* Maximum target luminance in nits */
+	double target_luminance_max;
+	/* Supports the Low-Latency mode in addition to the Standard mode */
+	bool mode_low_latency;
+	/* Indicates if the Primaries are unique */
+	bool unique_primaries;
+	/* Primaries */
+	double red_x, red_y, green_x, green_y, blue_x, blue_y;
+};
+
+/**
+ * Dolby Video Version 2 Data
+ */
+struct di_cta_dolby_video_block_v2 {
+	/* YUV 4:2:2 support for 12 bit signals */
+	bool yuv422_12bit;
+	/* Support for global dimming */
+	bool global_dimming;
+	/* Supported dynamic metadata version */
+	int dynamic_metadata_version;
+	/* Support for Backlight Control */
+	bool backlight_control;
+	/* Minimum backlight luminance in nits */
+	double backlight_luminance_min;
+	/* Supports the Standard mode in addition to the Low-Latency mode */
+	bool mode_standard;
+	/* Supports the Low-Latency-HDMI mode in addition to the Low-Latency mode */
+	bool mode_low_latency_hdmi;
+	/* YUV 4:4:4 support */
+	enum di_cta_dolby_video_yuv444 yuv444;
+	/* Minimum target luminance as a 12 bit PQ signal level */
+	int target_pq_12b_level_min;
+	/* Maximum target luminance as a 12 bit PQ signal level */
+	int target_pq_12b_level_max;
+	/* Unique Primaries */
+	double red_x, red_y, green_x, green_y, blue_x, blue_y;
+};
+
+/**
+ * Dolby Video Data Block version
+ */
+enum di_cta_dolby_video_version {
+	DI_CTA_DOLBY_VIDEO_VERSION0,
+	DI_CTA_DOLBY_VIDEO_VERSION1,
+	DI_CTA_DOLBY_VIDEO_VERSION2,
+};
+
+/**
+ * Dolby Video Data Block
+ */
+struct di_cta_dolby_video_block {
+	/* The version of this block */
+	enum di_cta_dolby_video_version version;
+	/* Version 0 data. NULL if the version of the block is not DI_CTA_DOLBY_VIDEO_VERSION0 */
+	const struct di_cta_dolby_video_block_v0 *v0;
+	/* Version 1 data. NULL if the version of the block is not DI_CTA_DOLBY_VIDEO_VERSION1 */
+	const struct di_cta_dolby_video_block_v1 *v1;
+	/* Version 2 data. NULL if the version of the block is not DI_CTA_DOLBY_VIDEO_VERSION2 */
+	const struct di_cta_dolby_video_block_v2 *v2;
+};
+
+/**
+ * Get the Dolby Vision information from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_DOLBY_VIDEO.
+ */
+const struct di_cta_dolby_video_block *
+di_cta_data_block_get_dolby_video(const struct di_cta_data_block *block);
+
+/**
  * InfoFrame types, defined in table 7.
  *
  * Note, the enum values don't match the specification.

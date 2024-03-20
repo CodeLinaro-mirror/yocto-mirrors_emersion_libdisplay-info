@@ -190,6 +190,13 @@ struct di_cta_type_vii_timing_priv {
 	struct di_displayid_type_i_ii_vii_timing timing;
 };
 
+struct di_cta_dolby_video_block_priv {
+	struct di_cta_dolby_video_block base;
+	struct di_cta_dolby_video_block_v0 v0;
+	struct di_cta_dolby_video_block_v1 v1;
+	struct di_cta_dolby_video_block_v2 v2;
+};
+
 struct di_cta_data_block {
 	enum di_cta_data_block_tag tag;
 
@@ -229,6 +236,8 @@ struct di_cta_data_block {
 	struct di_cta_type_vii_timing_priv did_vii_timing;
 	/* Used for DI_CTA_DATA_BLOCK_HDR10PLUS */
 	struct di_cta_hdr10plus_block hdr10plus;
+	/* Used for DI_CTA_DATA_BLOCK_DOLBY_VIDEO */
+	struct di_cta_dolby_video_block_priv dolby_video;
 };
 
 extern const struct di_cta_video_format _di_cta_video_formats[];
