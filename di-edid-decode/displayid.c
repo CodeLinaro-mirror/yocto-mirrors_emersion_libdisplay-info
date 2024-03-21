@@ -307,6 +307,29 @@ print_displayid_type_iii_timing_block(const struct di_displayid_data_block *data
 		print_displayid_type_iii_timing(timings[i]);
 }
 
+static void
+print_displayid_type_iv_timing_block(const struct di_displayid_data_block *data_block)
+{
+	size_t i;
+	const struct di_displayid_type_iv_timing *timing;
+
+	timing = di_displayid_data_block_get_type_iv_timing(data_block);
+	switch (timing->type) {
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_DMT:
+		for (i = 0; i < timing->codes_len; i++)
+			print_dmt_timing_code(timing->dmts[i]);
+		break;
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_CTA:
+		for (i = 0; i < timing->codes_len; i++)
+			print_cta_vic_timing(timing->cta_vics[i]);
+		break;
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_HDMI:
+		for (i = 0; i < timing->codes_len; i++)
+			print_hdmi_vic_timing(timing->hdmi_vics[i]);
+		break;
+	}
+}
+
 static const char *
 displayid_product_type_name(enum di_displayid_product_type type)
 {
@@ -417,6 +440,9 @@ print_displayid(const struct di_displayid *displayid)
 			break;
 		case DI_DISPLAYID_DATA_BLOCK_TYPE_III_TIMING:
 			print_displayid_type_iii_timing_block(data_block);
+			break;
+		case DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING:
+			print_displayid_type_iv_timing_block(data_block);
 			break;
 		default:
 			break; /* Ignore */

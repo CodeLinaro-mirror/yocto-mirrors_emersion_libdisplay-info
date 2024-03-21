@@ -12,6 +12,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <libdisplay-info/dmt.h>
+#include <libdisplay-info/hdmi-vic.h>
+#include <libdisplay-info/cta-vic.h>
+
 /**
  * DisplayID data structure.
  */
@@ -344,6 +348,45 @@ struct di_displayid_type_iii_timing {
  */
 const struct di_displayid_type_iii_timing *const *
 di_displayid_data_block_get_type_iii_timings(const struct di_displayid_data_block *data_block);
+
+/**
+ * Type IV timing, Timing Code Type
+ */
+enum di_displayid_type_iv_timing_code_type {
+	/* DMT Timing Code */
+	DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_DMT = 0,
+	/* CTA/CEA VIC Timing Code */
+	DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_CTA = 1,
+	/* HDMI VIC Timing Code */
+	DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_HDMI = 2,
+};
+
+/**
+ * Type IV timing, defined in section 4.4.4.
+ */
+struct di_displayid_type_iv_timing {
+	/* Type of codes */
+	enum di_displayid_type_iv_timing_code_type type;
+	/* Number of codes in one of dmts, cta_vics or hdmi_vics, depending on the value of type*/
+	size_t codes_len;
+	/* DMT Timing Codes, if type is DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_DMT, NULL otherwise */
+	const struct di_dmt_code *dmts;
+	/* CTA VICs, if type is DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_CTA, NULL otherwise */
+	const struct di_cta_vic *cta_vics;
+	/* HDMI VICs, if type is DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_HDMI, NULL otherwise */
+	const struct di_hdmi_vic *hdmi_vics;
+};
+
+/**
+ * Get type IV timing from a DisplayID data block.
+ *
+ * The returned array is NULL-terminated.
+ *
+ * Returns NULL if the data block tag isn't
+ * DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING.
+ */
+const struct di_displayid_type_iv_timing *
+di_displayid_data_block_get_type_iv_timing(const struct di_displayid_data_block *data_block);
 
 /**
  * Get DisplayID data blocks.

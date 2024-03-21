@@ -347,6 +347,85 @@ parse_type_ii_timing_block(struct di_displayid *displayid,
 }
 
 static bool
+parse_type_iv_timing_block(struct di_displayid *displayid,
+			   struct di_displayid_type_iv_timing *type_iv_timing,
+			   const uint8_t *data, size_t size)
+{
+	uint8_t flags;
+	uint8_t type;
+	size_t i;
+	uint8_t code;
+	struct di_dmt_code *dmts = NULL;
+	struct di_cta_vic *cta_vics = NULL;
+	struct di_hdmi_vic *hdmi_vics = NULL;
+
+	check_data_block_revision(displayid, data,
+				  "Video Timing Modes Type 4 - Short Timings Data Block",
+				  1);
+
+	flags = get_bit_range(data[0x01], 5, 3);
+	if (flags != 0) {
+		add_failure(displayid,
+			    "Video Timing Modes Type 4 - Short Timings Data Block: Unexpected flags (0x%02x).",
+			    flags);
+	}
+
+	type = get_bit_range(data[0x01], 7, 6);
+	switch (type) {
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_DMT:
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_CTA:
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_HDMI:
+		type_iv_timing->type = type;
+		break;
+	default:
+		add_failure(displayid,
+			    "Video Timing Modes Type 4 - Short Timings Data Block: Reserved Timing Code Type 0x%02x.",
+			    type);
+		break;
+	}
+
+	type_iv_timing->codes_len = size - DISPLAYID_DATA_BLOCK_HEADER_SIZE;
+	if (type_iv_timing->codes_len == 0) {
+		add_failure(displayid,
+			    "Video Timing Modes Type 4 - Short Timings Data Block: No Timing Code present.");
+		return true;
+	}
+
+	switch (type) {
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_DMT:
+		dmts = calloc(type_iv_timing->codes_len, sizeof(*dmts));
+
+		for (i = 0; i < type_iv_timing->codes_len; i++) {
+			code = data[DISPLAYID_DATA_BLOCK_HEADER_SIZE + i];
+			dmts[i] = (struct di_dmt_code) { .code = code };
+		}
+		break;
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_CTA:
+		cta_vics = calloc(type_iv_timing->codes_len, sizeof(*cta_vics));
+
+		for (i = 0; i < type_iv_timing->codes_len; i++) {
+			code = data[DISPLAYID_DATA_BLOCK_HEADER_SIZE + i];
+			cta_vics[i] = (struct di_cta_vic) { .code = code };
+		}
+		break;
+	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_HDMI:
+		hdmi_vics = calloc(type_iv_timing->codes_len, sizeof(*hdmi_vics));
+
+		for (i = 0; i < type_iv_timing->codes_len; i++) {
+			code = data[DISPLAYID_DATA_BLOCK_HEADER_SIZE + i];
+			hdmi_vics[i] = (struct di_hdmi_vic) { .code = code };
+		}
+		break;
+	}
+
+	type_iv_timing->dmts = dmts;
+	type_iv_timing->cta_vics = cta_vics;
+	type_iv_timing->hdmi_vics = hdmi_vics;
+
+	return true;
+}
+
+static bool
 parse_tiled_topo_block(struct di_displayid *displayid,
 		       struct di_displayid_tiled_topo_priv *priv,
 		       const uint8_t *data, size_t size)
@@ -565,9 +644,14 @@ parse_data_block(struct di_displayid *displayid, const uint8_t *data,
 		if (!parse_type_iii_timing_block(displayid, data_block, data, data_block_size))
 			goto error;
 		break;
+	case DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING:
+		if (!parse_type_iv_timing_block(displayid,
+						&data_block->type_iv_timing,
+						data, data_block_size))
+			goto error;
+		break;
 	case DI_DISPLAYID_DATA_BLOCK_PRODUCT_ID:
 	case DI_DISPLAYID_DATA_BLOCK_COLOR_CHARACT:
-	case DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING:
 	case DI_DISPLAYID_DATA_BLOCK_VESA_TIMING:
 	case DI_DISPLAYID_DATA_BLOCK_CEA_TIMING:
 	case DI_DISPLAYID_DATA_BLOCK_TIMING_RANGE_LIMITS:
@@ -727,6 +811,11 @@ destroy_data_block(struct di_displayid_data_block *data_block)
 		for (i = 0; i < data_block->type_iii_timings_len; i++)
 			free(data_block->type_iii_timings[i]);
 		break;
+	case DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING:
+		free((struct di_dmt_code *) data_block->type_iv_timing.dmts);
+		free((struct di_cta_vic *) data_block->type_iv_timing.cta_vics);
+		free((struct di_hdmi_vic *) data_block->type_iv_timing.cta_vics);
+		break;
 	default:
 		break; /* Nothing to do */
 	}
@@ -810,6 +899,15 @@ di_displayid_data_block_get_type_iii_timings(const struct di_displayid_data_bloc
 		return NULL;
 	}
 	return (const struct di_displayid_type_iii_timing *const *) data_block->type_iii_timings;
+}
+
+const struct di_displayid_type_iv_timing *
+di_displayid_data_block_get_type_iv_timing(const struct di_displayid_data_block *data_block)
+{
+	if (data_block->tag != DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING) {
+		return NULL;
+	}
+	return &data_block->type_iv_timing;
 }
 
 const struct di_displayid_data_block *const *

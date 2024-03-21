@@ -78,6 +78,9 @@ struct di_displayid_data_block {
 	struct di_displayid_type_iii_timing *type_iii_timings[DISPLAYID_MAX_TYPE_III_TIMINGS + 1];
 	size_t type_iii_timings_len;
 
+	/* Used for TYPE_IV_TIMING */
+	struct di_displayid_type_iv_timing type_iv_timing;
+
 	/* Used for DISPLAY_PARAMS */
 	struct di_displayid_display_params_priv display_params;
 
