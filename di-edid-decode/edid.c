@@ -383,57 +383,6 @@ print_color_point(const struct di_edid_color_point *c)
 }
 
 static void
-print_dmt_timing(const struct di_dmt_timing *t)
-{
-	int hbl, vbl, horiz_total, vert_total, horiz_ratio, vert_ratio;
-	double refresh, horiz_freq_hz, pixel_clock_mhz;
-
-	compute_aspect_ratio(t->horiz_video, t->vert_video,
-			     &horiz_ratio, &vert_ratio);
-
-	hbl = t->horiz_blank - 2 * t->horiz_border;
-	vbl = t->vert_blank - 2 * t->vert_border;
-	horiz_total = t->horiz_video + hbl;
-	vert_total = t->vert_video + vbl;
-	refresh = (double) t->pixel_clock_hz / (horiz_total * vert_total);
-	horiz_freq_hz = (double) t->pixel_clock_hz / horiz_total;
-	pixel_clock_mhz = (double) t->pixel_clock_hz / (1000 * 1000);
-
-	printf("      DMT 0x%02x:", t->dmt_id);
-	printf(" %5dx%-5d", t->horiz_video, t->vert_video);
-	printf(" %10.6f Hz", refresh);
-	printf(" %3u:%-3u", horiz_ratio, vert_ratio);
-	printf(" %8.3f kHz %13.6f MHz", horiz_freq_hz / 1000, pixel_clock_mhz);
-	if (t->reduced_blanking)
-		printf(" (RB)");
-	printf("\n");
-}
-
-static void
-print_cvt_timing(struct di_cvt_timing *t, struct di_cvt_options *options,
-		 int hratio, int vratio, bool preferred, bool rb)
-{
-	double hbl, htotal;
-
-	hbl = t->h_front_porch + t->h_sync + t->h_back_porch;
-	htotal = t->total_active_pixels + hbl;
-
-	printf("      CVT: %5dx%-5d", (int)options->h_pixels, (int)options->v_lines);
-	printf(" %10.6f Hz", t->act_frame_rate);
-	printf(" %3u:%-3u", hratio, vratio);
-	printf(" %8.3f kHz %13.6f MHz", t->act_pixel_freq * 1000 / htotal,
-	       (double) t->act_pixel_freq);
-
-	if (preferred || rb) {
-		printf(" (%s%s%s)", rb ? "RB" : "",
-				    (preferred && rb) ? ", " : "",
-				    preferred ? "preferred vertical rate" : "");
-	}
-
-	printf("\n");
-}
-
-static void
 print_cvt_timing_code(const struct di_edid_cvt_timing_code *t)
 {
 	struct di_cvt_timing timing;
@@ -525,7 +474,6 @@ print_display_desc(const struct di_edid *edid,
 	const struct di_edid_standard_timing *const *standard_timings;
 	const struct di_edid_color_point *const *color_points;
 	const struct di_edid_established_timings_iii *established_timings_iii;
-	const struct di_dmt_timing *dmt_timing;
 	const struct di_edid_color_management_data *color_management_data;
 	const struct di_edid_cvt_timing_code *const *cvt_timings;
 	size_t i;
@@ -648,9 +596,7 @@ print_display_desc(const struct di_edid *edid,
 
 		printf("\n");
 		for (i = 0; i < established_timings_iii->dmt_codes_len; i++) {
-			dmt_timing = di_dmt_timing_from_code(established_timings_iii->dmt_codes[i]);
-			if (dmt_timing)
-				print_dmt_timing(dmt_timing);
+			print_dmt_timing_code(established_timings_iii->dmt_codes[i]);
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:

@@ -5,6 +5,7 @@
 
 #include <libdisplay-info/edid.h>
 #include <libdisplay-info/cta.h>
+#include <libdisplay-info/cvt.h>
 #include <libdisplay-info/displayid.h>
 
 struct uncommon_features {
@@ -37,7 +38,20 @@ print_displayid2(const struct di_displayid2 *displayid2);
 
 void
 print_displayid_type_i_ii_vii_timing(const struct di_displayid_type_i_ii_vii_timing *t,
-				  int indent, const char *prefix);
+				     int indent, const char *prefix);
+
+void
+print_cta_vic_timing(struct di_cta_vic vic);
+
+void
+print_hdmi_vic_timing(const struct di_hdmi_vic vic);
+
+void
+print_dmt_timing_code(uint8_t dmt_code);
+
+void
+print_cvt_timing(struct di_cvt_timing *t, struct di_cvt_options *options,
+		 int hratio, int vratio, bool preferred, bool rb);
 
 void
 compute_aspect_ratio(int width, int height, int *horiz_ratio, int *vert_ratio);

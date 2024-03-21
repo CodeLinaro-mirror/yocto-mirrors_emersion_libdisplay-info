@@ -10,67 +10,10 @@
 #include "bits.h"
 #include "di-edid-decode.h"
 
-static const char *
-video_format_picture_aspect_ratio_name(enum di_cta_vic_video_format_picture_aspect_ratio ar)
-{
-	switch (ar) {
-	case DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3:
-		return "  4:3  ";
-	case DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9:
-		return " 16:9  ";
-	case DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27:
-		return " 64:27 ";
-	case DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135:
-		return "256:135";
-	}
-	abort(); /* unreachable */
-}
-
-static void
-print_cta_vic(struct di_cta_vic vic)
-{
-	const struct di_cta_vic_video_format *fmt;
-	int32_t h_blank, v_blank, v_active;
-	double refresh, h_freq_hz, pixel_clock_mhz, h_total, v_total;
-	char buf[10];
-
-	printf("    VIC %3" PRIu8, vic.code);
-
-	fmt = di_cta_vic_video_format_from_vic(vic);
-	if (fmt == NULL)
-		return;
-
-	v_active = fmt->v_active;
-	if (fmt->interlaced)
-		v_active /= 2;
-
-	h_blank = fmt->h_front + fmt->h_sync + fmt->h_back;
-	v_blank = fmt->v_front + fmt->v_sync + fmt->v_back;
-	h_total = fmt->h_active + h_blank;
-
-	v_total = v_active + v_blank;
-	if (fmt->interlaced)
-		v_total += 0.5;
-
-	refresh = (double) fmt->pixel_clock_hz / (h_total * v_total);
-	h_freq_hz = (double) fmt->pixel_clock_hz / h_total;
-	pixel_clock_mhz = (double) fmt->pixel_clock_hz / (1000 * 1000);
-
-	snprintf(buf, sizeof(buf), "%d%s",
-		 fmt->v_active,
-		 fmt->interlaced ? "i" : "");
-
-	printf(":");
-	printf(" %5dx%-5s", fmt->h_active, buf);
-	printf(" %10.6f Hz", refresh);
-	printf(" %s", video_format_picture_aspect_ratio_name(fmt->picture_aspect_ratio));
-	printf(" %8.3f kHz %13.6f MHz", h_freq_hz / 1000, pixel_clock_mhz);
-}
-
 static void
 printf_cta_svd(const struct di_cta_svd *svd)
 {
-	print_cta_vic(svd->vic);
+	print_cta_vic_timing(svd->vic);
 	if (svd->native)
 		printf(" (native)");
 	printf("\n");
@@ -83,40 +26,6 @@ printf_cta_svds(const struct di_cta_svd *const *svds)
 
 	for (i = 0; svds[i] != NULL; i++)
 		printf_cta_svd(svds[i]);
-}
-
-static void
-print_hdmi_vic(const struct di_hdmi_vic vic)
-{
-	const struct di_hdmi_vic_video_format *fmt;
-	int32_t h_blank, v_blank;
-	double refresh, h_freq_hz, pixel_clock_mhz, h_total, v_total;
-	int horiz_ratio, vert_ratio;
-
-	printf("    HDMI VIC %" PRIu8, vic.code);
-
-	fmt = di_hdmi_vic_video_format_from_vic(vic);
-	if (fmt == NULL)
-		return;
-
-	compute_aspect_ratio(fmt->h_active, fmt->v_active, &horiz_ratio, &vert_ratio);
-
-	h_blank = fmt->h_front + fmt->h_sync + fmt->h_back;
-	v_blank = fmt->v_front + fmt->v_sync + fmt->v_back;
-	h_total = fmt->h_active + h_blank;
-
-	v_total = fmt->v_active + v_blank;
-
-	refresh = (double) fmt->pixel_clock_hz / (h_total * v_total);
-	h_freq_hz = (double) fmt->pixel_clock_hz / h_total;
-	pixel_clock_mhz = (double) fmt->pixel_clock_hz / (1000 * 1000);
-
-	printf(":");
-	printf(" %5dx%-5d", fmt->h_active, fmt->v_active);
-	printf(" %10.6f Hz", refresh);
-	/* Not part of the spec, but edid-decode prints the aspect ratio. */
-	printf(" %3u:%-3u", horiz_ratio, vert_ratio);
-	printf(" %8.3f kHz %13.6f MHz", h_freq_hz / 1000, pixel_clock_mhz);
 }
 
 static const char *
@@ -929,7 +838,7 @@ print_cta_hdmi(const struct di_cta_vendor_hdmi_block *hdmi)
 		printf("      HDMI VICs:\n");
 		for (i = 0; i < hdmi->vics_len; i++) {
 			printf("    ");
-			print_hdmi_vic(hdmi->vics[i]);
+			print_hdmi_vic_timing(hdmi->vics[i]);
 			printf("\n");
 		}
 	}

@@ -7,6 +7,7 @@ di_edid_decode = executable(
 		'edid.c',
 		'main.c',
 		'util.c',
+		'timing.c',
 	],
 	dependencies: [di_dep, math],
 	install: true,
