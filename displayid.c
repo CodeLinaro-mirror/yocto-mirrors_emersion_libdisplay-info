@@ -61,15 +61,25 @@ check_data_block_revision(struct di_displayid *displayid,
 			  const uint8_t data[static DISPLAYID_DATA_BLOCK_HEADER_SIZE],
 			  const char *block_name, uint8_t max_revision)
 {
-	uint8_t revision, flags;
+	uint8_t revision;
 
-	flags = get_bit_range(data[0x01], 7, 3);
 	revision = get_bit_range(data[0x01], 2, 0);
 
 	if (revision > max_revision) {
 		add_failure(displayid, "%s: Unexpected revision (%u != %u).",
 			    block_name, revision, max_revision);
 	}
+}
+
+static void
+check_data_block_flags_reserved(struct di_displayid *displayid,
+				const uint8_t data[static DISPLAYID_DATA_BLOCK_HEADER_SIZE],
+				const char *block_name)
+{
+	uint8_t flags;
+
+	flags = get_bit_range(data[0x01], 7, 3);
+
 	if (flags != 0) {
 		add_failure(displayid, "%s: Unexpected flags (0x%02x).",
 			    block_name, flags);
@@ -84,9 +94,8 @@ parse_display_params_block(struct di_displayid *displayid,
 	struct di_displayid_display_params *params = &priv->base;
 	uint8_t raw_features;
 
-	check_data_block_revision(displayid, data,
-				  "Display Parameters Data Block",
-				  0);
+	check_data_block_revision(displayid, data, "Display Parameters Data Block", 0);
+	check_data_block_flags_reserved(displayid, data, "Display Parameters Data Block");
 
 	if (size != 0x0F) {
 		add_failure(displayid, "Display Parameters Data Block: DisplayID payload length is different than expected (%zu != %zu)", size, 0x0F);
@@ -226,6 +235,8 @@ parse_type_i_timing_block(struct di_displayid *displayid,
 	check_data_block_revision(displayid, data,
 				  "Video Timing Modes Type 1 - Detailed Timings Data Block",
 				  1);
+	check_data_block_flags_reserved(displayid, data,
+					"Video Timing Modes Type 1 - Detailed Timings Data Block");
 
 	if ((size - DISPLAYID_DATA_BLOCK_HEADER_SIZE) % DISPLAYID_TYPE_I_TIMING_SIZE != 0) {
 		add_failure(displayid,
@@ -316,6 +327,8 @@ parse_type_ii_timing_block(struct di_displayid *displayid,
 	check_data_block_revision(displayid, data,
 				  "Video Timing Modes Type 2 - Detailed Timings Data Block",
 				  0);
+	check_data_block_flags_reserved(displayid, data,
+				  "Video Timing Modes Type 2 - Detailed Timings Data Block");
 
 	if ((size - DISPLAYID_DATA_BLOCK_HEADER_SIZE) % DISPLAYID_TYPE_II_TIMING_SIZE != 0) {
 		add_failure(displayid,
@@ -343,9 +356,8 @@ parse_tiled_topo_block(struct di_displayid *displayid,
 	bool has_bezel;
 	float px_mult;
 
-	check_data_block_revision(displayid, data,
-				  "Tiled Display Topology Data Block",
-				  0);
+	check_data_block_revision(displayid, data, "Tiled Display Topology Data Block", 0);
+	check_data_block_flags_reserved(displayid, data, "Tiled Display Topology Data Block");
 
 	if (size - DISPLAYID_DATA_BLOCK_HEADER_SIZE != 22) {
 		add_failure(displayid,
