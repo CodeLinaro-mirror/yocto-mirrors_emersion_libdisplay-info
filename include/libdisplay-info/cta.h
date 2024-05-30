@@ -1007,7 +1007,7 @@ di_cta_data_block_get_infoframe(const struct di_cta_data_block *block);
 /**
  * Room Configuration Data Block, defined in section 7.5.15.
  */
-struct di_cta_room_configuration {
+struct di_cta_room_configuration_block {
 	/* Present speakers */
 	struct di_cta_speaker_allocation speakers;
 	/* Total number of L-PCM channels */
@@ -1033,7 +1033,7 @@ struct di_cta_room_configuration {
  *
  * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_ROOM_CONFIG.
  */
-const struct di_cta_room_configuration *
+const struct di_cta_room_configuration_block *
 di_cta_data_block_get_room_configuration(const struct di_cta_data_block *block);
 
 enum di_cta_speaker_placement {

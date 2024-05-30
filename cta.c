@@ -1433,7 +1433,7 @@ decode_coord(unsigned char x)
 
 static bool
 parse_room_config_block(struct di_edid_cta *cta,
-			struct di_cta_room_configuration *rc,
+			struct di_cta_room_configuration_block *rc,
 			const uint8_t *data, size_t size)
 {
 	bool has_display_coords;
@@ -2133,7 +2133,7 @@ di_cta_data_block_get_vesa_transfer_characteristics(const struct di_cta_data_blo
 	return &block->vesa_transfer_characteristics;
 }
 
-const struct di_cta_room_configuration *
+const struct di_cta_room_configuration_block *
 di_cta_data_block_get_room_configuration(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_ROOM_CONFIG) {

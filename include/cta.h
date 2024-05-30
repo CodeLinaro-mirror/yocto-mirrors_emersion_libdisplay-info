@@ -212,7 +212,7 @@ struct di_cta_data_block {
 	/* Used for DI_CTA_DATA_BLOCK_INFOFRAME */
 	struct di_cta_infoframe_block_priv infoframe;
 	/* Used for DI_CTA_DATA_BLOCK_ROOM_CONFIG */
-	struct di_cta_room_configuration room_config;
+	struct di_cta_room_configuration_block room_config;
 	/* Used for DI_CTA_DATA_BLOCK_SPEAKER_LOCATION */
 	struct di_cta_speaker_location_block speaker_location;
 	/* Used for DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF */
