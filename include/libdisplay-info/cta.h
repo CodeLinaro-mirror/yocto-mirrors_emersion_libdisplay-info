@@ -1128,13 +1128,23 @@ struct di_cta_speaker_location_block {
 const struct di_cta_speaker_location_block *
 di_cta_data_block_get_speaker_locations(const struct di_cta_data_block *block);
 
+/* See <libdisplay-info/displayid.h> */
+struct di_displayid_type_i_ii_vii_timing;
+
+/**
+ * Type VII Video Timing Data Block, defined in section 7.5.17.1
+ */
+struct di_cta_type_vii_timing_block {
+	const struct di_displayid_type_i_ii_vii_timing *timing;
+};
+
 /**
  * Get the DisplayID Type VII Video Timing from a CTA data block.
  *
  * Returns NULL if the data block tag is not
  * DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII.
  */
-const struct di_displayid_type_i_ii_vii_timing *
+const struct di_cta_type_vii_timing_block *
 di_cta_data_block_get_did_type_vii_timing(const struct di_cta_data_block *block);
 
 enum di_cta_svr_type {

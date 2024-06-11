@@ -1553,7 +1553,7 @@ parse_speaker_location_block(struct di_edid_cta *cta,
 
 static bool
 parse_did_type_vii_timing(struct di_edid_cta *cta,
-			  struct di_displayid_type_i_ii_vii_timing *t,
+			  struct di_cta_type_vii_timing_priv *t,
 			  const uint8_t *data, size_t size)
 {
 	uint8_t revision;
@@ -1590,11 +1590,12 @@ parse_did_type_vii_timing(struct di_edid_cta *cta,
 	data += 1;
 	size -= 1;
 
-	if (!_di_displayid_parse_type_1_7_timing(t, cta->logger,
+	if (!_di_displayid_parse_type_1_7_timing(&t->timing, cta->logger,
 						 "DisplayID Type VII Video Timing Data Block",
 						 data, true))
 		return false;
 
+	t->base.timing = &t->timing;
 	return true;
 }
 
@@ -2112,13 +2113,13 @@ di_cta_data_block_get_speaker_locations(const struct di_cta_data_block *block)
 	return &block->speaker_location.base;
 }
 
-const struct di_displayid_type_i_ii_vii_timing *
+const struct di_cta_type_vii_timing_block *
 di_cta_data_block_get_did_type_vii_timing(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII) {
 		return NULL;
 	}
-	return &block->did_vii_timing;
+	return &block->did_vii_timing.base;
 }
 
 const struct di_edid_detailed_timing_def *const *

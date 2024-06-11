@@ -906,7 +906,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_infoframe_block *infoframe;
 	const struct di_cta_video_format_pref_block *video_format_pref;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
-	const struct di_displayid_type_i_ii_vii_timing *type_vii_timing;
+	const struct di_cta_type_vii_timing_block *type_vii_timing;
 	const struct di_cta_hdmi_audio_block *hdmi_audio;
 	size_t i;
 	int vtdb_index = 0;
@@ -1024,7 +1024,7 @@ print_cta(const struct di_edid_cta *cta)
 			break;
 		case DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII:
 			type_vii_timing = di_cta_data_block_get_did_type_vii_timing(data_block);
-			print_did_type_vii_timing(type_vii_timing, vtdb_index);
+			print_did_type_vii_timing(type_vii_timing->timing, vtdb_index);
 			vtdb_index++;
 			break;
 		case DI_CTA_DATA_BLOCK_HDMI_AUDIO:

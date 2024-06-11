@@ -185,6 +185,11 @@ struct di_cta_video_format_pref_priv {
 	size_t svrs_len;
 };
 
+struct di_cta_type_vii_timing_priv {
+	struct di_cta_type_vii_timing_block base;
+	struct di_displayid_type_i_ii_vii_timing timing;
+};
+
 struct di_cta_data_block {
 	enum di_cta_data_block_tag tag;
 
@@ -221,7 +226,7 @@ struct di_cta_data_block {
 	/* Used for DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF */
 	struct di_cta_video_format_pref_priv video_format_pref;
 	/* Used for DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII */
-	struct di_displayid_type_i_ii_vii_timing did_vii_timing;
+	struct di_cta_type_vii_timing_priv did_vii_timing;
 };
 
 extern const struct di_cta_video_format _di_cta_video_formats[];
