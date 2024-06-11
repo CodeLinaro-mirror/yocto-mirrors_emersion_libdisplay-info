@@ -1500,10 +1500,10 @@ parse_room_config_block(struct di_edid_cta *cta,
 
 static bool
 parse_speaker_location_block(struct di_edid_cta *cta,
-			     struct di_cta_speaker_location_block *sldb,
+			     struct di_cta_speaker_location_priv *sldb,
 			     const uint8_t *data, size_t size)
 {
-	struct di_cta_speaker_locations speaker_loc, *slp;
+	struct di_cta_speaker_location_descriptor speaker_loc, *slp;
 
 	if (size < 2) {
 		add_failure(cta, "Speaker Location Data Block: Empty Data Block with length %u.",
@@ -1545,6 +1545,8 @@ parse_speaker_location_block(struct di_edid_cta *cta,
 		sldb->locations[sldb->locations_len++] = slp;
 	}
 
+	sldb->base.locations =
+		(const struct di_cta_speaker_location_descriptor *const *)sldb->locations;
 	return true;
 }
 
@@ -1602,7 +1604,7 @@ destroy_data_block(struct di_cta_data_block *data_block)
 	struct di_cta_video_block_priv *video;
 	struct di_cta_audio_block_priv *audio;
 	struct di_cta_infoframe_block_priv *infoframe;
-	struct di_cta_speaker_location_block *speaker_location;
+	struct di_cta_speaker_location_priv *speaker_location;
 	struct di_cta_video_format_pref_block *vfpdb;
 	struct di_cta_hdmi_audio_block_priv *hdmi_audio;
 	struct di_cta_ycbcr420_video_block_priv *ycbcr420;
@@ -2100,13 +2102,13 @@ di_cta_data_block_get_infoframe(const struct di_cta_data_block *block)
 	return &block->infoframe.block;
 }
 
-const struct di_cta_speaker_locations *const *
+const struct di_cta_speaker_location_block *
 di_cta_data_block_get_speaker_locations(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_SPEAKER_LOCATION) {
 		return NULL;
 	}
-	return (const struct di_cta_speaker_locations *const *) block->speaker_location.locations;
+	return &block->speaker_location.base;
 }
 
 const struct di_displayid_type_i_ii_vii_timing *

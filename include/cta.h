@@ -166,13 +166,15 @@ struct di_cta_hdmi_audio_block_priv {
 
 struct di_cta_infoframe_block_priv {
 	struct di_cta_infoframe_block block;
+	/* NULL-terminated */
 	struct di_cta_infoframe_descriptor *infoframes[EDID_CTA_INFOFRAME_BLOCK_ENTRIES + 1];
 	size_t infoframes_len;
 };
 
-struct di_cta_speaker_location_block {
+struct di_cta_speaker_location_priv {
+	struct di_cta_speaker_location_block base;
 	/* NULL-terminated */
-	struct di_cta_speaker_locations *locations[EDID_CTA_MAX_SPEAKER_LOCATION_BLOCK_ENTRIES + 1];
+	struct di_cta_speaker_location_descriptor *locations[EDID_CTA_MAX_SPEAKER_LOCATION_BLOCK_ENTRIES + 1];
 	size_t locations_len;
 };
 
@@ -214,7 +216,7 @@ struct di_cta_data_block {
 	/* Used for DI_CTA_DATA_BLOCK_ROOM_CONFIG */
 	struct di_cta_room_configuration_block room_config;
 	/* Used for DI_CTA_DATA_BLOCK_SPEAKER_LOCATION */
-	struct di_cta_speaker_location_block speaker_location;
+	struct di_cta_speaker_location_priv speaker_location;
 	/* Used for DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF */
 	struct di_cta_video_format_pref_block video_format_pref;
 	/* Used for DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII */

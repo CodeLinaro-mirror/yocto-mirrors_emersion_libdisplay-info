@@ -1096,9 +1096,9 @@ enum di_cta_speaker_placement {
 };
 
 /**
- * Speaker Location Data Block, defined in section 7.5.16.
+ * Speaker Location Descriptor, defined in section 7.5.16.
  */
-struct di_cta_speaker_locations {
+struct di_cta_speaker_location_descriptor {
 	/* Index of the audio channel where the audio for the described speaker
 	 * is to be transmitted. */
 	int channel_index;
@@ -1113,13 +1113,19 @@ struct di_cta_speaker_locations {
 };
 
 /**
- * Get an array of Speaker Locations.
+ * Speaker Location Data Block, defined in section 7.5.16.
+ */
+struct di_cta_speaker_location_block {
+	/* Speaker Location Descriptors. The array is NULL-terminated. */
+	const struct di_cta_speaker_location_descriptor *const *locations;
+};
+
+/**
+ * Get the Speaker Locations from a CTA data block.
  *
  * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_SPEAKER_LOCATION.
- *
- * The returned array is NULL-terminated.
  */
-const struct di_cta_speaker_locations *const *
+const struct di_cta_speaker_location_block *
 di_cta_data_block_get_speaker_locations(const struct di_cta_data_block *block);
 
 /**
