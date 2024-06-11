@@ -165,7 +165,7 @@ struct di_cta_hdmi_audio_block_priv {
 };
 
 struct di_cta_infoframe_block_priv {
-	struct di_cta_infoframe_block block;
+	struct di_cta_infoframe_block base;
 	/* NULL-terminated */
 	struct di_cta_infoframe_descriptor *infoframes[EDID_CTA_INFOFRAME_BLOCK_ENTRIES + 1];
 	size_t infoframes_len;

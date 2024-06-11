@@ -1378,8 +1378,8 @@ parse_infoframe_block(struct di_edid_cta *cta,
 		return false;
 	}
 
-	ifb->block.num_simultaneous_vsifs = data[1] + 1;
-	ifb->block.infoframes = (const struct di_cta_infoframe_descriptor *const *)ifb->infoframes;
+	ifb->base.num_simultaneous_vsifs = data[1] + 1;
+	ifb->base.infoframes = (const struct di_cta_infoframe_descriptor *const *)ifb->infoframes;
 
 	index = get_bit_range(data[0], 7, 5) + 2;
 	if (get_bit_range(data[0], 4, 0) != 0)
@@ -2099,7 +2099,7 @@ di_cta_data_block_get_infoframe(const struct di_cta_data_block *block)
 	if (block->tag != DI_CTA_DATA_BLOCK_INFOFRAME) {
 		return NULL;
 	}
-	return &block->infoframe.block;
+	return &block->infoframe.base;
 }
 
 const struct di_cta_speaker_location_block *
