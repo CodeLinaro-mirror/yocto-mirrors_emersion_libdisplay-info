@@ -1103,7 +1103,7 @@ parse_vesa_transfer_characteristics_block(struct di_edid_cta *cta,
 
 static bool
 parse_video_format_pref_block(struct di_edid_cta *cta,
-			      struct di_cta_video_format_pref_block *vfpdb,
+			      struct di_cta_video_format_pref_priv *vfpdb,
 			      const uint8_t *data, size_t size)
 {
 	struct di_cta_svr *svr;
@@ -1147,6 +1147,7 @@ parse_video_format_pref_block(struct di_edid_cta *cta,
 		vfpdb->svrs[vfpdb->svrs_len++] = svr;
 	}
 
+	vfpdb->base.svrs = (const struct di_cta_svr *const *)vfpdb->svrs;
 	return true;
 }
 
@@ -1605,7 +1606,7 @@ destroy_data_block(struct di_cta_data_block *data_block)
 	struct di_cta_audio_block_priv *audio;
 	struct di_cta_infoframe_block_priv *infoframe;
 	struct di_cta_speaker_location_priv *speaker_location;
-	struct di_cta_video_format_pref_block *vfpdb;
+	struct di_cta_video_format_pref_priv *vfpdb;
 	struct di_cta_hdmi_audio_block_priv *hdmi_audio;
 	struct di_cta_ycbcr420_video_block_priv *ycbcr420;
 
@@ -1985,13 +1986,13 @@ di_cta_data_block_get_ycbcr420_video(const struct di_cta_data_block *block)
 	return &block->ycbcr420.base;
 }
 
-const struct di_cta_svr *const *
-di_cta_data_block_get_svrs(const struct di_cta_data_block *block)
+const struct di_cta_video_format_pref_block *
+di_cta_data_block_get_video_format_pref(const struct di_cta_data_block *block)
 {
 	if (block->tag != DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF) {
 		return NULL;
 	}
-	return (const struct di_cta_svr *const *) block->video_format_pref.svrs;
+	return &block->video_format_pref.base;
 }
 
 const struct di_cta_audio_block *

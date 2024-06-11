@@ -904,7 +904,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_sad *const *sads;
 	const struct di_cta_ycbcr420_cap_map_block *ycbcr420_cap_map;
 	const struct di_cta_infoframe_block *infoframe;
-	const struct di_cta_svr *const *svrs;
+	const struct di_cta_video_format_pref_block *video_format_pref;
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 	const struct di_displayid_type_i_ii_vii_timing *type_vii_timing;
 	const struct di_cta_hdmi_audio_block *hdmi_audio;
@@ -1019,8 +1019,8 @@ print_cta(const struct di_edid_cta *cta)
 			print_infoframes(infoframe->infoframes);
 			break;
 		case DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF:
-			svrs = di_cta_data_block_get_svrs(data_block);
-			printf_cta_svrs(svrs);
+			video_format_pref = di_cta_data_block_get_video_format_pref(data_block);
+			printf_cta_svrs(video_format_pref->svrs);
 			break;
 		case DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII:
 			type_vii_timing = di_cta_data_block_get_did_type_vii_timing(data_block);

@@ -178,7 +178,8 @@ struct di_cta_speaker_location_priv {
 	size_t locations_len;
 };
 
-struct di_cta_video_format_pref_block {
+struct di_cta_video_format_pref_priv {
+	struct di_cta_video_format_pref_block base;
 	/* NULL-terminated */
 	struct di_cta_svr *svrs[EDID_CTA_MAX_VIDEO_FORMAT_PREF_BLOCK_ENTRIES + 1];
 	size_t svrs_len;
@@ -218,7 +219,7 @@ struct di_cta_data_block {
 	/* Used for DI_CTA_DATA_BLOCK_SPEAKER_LOCATION */
 	struct di_cta_speaker_location_priv speaker_location;
 	/* Used for DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF */
-	struct di_cta_video_format_pref_block video_format_pref;
+	struct di_cta_video_format_pref_priv video_format_pref;
 	/* Used for DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII */
 	struct di_displayid_type_i_ii_vii_timing did_vii_timing;
 };

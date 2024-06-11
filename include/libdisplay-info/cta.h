@@ -1166,17 +1166,24 @@ struct di_cta_svr {
 	uint8_t t7_t10_vtdb_index;
 };
 
+
 /**
- * Get an array of Short Video References (SVRs) from a CTA data block. The
- * first SVR refers to the most-preferred Video Format, while the next SVRs
- * are listed in order of decreasing preference.
+ * Video Format Preference Data Block, defined in section 7.5.12.
+ */
+struct di_cta_video_format_pref_block {
+	/* Short Video References (SVRs). The array is NULL-terminated.
+	 * The first SVR refers to the most-preferred Video Format, while the
+	 * next SVRs are listed in order of decreasing preference. */
+	const struct di_cta_svr *const *svrs;
+};
+
+/**
+ * Get the Video Format Preference information from a CTA data block.
  *
  * Returns NULL if the data block tag is not
  * DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF.
- *
- * The returned array is NULL-terminated.
  */
-const struct di_cta_svr *const *
-di_cta_data_block_get_svrs(const struct di_cta_data_block *block);
+const struct di_cta_video_format_pref_block *
+di_cta_data_block_get_video_format_pref(const struct di_cta_data_block *block);
 
 #endif
