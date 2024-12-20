@@ -11,7 +11,7 @@ include:
 # $ git push -f -o ci.variable="FDO_FORCE_REBUILD=1"
 variables:
   FDO_UPSTREAM_REPO: 'emersion/libdisplay-info'
-  FDO_DISTRIBUTION_TAG: '2024-06-07.0'
+  FDO_DISTRIBUTION_TAG: '2025-01-20.0'
 
 workflow:
   rules:
@@ -39,17 +39,24 @@ prepare-container:
   extends: .fdo.container-build@alpine@x86_64
   stage: "Prepare container"
   variables:
-    EDID_DECODE_COMMIT: c6b859d7f0251e2433fb81bd3f67bd2011c2036c
+    V4L_UTILS_COMMIT: 1316a80455ef70889bea89491f37cd69170f3ee7
     FDO_BASE_IMAGE: alpine:latest
     FDO_DISTRIBUTION_PACKAGES: |
       build-base clang compiler-rt meson make git gcovr py3-pygments go hwdata
+      perl argp-standalone gettext-dev linux-headers
     FDO_DISTRIBUTION_EXEC: |
-      grep $EDID_DECODE_COMMIT ./subprojects/edid-decode.wrap >/dev/null || \
-        (echo "Keep edid-decode.wrap and CI in sync!" && exit 1)
-      git clone git://linuxtv.org/edid-decode.git
-      cd edid-decode
-      git checkout $EDID_DECODE_COMMIT
-      meson setup build/
+      grep $V4L_UTILS_COMMIT ./subprojects/v4l-utils.wrap >/dev/null || \
+        (echo "Keep v4l-utils.wrap and CI in sync!" && exit 1)
+      git clone https://git.linuxtv.org/v4l-utils.git
+      cd v4l-utils
+      git checkout $V4L_UTILS_COMMIT
+      meson setup build/ \
+        -Dauto_features=disabled \
+        -Dv4l-plugins=false \
+        -Dv4l-wrappers=false \
+        -Dv4l2-compliance-libv4l=false \
+        -Dv4l2-ctl-libv4l=false \
+        -Dv4l2-ctl-stream-to=false
       ninja -C build/
       ninja -C build/ install
       cd ..

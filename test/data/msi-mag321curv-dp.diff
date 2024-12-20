@@ -39,7 +39,7 @@
    Detailed Timing Descriptors:
      DTD 2:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (700 mm x 390 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -144,29 +125,12 @@
+@@ -144,30 +125,12 @@
      DTD 4:  1280x768    59.870228 Hz   5:3     47.776 kHz     79.500000 MHz (700 mm x 390 mm)
                   Hfront   64 Hsync 128 Hback  192 Hpol N
                   Vfront    3 Vsync   7 Vback   20 Vpol P
@@ -54,6 +54,7 @@
 -  Vendor & Product Identification: The serial number is one of the known dummy values, it should probably be set to 0.
 -  Display Range Limits: GTF support is deprecated in EDID 1.4.
 -Block 1, CTA-861 Extension Block:
+-  Video Data Block: VIC 1 and the first DTD are not identical. Is this intended?
 -  Display Product Serial Number is set, so the Serial Number in the Base EDID should be 0.
 -EDID:
 -  Base EDID: Some timings are out of range of the Monitor Ranges:
