@@ -1,6 +1,7 @@
 make: LG Electronics
 model: ITE6604
 serial: 0x01010101
+device tag: GSM-7666.ITE6604-0x01010101-2012.1
 HDR static metadata:
 luminance 0.000000-0.000000, maxFALL 0.000000
 metadata type1=no

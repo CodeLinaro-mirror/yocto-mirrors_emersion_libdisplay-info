@@ -44,6 +44,10 @@ print_info(const struct di_info *info)
 	printf("serial: %s\n", str_or_null(str));
 	free(str);
 
+	str = di_info_get_device_tag(info);
+	printf("device tag: %s\n", str_or_null(str));
+	free(str);
+
 	hdr_static = di_info_get_hdr_static_metadata(info);
 	assert(hdr_static);
 	printf("HDR static metadata:\n"

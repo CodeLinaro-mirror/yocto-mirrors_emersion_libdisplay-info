@@ -1,6 +1,7 @@
 make: ViewSonic Corporation
 model: VP2768 Series
 serial: UY5171500307
+device tag: VSC-2034.VP2768_Series-0x01010101.UY5171500307-2017.15
 HDR static metadata:
 luminance 0.000000-0.000000, maxFALL 0.000000
 metadata type1=no

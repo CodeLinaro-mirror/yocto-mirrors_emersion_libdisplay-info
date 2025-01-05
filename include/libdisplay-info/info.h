@@ -104,6 +104,20 @@ char *
 di_info_get_serial(const struct di_info *info);
 
 /**
+ * Get a display device tag string.
+ *
+ * This is a string containing all device identifying information (e.g.
+ * manufacturer, model, serial number). It is stable (ie. suitable for
+ * referring to a specific display device in configuration files) but is not
+ * guaranteed unique (two different devices may share the same string).
+ *
+ * The caller is responsible for free'ing the returned string. NULL is returned
+ * on error.
+ */
+char *
+di_info_get_device_tag(const struct di_info *info);
+
+/**
  * Display HDR static metadata
  */
 struct di_hdr_static_metadata {

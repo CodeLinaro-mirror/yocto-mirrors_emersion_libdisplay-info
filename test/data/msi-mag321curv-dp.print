@@ -1,6 +1,7 @@
 make: Microstep
 model: MAG321CURV
 serial: DA2A019360041
+device tag: MSI-3DA2.MAG321CURV-0x01010101.DA2A019360041-2019.36
 HDR static metadata:
 luminance 0.000000-366.801605, maxFALL 366.801605
 metadata type1=yes

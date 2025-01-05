@@ -1,6 +1,7 @@
 make: Panasonic Industry Company
 model: 0x96A2
 serial: {null}
+device tag: MEI-96A2-VVX14T058J10
 HDR static metadata:
 luminance 0.000000-0.000000, maxFALL 0.000000
 metadata type1=no

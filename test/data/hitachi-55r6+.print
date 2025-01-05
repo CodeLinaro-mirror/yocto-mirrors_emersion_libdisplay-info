@@ -1,6 +1,7 @@
 make: Hisense Electric Co., Ltd.
 model: 55R6+
 serial: 0x000001D8
+device tag: HEC-55R6+-0x000001D8-2020.20
 HDR static metadata:
 luminance 0.000000-0.000000, maxFALL 0.000000
 metadata type1=yes

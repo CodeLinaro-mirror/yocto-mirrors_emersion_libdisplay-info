@@ -357,6 +357,148 @@ di_info_get_serial(const struct di_info *info)
 	return NULL;
 }
 
+static bool
+is_allowed_device_tag_char(char ch)
+{
+	/* Ensure we only allow printable ASCII and avoid some special
+	 * characters that might be awkward in text-based config files
+	 * or command lines. */
+	switch (ch) {
+	case ' ':
+	case '"':
+	case '\'':
+	case '/':
+	case '\\':
+		return false;
+	default:
+		return ch > 0x1F && ch < 0x7F;
+	}
+}
+
+static bool
+has_any_allowed_device_tag_char(const char *str)
+{
+	size_t i;
+
+	for (i = 0; str[i] != '\0'; i++) {
+		if (is_allowed_device_tag_char(str[i]))
+			return true;
+	}
+
+	return false;
+}
+
+static void
+encode_device_tag_string(FILE *out, const char *str)
+{
+	size_t len, i;
+	char ch;
+	bool ch_is_allowed, prev_ch_is_allowed;
+
+	/* Trim trailing unallowed characters */
+	len = strlen(str);
+	while (len > 0 && !is_allowed_device_tag_char(str[len - 1])) {
+		len--;
+	}
+
+	prev_ch_is_allowed = false;
+	for (i = 0; i < len; i++) {
+		ch = str[i];
+
+		/* Replace consecutive unallowed characters with a single
+		 * replacement character */
+		ch_is_allowed = is_allowed_device_tag_char(ch);
+		if (ch_is_allowed)
+			fputc(ch, out);
+		else if (prev_ch_is_allowed)
+			fputc('_', out);
+
+		prev_ch_is_allowed = ch_is_allowed;
+	}
+}
+
+char *
+di_info_get_device_tag(const struct di_info *info)
+{
+	const struct di_edid_display_descriptor *const *desc;
+	const struct di_edid_vendor_product *evp;
+	struct memory_stream m;
+	size_t i;
+	const char *str, *product_name, *product_serial;
+	bool has_product, has_serial;
+
+	if (!info->edid)
+		return NULL;
+
+	if (!memory_stream_open(&m))
+		return NULL;
+
+	product_name = NULL;
+	product_serial = NULL;
+	desc = di_edid_get_display_descriptors(info->edid);
+	for (i = 0; desc[i] != NULL; i++) {
+		switch (di_edid_display_descriptor_get_tag(desc[i])) {
+		case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
+			str = di_edid_display_descriptor_get_string(desc[i]);
+			if (has_any_allowed_device_tag_char(str))
+				product_name = str;
+			break;
+		case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL:
+			str = di_edid_display_descriptor_get_string(desc[i]);
+			if (has_any_allowed_device_tag_char(str))
+				product_serial = str;
+			break;
+		default:
+			break;
+		}
+	}
+
+	evp = di_edid_get_vendor_product(info->edid);
+	fprintf(m.fp, "%.3s", evp->manufacturer);
+
+	has_product = evp->product != 0 || product_name != NULL;
+	has_serial = evp->serial != 0 || product_serial != NULL;
+
+	if (has_product)
+		fprintf(m.fp, "-");
+	if (evp->product != 0)
+		fprintf(m.fp, "%04" PRIX16, evp->product);
+	if (evp->product != 0 && product_name != NULL)
+		fprintf(m.fp, ".");
+	if (product_name != NULL)
+		encode_device_tag_string(m.fp, product_name);
+
+	if (has_serial)
+		fprintf(m.fp, "-");
+	if (evp->serial != 0)
+		fprintf(m.fp, "0x%08" PRIX32, evp->serial);
+	if (evp->serial != 0 && product_serial != NULL)
+		fprintf(m.fp, ".");
+	if (product_serial != NULL)
+		encode_device_tag_string(m.fp, product_serial);
+
+	for (i = 0; desc[i] != NULL; i++) {
+		if (di_edid_display_descriptor_get_tag(desc[i]) !=
+		    DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING)
+			continue;
+
+		str = di_edid_display_descriptor_get_string(desc[i]);
+		if (!has_any_allowed_device_tag_char(str))
+			continue;
+
+		fprintf(m.fp, "-");
+		encode_device_tag_string(m.fp, str);
+	}
+
+	if (evp->manufacture_year != 0) {
+		fprintf(m.fp, "-%d", evp->manufacture_year);
+		if (evp->manufacture_week != 0)
+			fprintf(m.fp, ".%d", evp->manufacture_week);
+	}
+
+	return memory_stream_close(&m);
+}
+
 const struct di_hdr_static_metadata *
 di_info_get_hdr_static_metadata(const struct di_info *info)
 {

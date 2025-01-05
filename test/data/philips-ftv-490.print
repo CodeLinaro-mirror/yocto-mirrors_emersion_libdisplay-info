@@ -1,6 +1,7 @@
 make: Philips Consumer Electronics Company
 model: Philips FTV
 serial: 0x01010101
+device tag: PHL-01EA.Philips_FTV-0x01010101-2018.46
 HDR static metadata:
 luminance 0.000000-0.000000, maxFALL 0.000000
 metadata type1=yes

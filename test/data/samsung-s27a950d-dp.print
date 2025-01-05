@@ -1,6 +1,7 @@
 make: Samsung Electric Company
 model: S27A950D
 serial: {null}
+device tag: SAM-079F.S27A950D-2011.3
 HDR static metadata:
 luminance 0.000000-0.000000, maxFALL 0.000000
 metadata type1=no
