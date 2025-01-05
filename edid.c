@@ -1131,8 +1131,8 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 	char section_name[64];
 
 	if (!validate_block_checksum(data)) {
-		errno = EINVAL;
-		return false;
+		add_failure(edid, "Invalid extension checksum.");
+		return true;
 	}
 
 	ext = calloc(1, sizeof(*ext));
