@@ -73,16 +73,14 @@ testing-check:
   stage: "Build and test"
   script:
    - |
-     # Check if the origin of all test EDIDs is documented
-     for f in ./test/data/*.edid; do
-       grep -q "^$(basename ${f%.edid})\s" ./test/data/README.md ||
-         (echo "$f not in README.md" && exit 1)
-     done
-     # Check if the test references checked in the repo match what we have in CI
-     meson setup build/
-     ninja -C build/ gen-test-data
-     git diff --quiet ||
-       (echo "Checked in reference output does not match generated reference output" && exit 1)
+      # Check if the origin of all test EDIDs is documented
+      for f in ./test/data/*.edid; do
+        grep -q "^$(basename ${f%.edid})\s" ./test/data/README.md ||
+          (echo "$f not in README.md" && exit 1)
+      done
+   - |
+      ./test/edid-reference-check.sh test/data/*.edid ||
+      (echo "Checked in reference output does not match generated reference output!" && exit 1)
   rules:
     - when: on_success
 
