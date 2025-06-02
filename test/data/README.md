@@ -8,6 +8,7 @@ name | source | source commit
 ---- | ------ | -------------
 acer-p1276		| ./Analog/Acer/ACR1616/4108C2D271EB		| cff7fe4d44
 goldstar-ite6604-hdmi	| ./Digital/Goldstar/GSM7666/FE91A60D5B6E	| cff7fe4d44
+lenovo-t27p10           | ./Digital/Lenovo/LEN61DA/75037CFDD4F5         | 6074fb4434
 msi-mag321curv-dp	| ./Digital/MSI/MSI3DA2/9BD6EC4AFDBD		| cff7fe4d44
 panasonic-mei96a2-dp	| ./Digital/Panasonic/MEI96A2/7CA47BE65E1E	| cff7fe4d44
 samsung-odyssey-g60sd   | ./Digital/Samsung/SAM75C3/D3961D5B60BC        | f295649735

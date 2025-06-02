@@ -18,6 +18,7 @@ test_cases = [
 	'goldstar-e2441',
 	'goldstar-ite6604-hdmi',
 	'hp-5dq99aa-hdmi',
+	'lenovo-t27p10',
 	'msi-mag321curv-dp',
 	'panasonic-mei96a2-dp',
 	'qemu',
