@@ -20,6 +20,7 @@ samsung-s27a950d-dp	| ./Digital/Samsung/SAM079F/6D343EDB39F8	| cff7fe4d44
 sun-gh19ps-dvi		| ./Digital/Sun/SUN058C/34B2E3B9A052		| cff7fe4d44
 tcl-smart-tv-5655	| ./Digital/TCL/TCL5655/1723FF2DC6D1		| cff7fe4d44
 viewsonic-vp2768-dp	| ./Digital/ViewSonic/VSC2034/6B81BEA28A1E	| cff7fe4d44
+vizio-d40fj09           | ./Digital/Vizio/VIZ1044/F82F2A538C85          | c430d65898
 
 The following blobs originate from the [edid-decode] repository and are under
 the same license as the rest of the libdisplay-info project:
