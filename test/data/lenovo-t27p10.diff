@@ -1,6 +1,6 @@
 --- ref
 +++ di
-@@ -75,22 +75,8 @@
+@@ -75,20 +75,6 @@
        Supported sample sizes (bits): 24 20 16
    Speaker Allocation Data Block:
      FL/FR - Front Left/Right
@@ -19,11 +19,8 @@
 -    SCDC Present
 -    Supports 10-bits/component Deep Color 4:2:0 Pixel Encoding
    YCbCr 4:2:0 Capability Map Data Block:
--    VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
-+    VIC  95:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
+     VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
    Detailed Timing Descriptors:
-     DTD 3:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (597 mm x 336 mm)
-                  Hfront   48 Hsync  32 Hback   80 Hpol P
 @@ -98,23 +84,12 @@
      DTD 4:  2560x1600   59.971589 Hz  16:10    98.713 kHz    268.500000 MHz (597 mm x 336 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P

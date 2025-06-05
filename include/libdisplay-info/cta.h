@@ -819,6 +819,9 @@ di_cta_data_block_get_hdr_dynamic_metadata(const struct di_cta_data_block *block
 struct di_cta_svd {
 	/* Video Identification Code (VIC) */
 	uint8_t vic;
+	/* Original index of the VIC in this block's array. Some maps refer to
+	 * this value, such as the YCbCr 4:2:0 Capability Map. */
+	uint8_t original_index;
 	/* Whether this is a native video format */
 	bool native;
 };

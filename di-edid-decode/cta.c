@@ -648,7 +648,8 @@ print_ycbcr420_cap_map(const struct di_edid_cta *cta,
 	const struct di_cta_data_block *data_block;
 	enum di_cta_data_block_tag tag;
 	const struct di_cta_svd *const *svds;
-	size_t i, j, svd_index = 0;
+	size_t global_svd_index, block_index_offset = 0;
+	size_t i, j;
 
 	data_blocks = di_edid_cta_get_data_blocks(cta);
 
@@ -661,11 +662,12 @@ print_ycbcr420_cap_map(const struct di_edid_cta *cta,
 
 		svds = di_cta_data_block_get_video(data_block)->svds;
 		for (j = 0; svds[j] != NULL; j++) {
-			if (di_cta_ycbcr420_cap_map_supported(map, svd_index))
+			global_svd_index = svds[j]->original_index + block_index_offset;
+			if (di_cta_ycbcr420_cap_map_supported(map, global_svd_index))
 				printf_cta_svd(svds[j]);
-
-			svd_index++;
 		}
+		if (j > 0)
+			block_index_offset += svds[j - 1]->original_index;
 	}
 }
 

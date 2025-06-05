@@ -67,7 +67,8 @@ add_failure_until(struct di_edid_cta *cta, int revision, const char fmt[], ...)
 }
 
 static struct di_cta_svd *
-parse_svd(struct di_edid_cta *cta, uint8_t raw, const char *prefix)
+parse_svd(struct di_edid_cta *cta, uint8_t raw, uint8_t original_index,
+	  const char *prefix)
 {
 	struct di_cta_svd svd, *svd_ptr;
 
@@ -81,11 +82,13 @@ parse_svd(struct di_edid_cta *cta, uint8_t raw, const char *prefix)
 	} else if (raw <= 127 || raw >= 193) {
 		svd = (struct di_cta_svd) {
 			.vic = raw,
+			.original_index = original_index,
 		};
 	} else {
 		svd = (struct di_cta_svd) {
 			.vic = get_bit_range(raw, 6, 0),
 			.native = true,
+			.original_index = original_index,
 		};
 	}
 
@@ -100,14 +103,16 @@ static bool
 parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block_priv *video,
 		  const uint8_t *data, size_t size)
 {
-	size_t i;
+	uint8_t i;
 	struct di_cta_svd *svd;
 
 	if (size == 0)
 		add_failure(cta, "Video Data Block: Empty Data Block");
 
+	assert(size < (1 << 8));
+
 	for (i = 0; i < size; i++) {
-		svd = parse_svd(cta, data[i], "Video Data Block");
+		svd = parse_svd(cta, data[i], i, "Video Data Block");
 		if (!svd)
 			continue;
 		assert(video->svds_len < EDID_CTA_MAX_VIDEO_BLOCK_ENTRIES);
@@ -123,14 +128,16 @@ parse_ycbcr420_block(struct di_edid_cta *cta,
 		     struct di_cta_ycbcr420_video_block_priv *ycbcr420,
 		     const uint8_t *data, size_t size)
 {
-	size_t i;
+	uint8_t i;
 	struct di_cta_svd *svd;
 
 	if (size == 0)
 		add_failure(cta, "YCbCr 4:2:0 Video Data Block: Empty Data Block");
 
+	assert(size < (1 << 8));
+
 	for (i = 0; i < size; i++) {
-		svd = parse_svd(cta, data[i], "YCbCr 4:2:0 Video Data Block");
+		svd = parse_svd(cta, data[i], i, "YCbCr 4:2:0 Video Data Block");
 		if (!svd)
 			continue;
 		assert(ycbcr420->svds_len < EDID_CTA_MAX_VIDEO_BLOCK_ENTRIES);
