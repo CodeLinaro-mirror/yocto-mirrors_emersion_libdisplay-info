@@ -815,6 +815,82 @@ print_hdmi_audio(const struct di_cta_hdmi_audio_block *hdmi_audio)
 	print_speaker_alloc (&audio_3d->speakers, "      ");
 }
 
+static int
+peak_lum_get_index(int peak_lum)
+{
+	switch (peak_lum) {
+	case 0:
+		return 0;
+	case 200:
+		return 1;
+	case 300:
+		return 2;
+	case 400:
+		return 3;
+	case 500:
+		return 4;
+	case 600:
+		return 5;
+	case 800:
+		return 6;
+	case 1000:
+		return 7;
+	case 1200:
+		return 8;
+	case 1500:
+		return 9;
+	case 2000:
+		return 10;
+	case 2500:
+		return 11;
+	case 3000:
+		return 12;
+	case 4000:
+		return 13;
+	case 6000:
+		return 14;
+	case 8000:
+		return 15;
+	}
+	abort(); /* unreachable */
+}
+
+static int
+ff_peak_lum_get_index(int ff_peak_lum, int peak_lum)
+{
+	float div;
+
+	if (peak_lum == 0)
+		return 0;
+
+	div = (float)ff_peak_lum / (float)peak_lum;
+
+	if (fabs(div - 0.1) <= 1e-5)
+		return 0;
+	else if (fabs(div - 0.2) <= 1e-5)
+		return 1;
+	else if (fabs(div - 0.4) <= 1e-5)
+		return 2;
+	else if (fabs(div - 0.8) <= 1e-5)
+		return 3;
+
+	abort(); /* unreachable */
+}
+
+static void
+print_cta_hdr10plus(const struct di_cta_hdr10plus_block *hdr10plus)
+{
+	int peak_lum_index, ff_peak_lum_index;
+
+	peak_lum_index = peak_lum_get_index(hdr10plus->peak_lum);
+	ff_peak_lum_index = ff_peak_lum_get_index(hdr10plus->ff_peak_lum,
+						  hdr10plus->peak_lum);
+
+	printf("    Application Version: %d\n", hdr10plus->version);
+	printf("    Full Frame Peak Luminance Index: %d\n", ff_peak_lum_index);
+	printf("    Peak Luminance Index: %d\n", peak_lum_index);
+}
+
 static const char *
 cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 {
@@ -867,6 +943,8 @@ cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 		return "HDMI Forum Sink Capability Data Block";
 	case DI_CTA_DATA_BLOCK_DOLBY_VIDEO:
 		return "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46";
+	case DI_CTA_DATA_BLOCK_HDR10PLUS:
+		return "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B";
 	}
 	return "Unknown CTA-861 Data Block";
 }
@@ -910,6 +988,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 	const struct di_cta_type_vii_timing_block *type_vii_timing;
 	const struct di_cta_hdmi_audio_block *hdmi_audio;
+	const struct di_cta_hdr10plus_block *hdr10plus;
 	size_t i;
 	int vtdb_index = 0;
 
@@ -1032,6 +1111,10 @@ print_cta(const struct di_edid_cta *cta)
 		case DI_CTA_DATA_BLOCK_HDMI_AUDIO:
 			hdmi_audio = di_cta_data_block_get_hdmi_audio(data_block);
 			print_hdmi_audio(hdmi_audio);
+			break;
+		case DI_CTA_DATA_BLOCK_HDR10PLUS:
+			hdr10plus = di_cta_data_block_get_hdr10plus(data_block);
+			print_cta_hdr10plus(hdr10plus);
 			break;
 		default:
 			break; /* Ignore */

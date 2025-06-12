@@ -21,14 +21,9 @@
    HDR Static Metadata Data Block:
      Electro optical transfer functions:
        Traditional gamma - SDR luminance range
-@@ -136,38 +122,19 @@
-     VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
-     VIC 101:  4096x2160   50.000000 Hz 256:135  112.500 kHz    594.000000 MHz
-     VIC 102:  4096x2160   60.000000 Hz 256:135  135.000 kHz    594.000000 MHz
--  Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B:
--    Application Version: 1
--    Full Frame Peak Luminance Index: 0
--    Peak Luminance Index: 0
+@@ -141,33 +127,19 @@
+     Full Frame Peak Luminance Index: 0
+     Peak Luminance Index: 0
    Detailed Timing Descriptors:
 -    DTD 3:  1920x1080i  50.000000 Hz  16:9     28.125 kHz     74.250000 MHz (1872 mm x 1053 mm)
 +    DTD 3:  1920x540  i  50.044484 Hz  32:9     28.125 kHz     74.250000 MHz (1872 mm x 1053 mm)
@@ -63,4 +58,5 @@
 -  Base EDID: The DTD max image size is 1872x1053mm, which is larger than the display size 1650.0x930.0mm.
 -
 +  Colorimetry Data Block: Reserved bits MD0-MD3 must be 0.
++  Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B: Peak luminance index 0 is reserved.
  EDID conformity: FAIL

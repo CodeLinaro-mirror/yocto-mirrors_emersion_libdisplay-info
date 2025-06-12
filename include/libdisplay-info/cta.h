@@ -176,6 +176,8 @@ enum di_cta_data_block_tag {
 
 	/* Dolby Video Vendor-Specific Data Block */
 	DI_CTA_DATA_BLOCK_DOLBY_VIDEO,
+	/* HDR10+ Video Vendor-Specific Data Block */
+	DI_CTA_DATA_BLOCK_HDR10PLUS,
 };
 
 /**
@@ -959,6 +961,26 @@ struct di_cta_hdmi_audio_block {
  */
 const struct di_cta_hdmi_audio_block *
 di_cta_data_block_get_hdmi_audio(const struct di_cta_data_block *block);
+
+/**
+ * HDR10+ Vendor-Specific Video Data Block
+ */
+struct di_cta_hdr10plus_block {
+	/* Application version */
+	int version;
+	/* Peak Luminance in nits; 0 for invalid. */
+	int peak_lum;
+	/* Full Frame Peak Luminance in nits; 0 for invalid. */
+	int ff_peak_lum;
+};
+
+/**
+ * Get the HDR10+ information from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not DI_CTA_DATA_BLOCK_HDR10PLUS.
+ */
+const struct di_cta_hdr10plus_block *
+di_cta_data_block_get_hdr10plus(const struct di_cta_data_block *block);
 
 /**
  * InfoFrame types, defined in table 7.

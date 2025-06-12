@@ -31,6 +31,7 @@
  * IEEE Organizationally unique identifiers
  */
 #define IEEE_OUI_DOLBY 0x00D046
+#define IEEE_OUI_HDR10PLUS 0x90848B
 
 const struct di_cta_video_format *
 di_cta_video_format_from_vic(uint8_t vic)
@@ -1603,6 +1604,117 @@ parse_did_type_vii_timing(struct di_edid_cta *cta,
 	return true;
 }
 
+static int
+peak_lum_index_to_nits(int index)
+{
+	switch (index) {
+	case 1:
+		return 200;
+	case 2:
+		return 300;
+	case 3:
+		return 400;
+	case 4:
+		return 500;
+	case 5:
+		return 600;
+	case 6:
+		return 800;
+	case 7:
+		return 1000;
+	case 8:
+		return 1200;
+	case 9:
+		return 1500;
+	case 10:
+		return 2000;
+	case 11:
+		return 2500;
+	case 12:
+		return 3000;
+	case 13:
+		return 4000;
+	case 14:
+		return 6000;
+	case 15:
+		return 8000;
+	}
+
+	return 0;
+}
+
+static int
+ff_peak_lum_index_to_nits(int index, int peak_lum)
+{
+	float mult;
+
+	/**
+	 * Full Frame Peak Luminance index maps to a certain percentage of the
+	 * Peak Luminance.
+	 */
+
+	if (peak_lum == 0)
+		return 0;
+
+	switch (index) {
+	case 0:
+		mult = 0.1f;
+		break;
+	case 1:
+		mult = 0.2f;
+		break;
+	case 2:
+		mult = 0.4f;
+		break;
+	case 3:
+		mult = 0.8f;
+		break;
+	default:
+		mult = 0.0f;
+		break;
+	}
+
+	return (int)roundf((float)peak_lum * mult);
+}
+
+static bool
+parse_hdr10plus_block(struct di_edid_cta *cta,
+		      struct di_cta_hdr10plus_block *block,
+		      const uint8_t *data, size_t size)
+{
+	int peak_lum_index, ff_peak_lum_index;
+
+	if (size < 1) {
+		add_failure(cta, "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B: "
+				 "Empty Data Block with length %u.",
+			    size);
+		return false;
+	}
+
+	block->version = get_bit_range(data[0], 1, 0);
+	if (block->version != 1) {
+		add_failure(cta, "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B: "
+				 "We were expecting application version 1, but got %d.",
+			    block->version);
+		return false;
+	}
+
+	/* Index 0 is reserved and > 15 invalid (but 4 bits goes up to 15). */
+	peak_lum_index = get_bit_range(data[0], 7, 4);
+	if (peak_lum_index == 0) {
+		add_failure(cta, "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B: "
+				 "Peak luminance index 0 is reserved.");
+	}
+	block->peak_lum = peak_lum_index_to_nits(peak_lum_index);
+
+	/* Index > 3 is invalid, but 2 bits goes up to 3 so no need to check. */
+	ff_peak_lum_index = get_bit_range(data[0], 3, 2);
+	block->ff_peak_lum = ff_peak_lum_index_to_nits(ff_peak_lum_index,
+						       block->peak_lum);
+
+	return true;
+}
+
 static void
 destroy_data_block(struct di_cta_data_block *data_block)
 {
@@ -1681,6 +1793,12 @@ parse_vendor_specific_video_block(struct di_edid_cta *cta,
 	switch (oui) {
 	case IEEE_OUI_DOLBY:
 		*tag = DI_CTA_DATA_BLOCK_DOLBY_VIDEO;
+		break;
+	case IEEE_OUI_HDR10PLUS:
+		*tag = DI_CTA_DATA_BLOCK_HDR10PLUS;
+		if (!parse_hdr10plus_block(cta, &data_block->hdr10plus,
+					   data, size))
+			goto skip;
 		break;
 	default:
 		goto skip;
@@ -2163,6 +2281,15 @@ di_cta_data_block_get_did_type_vii_timing(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return &block->did_vii_timing.base;
+}
+
+const struct di_cta_hdr10plus_block *
+di_cta_data_block_get_hdr10plus(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_HDR10PLUS) {
+		return NULL;
+	}
+	return &block->hdr10plus;
 }
 
 const struct di_edid_detailed_timing_def *const *

@@ -227,6 +227,8 @@ struct di_cta_data_block {
 	struct di_cta_video_format_pref_priv video_format_pref;
 	/* Used for DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII */
 	struct di_cta_type_vii_timing_priv did_vii_timing;
+	/* Used for DI_CTA_DATA_BLOCK_HDR10PLUS */
+	struct di_cta_hdr10plus_block hdr10plus;
 };
 
 extern const struct di_cta_video_format _di_cta_video_formats[];

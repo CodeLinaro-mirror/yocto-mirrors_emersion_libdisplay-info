@@ -48,21 +48,15 @@
    HDR Static Metadata Data Block:
      Electro optical transfer functions:
        Traditional gamma - SDR luminance range
-@@ -120,13 +86,8 @@
+@@ -120,7 +86,6 @@
        Static metadata type 1
      Desired content max luminance: 96 (400.000 cd/m^2)
      Desired content max frame-average luminance: 75 (253.810 cd/m^2)
 -    Desired content min luminance: 0 (0.000 cd/m^2)
    YCbCr 4:2:0 Capability Map Data Block:
      VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
--  Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B:
--    Application Version: 1
--    Full Frame Peak Luminance Index: 2
--    Peak Luminance Index: 3
-   Detailed Timing Descriptors:
-     DTD 2:  2560x1440   59.950550 Hz  16:9     88.787 kHz    241.500000 MHz (598 mm x 336 mm)
-                  Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -134,21 +95,8 @@
+   Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B:
+@@ -134,21 +99,8 @@
      DTD 3:  2560x1440  119.997589 Hz  16:9    182.996 kHz    497.750000 MHz (598 mm x 336 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
                   Vfront    3 Vsync   5 Vback   77 Vpol N
