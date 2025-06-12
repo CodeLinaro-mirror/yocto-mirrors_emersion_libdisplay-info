@@ -17,6 +17,7 @@ test_cases = [
 	'dell-2408wfp-dp',
 	'goldstar-e2441',
 	'goldstar-ite6604-hdmi',
+	'goldstar-37lg5000',
 	'hp-5dq99aa-hdmi',
 	'lenovo-t27p10',
 	'msi-mag321curv-dp',
