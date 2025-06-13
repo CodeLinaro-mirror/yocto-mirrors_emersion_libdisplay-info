@@ -1122,35 +1122,52 @@ parse_byte_descriptor(struct di_edid *edid,
 	return true;
 }
 
+static const char *
+ext_tag_name(enum di_edid_ext_tag tag)
+{
+	switch (tag) {
+	case DI_EDID_EXT_CEA:
+		return "CTA-861 Extension Block";
+	case DI_EDID_EXT_VTB:
+		return "Video Timing Extension Block";
+	case DI_EDID_EXT_DI:
+		return "Display Information Extension Block";
+	case DI_EDID_EXT_LS:
+		return "Localized String Extension Block";
+	case DI_EDID_EXT_DPVL:
+		return "Digital Packet Video Link Extension";
+	case DI_EDID_EXT_BLOCK_MAP:
+		return "Block Map Extension Block";
+	case DI_EDID_EXT_VENDOR:
+		return "Manufacturer-Specific Extension Block";
+	case DI_EDID_EXT_DISPLAYID:
+		return "DisplayID Extension Block";
+	}
+	return "Unknown Extension Block";
+}
+
 static bool
 parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 {
 	struct di_edid_ext *ext;
-	uint8_t tag;
 	struct di_logger logger;
 	char section_name[64];
-
-	if (!validate_block_checksum(data)) {
-		add_failure(edid, "Invalid extension checksum.");
-		return true;
-	}
 
 	ext = calloc(1, sizeof(*ext));
 	if (!ext) {
 		return false;
 	}
+	ext->tag = data[0x00];
 
-	tag = data[0x00];
-	switch (tag) {
+	snprintf(section_name, sizeof(section_name), "Block %zu, %s",
+		 edid->exts_len + 1, ext_tag_name(ext->tag));
+	logger = (struct di_logger) {
+		.f = edid->logger->f,
+		.section = section_name,
+	};
+
+	switch (ext->tag) {
 	case DI_EDID_EXT_CEA:
-		snprintf(section_name, sizeof(section_name),
-			 "Block %zu, CTA-861 Extension Block",
-			 edid->exts_len + 1);
-		logger = (struct di_logger) {
-			.f = edid->logger->f,
-			.section = section_name,
-		};
-
 		if (!_di_edid_cta_parse(&ext->cta, data, EDID_BLOCK_SIZE, &logger)) {
 			free(ext);
 			return errno == EINVAL;
@@ -1165,14 +1182,6 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 		/* Supported */
 		break;
 	case DI_EDID_EXT_DISPLAYID:
-		snprintf(section_name, sizeof(section_name),
-			 "Block %zu, DisplayID Extension Block",
-			 edid->exts_len + 1);
-		logger = (struct di_logger) {
-			.f = edid->logger->f,
-			.section = section_name,
-		};
-
 		if (!_di_displayid_parse(&ext->displayid, &data[1],
 					 EDID_BLOCK_SIZE - 2, &logger)) {
 			free(ext);
@@ -1186,7 +1195,9 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 		return true;
 	}
 
-	ext->tag = tag;
+	if (!validate_block_checksum(data))
+		_di_logger_add_failure(&logger, "Invalid extension checksum.");
+
 	assert(edid->exts_len < EDID_MAX_BLOCK_COUNT - 1);
 	edid->exts[edid->exts_len++] = ext;
 	return true;
