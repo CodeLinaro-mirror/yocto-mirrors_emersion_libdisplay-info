@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
 import os
-import subprocess
 import sys
+import pdfplumber
 
 if len(sys.argv) != 2:
-    print("usage: gen-cta-vic.py <CTA-861-H PDF>", file=sys.stderr)
+    print("usage: gen-cta-vic.py <CTA-861-I PDF>", file=sys.stderr)
     sys.exit(1)
 in_path = sys.argv[1]
 in_basename = os.path.basename(in_path)
@@ -13,41 +13,24 @@ in_basename = os.path.basename(in_path)
 tool_dir = os.path.dirname(os.path.realpath(__file__))
 out_path = tool_dir + "/../cta-vic-table.c"
 
-# Page numbers for CTA-861-H
+# Page numbers for CTA-861-I
 pages = {
-    "timing": (41, 43),
-    "sync": (44, 46),
-    "aspect_ratio": (55, 58),
+    "timing": (42, 45),
+    "aspect_ratio": (54, 57),
 }
 
-def extract_pages(page_range):
-    pages = []
-    page = ""
-    cmd = ["pdftotext", "-f", str(page_range[0]), "-l", str(page_range[1]), "-layout", in_path, "-"]
-    for l in subprocess.check_output(cmd, text=True):
-        if l.startswith("\f"):
-            pages.append(page)
-            page = l[1:]
-        else:
-            page += l
-    return pages
-
-def extract_table(page):
-    lines = [l.strip() for l in page.splitlines()]
+def extract_rows(pdf, page_range):
+    (first, last) = page_range
     rows = []
-    for l in lines:
-        fields = [field.strip() for field in l.split("  ") if field != ""]
-        rows.append(fields)
+    for page in pdf.pages:
+        if page.page_number < first or page.page_number > last:
+            continue
+        table = page.extract_table()
+        rows += table[1:] # strip header
     return rows
 
 def parse_vic_list(s):
     return [int(vic.strip()) for vic in s.split(",")]
-
-def parse_hactive(s):
-    # Some hactive pixel values have a footnote marker
-    if s == "14402" or s == "28802":
-        s = s[:-1]
-    return int(s)
 
 def parse_interlaced(s):
     if s == "Prog":
@@ -57,20 +40,6 @@ def parse_interlaced(s):
     else:
         assert(False)
 
-def parse_timing_table(page, format_table):
-    assert("Table 1 - Video Format Timings — Detailed Timing Information" in page)
-
-    for fields in extract_table(page):
-        if len(fields) != 11 or fields[0] == "VIC":
-            continue
-        for vic in parse_vic_list(fields[0]):
-            format_table[vic] = {
-                "h_active": parse_hactive(fields[1]),
-                "v_active": int(fields[2]),
-                "interlaced": parse_interlaced(fields[3]),
-                "pixel_clock_hz": int(float(fields[10]) * 1000 * 1000),
-            }
-
 def parse_polarity(pol):
     if pol == "P":
         return "POSITIVE"
@@ -79,44 +48,47 @@ def parse_polarity(pol):
     else:
         assert(False)
 
-def parse_sync_table(page, format_table):
-    assert("Table 2 - Video Format Timings — Detailed Sync Information" in page)
+pages_list = []
+for type, (first, last) in pages.items():
+    pages_list += list(range(first, last + 1))
 
-    for fields in extract_table(page):
-        if len(fields) < 12:
-            continue
-        for vic in parse_vic_list(fields[0]):
-            fmt = format_table[vic]
-            fmt["h_front"] = int(fields[2])
-            fmt["h_sync"] = int(fields[3])
-            fmt["h_back"] = int(fields[4])
-            fmt["h_sync_polarity"] = "DI_CTA_VIC_VIDEO_FORMAT_SYNC_" + parse_polarity(fields[5])
-            fmt["v_front"] = int(fields[6])
-            fmt["v_sync"] = int(fields[7])
-            fmt["v_back"] = int(fields[8])
-            fmt["v_sync_polarity"] = "DI_CTA_VIC_VIDEO_FORMAT_SYNC_" + parse_polarity(fields[9])
-
-def parse_aspect_ratio_table(page, format_table):
-    assert("Table 3 - Video Formats — Video ID Code and Aspect Ratios" in page)
-
-    for fields in extract_table(page):
-        if len(fields) != 5:
-            continue
-        vic = int(fields[0])
-        fmt = format_table[vic]
-        pic_ar = fields[3]
-        if pic_ar == "64:276":
-            # 64:27 has a footnote
-            pic_ar = pic_ar[:-1]
-        fmt["picture_aspect_ratio"] = "DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_" + pic_ar.replace(":", "_")
+with pdfplumber.open(in_path, pages=pages_list) as pdf:
+    timing_rows = extract_rows(pdf, pages["timing"])
+    aspect_ratio_rows = extract_rows(pdf, pages["aspect_ratio"])
 
 format_table = {}
-for page in extract_pages(pages["timing"]):
-    parse_timing_table(page, format_table)
-for page in extract_pages(pages["sync"]):
-    parse_sync_table(page, format_table)
-for page in extract_pages(pages["aspect_ratio"]):
-    parse_aspect_ratio_table(page, format_table)
+for row in timing_rows:
+    if not row[1]:
+        continue
+    for vic in parse_vic_list(row[1]):
+        # Note, some values have a footnote marker
+        format_table[vic] = {
+            "h_active": int(row[3].rstrip("b")),
+            "v_active": int(row[4]),
+            "interlaced": parse_interlaced(row[5]),
+            "pixel_clock_hz": int(float(row[20]) * 1000 * 1000),
+            "h_front": int(row[8]),
+            "h_sync": int(row[9]),
+            "h_back": int(row[10]),
+            "h_sync_polarity": "DI_CTA_VIC_VIDEO_FORMAT_SYNC_" + parse_polarity(row[11]),
+            "v_front": int(row[14]),
+            "v_sync": int(row[15]),
+            "v_back": int(row[16]),
+            "v_sync_polarity": "DI_CTA_VIC_VIDEO_FORMAT_SYNC_" + parse_polarity(row[17]),
+        }
+
+for row in aspect_ratio_rows:
+    if len(row) == 15:
+        # last two pages are extracted differently by pdfplumber due to
+        # grayed-out rows ("Forbidden" and "Reserved for the Future")
+        row = [row[0], row[3], row[6], row[9], row[12]]
+    if not row[3]:
+        continue
+    vic = int(row[0])
+    fmt = format_table[vic]
+    # Note, some values have a footnote marker
+    pic_ar = row[3].rstrip("f").replace(":", "_")
+    fmt["picture_aspect_ratio"] = "DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_" + pic_ar
 
 max_vic = 0
 for vic in format_table:
@@ -124,9 +96,7 @@ for vic in format_table:
         max_vic = vic
 
 # Sanity check
-for vic in format_table:
-    fmt = format_table[vic]
-    assert("h_sync" in fmt)
+for vic, fmt in format_table.items():
     assert("picture_aspect_ratio" in fmt)
 
 with open(out_path, "w+") as f:
