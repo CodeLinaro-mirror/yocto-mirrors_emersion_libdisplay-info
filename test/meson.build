@@ -27,6 +27,7 @@ test_cases = [
 	'viewsonic-vp2768-dp',
 	'cvt',
 	'philips-ftv-490',
+	'samsung-odyssey-g60sd',
 	'samsung-q800t-hdmi2.0',
 	'cta-timings',
 	'hitachi-55r6+',
