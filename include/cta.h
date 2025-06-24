@@ -205,7 +205,7 @@ struct di_cta_dolby_video_block_priv {
 
 struct di_cta_vendor_hdmi_forum_block_priv {
 	struct di_cta_vendor_hdmi_forum_block base;
-	struct di_cta_vendor_hdmi_forum_dsc dsc;
+	struct di_cta_hdmi_dsc dsc;
 };
 
 struct di_cta_data_block {

@@ -1407,50 +1407,50 @@ di_cta_data_block_get_vendor_hdmi(const struct di_cta_data_block *block);
 /**
  * Fixed Rate Link (FRL) support.
  */
-enum di_cta_vendor_hdmi_forum_frl {
+enum di_cta_hdmi_frl {
 	/* Fixed Rate Link is not supported */
-	DI_CTA_VENDOR_HDMI_FORUM_FRL_UNSUPPORTED = 0,
+	DI_CTA_HDMI_FRL_UNSUPPORTED = 0,
 	/* 3 Gbit/s per lane on 3 lanes */
-	DI_CTA_VENDOR_HDMI_FORUM_FRL_3GBPS_3LANES = 1,
+	DI_CTA_HDMI_FRL_3GBPS_3LANES = 1,
 	/* 6 Gbit/s & 3 Gbit/s per lane on 3 lanes */
-	DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_3LANES = 2,
+	DI_CTA_HDMI_FRL_6GBPS_3LANES = 2,
 	/* 6 Gbit/s per lane on 4 lanes,
 	 * 6 Gbit/s & 3 Gbit/s per lane on 3 lanes */
-	DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_4LANES = 3,
+	DI_CTA_HDMI_FRL_6GBPS_4LANES = 3,
 	/* 8 Gbit/s & 6 Gbit/s per lane on 4 lanes,
 	 * 6 Gbit/s & 3 Gbit/s per lane on 3 lanes */
-	DI_CTA_VENDOR_HDMI_FORUM_FRL_8GBPS_4LANES = 4,
+	DI_CTA_HDMI_FRL_8GBPS_4LANES = 4,
 	/* 10 Gbit/s & 8 Gbit/s & 6 Gbit/s per lane on 4 lanes,
 	 * 6 Gbit/s & 3 Gbit/s per lane on 3 lanes */
-	DI_CTA_VENDOR_HDMI_FORUM_FRL_10GBPS_4LANES = 5,
+	DI_CTA_HDMI_FRL_10GBPS_4LANES = 5,
 	/* 12 Gbit/s & 10 Gbit/s & 8 Gbit/s & 6 Gbit/s per lane on 4 lanes,
 	 * 6 Gbit/s & 3 Gbit/s per lane on 3 lanes */
-	DI_CTA_VENDOR_HDMI_FORUM_FRL_12GBPS_4LANES = 6,
+	DI_CTA_HDMI_FRL_12GBPS_4LANES = 6,
 };
 
-enum di_cta_vendor_hdmi_forum_dsc_max_slices {
+enum di_cta_hdmi_dsc_max_slices {
 	/* DSC is not supported */
-	DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_UNSUPPORTED = 0,
+	DI_CTA_HDMI_DSC_MAX_SLICES_UNSUPPORTED = 0,
 	/* up to 1 slice, up to 340 MHz/KSliceAdjust */
-	DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_1_340MHZ = 1,
+	DI_CTA_HDMI_DSC_MAX_SLICES_1_340MHZ = 1,
 	/* up to 2 slice, up to 340 MHz/KSliceAdjust */
-	DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_2_340MHZ = 2,
+	DI_CTA_HDMI_DSC_MAX_SLICES_2_340MHZ = 2,
 	/* up to 4 slice, up to 340 MHz/KSliceAdjust */
-	DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_4_340MHZ = 3,
+	DI_CTA_HDMI_DSC_MAX_SLICES_4_340MHZ = 3,
 	/* up to 8 slice, up to 340 MHz/KSliceAdjust */
-	DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_8_340MHZ = 4,
+	DI_CTA_HDMI_DSC_MAX_SLICES_8_340MHZ = 4,
 	/* up to 8 slice, up to 400 MHz/KSliceAdjust */
-	DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_8_400MHZ = 5,
+	DI_CTA_HDMI_DSC_MAX_SLICES_8_400MHZ = 5,
 	/* up to 12 slice, up to 400 MHz/KSliceAdjust */
-	DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_12_400MHZ = 6,
+	DI_CTA_HDMI_DSC_MAX_SLICES_12_400MHZ = 6,
 	/* up to 16 slice, up to 400 MHz/KSliceAdjust */
-	DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_16_400MHZ = 7,
+	DI_CTA_HDMI_DSC_MAX_SLICES_16_400MHZ = 7,
 };
 
 /**
  * Display Stream Compression (DSC) support.
  */
-struct di_cta_vendor_hdmi_forum_dsc {
+struct di_cta_hdmi_dsc {
 	/* Supports Display Stream Compression for 10bpc */
 	bool supports_10bpc;
 	/* Supports Display Stream Compression for 12bpc */
@@ -1460,20 +1460,21 @@ struct di_cta_vendor_hdmi_forum_dsc {
 	/* Supports Display Stream Compression for 4:2:0 pixel encodings */
 	bool supports_native_420;
 	/* Maximum number of horizontal slices */
-	enum di_cta_vendor_hdmi_forum_dsc_max_slices max_slices;
+	enum di_cta_hdmi_dsc_max_slices max_slices;
 	/* Maximum FRL_Rate for DSC */
-	enum di_cta_vendor_hdmi_forum_frl max_frl_rate;
+	enum di_cta_hdmi_frl max_frl_rate;
 	/* Maximum total number of bytes in a line of chunks, zero if
 	 * unsupported */
 	int max_total_chunk_bytes;
 };
 
 /**
- * HDMI Forum vendor-specific data block.
+ * HDMI Sink Capability Data Structure (SCDS).
  *
- * This block is defined in HDMI 2.1 section 10.3.2.
+ * This data is exposed via HDMI Forum Vendor-Specific Data Block (HF-VSDB) or
+ * the HDMI Forum Sink Capability Data Block (HF-SCDB).
  */
-struct di_cta_vendor_hdmi_forum_block {
+struct di_cta_hdmi_scds {
 	/* Version */
 	int version;
 	/* Maximum TMDS character rate in MHz, zero if TMDS Character Rates <= 340 Mcsc */
@@ -1503,7 +1504,7 @@ struct di_cta_vendor_hdmi_forum_block {
 	/* Supports CTA-861-I VIC indication in the AVI InfoFrame in all cases */
 	bool supports_uhd_vic;
 	/* Fixed Rate Link (FRL) support */
-	enum di_cta_vendor_hdmi_forum_frl max_frl_rate;
+	enum di_cta_hdmi_frl max_frl_rate;
 	/* Supports FAPA beginning on the first horizontal Blank Pixel
 	 * immediately following the first Active Video Pixel of a video
 	 * frame/field */
@@ -1536,7 +1537,17 @@ struct di_cta_vendor_hdmi_forum_block {
 	bool qms_tfr_max;
 	/* Display Stream Compression (DSC) support, NULL if VESA DSC 1.2a is
 	 * unsupported */
-	const struct di_cta_vendor_hdmi_forum_dsc *dsc;
+	const struct di_cta_hdmi_dsc *dsc;
+};
+
+/**
+ * HDMI Forum vendor-specific data block (HF-VSDB).
+ *
+ * This block is defined in HDMI 2.1 section 10.3.2.
+ */
+struct di_cta_vendor_hdmi_forum_block {
+	/* The content of a HF-VSDB is a HDMI SCDS. */
+	struct di_cta_hdmi_scds scds;
 };
 
 /**

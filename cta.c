@@ -309,14 +309,11 @@ parse_vendor_hdmi_block(struct di_edid_cta *cta,
 }
 
 static bool
-parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
-			      struct di_cta_vendor_hdmi_forum_block_priv *priv,
-			      const uint8_t *data, size_t size)
+parse_hdmi_scds(struct di_edid_cta *cta, struct di_cta_hdmi_scds *scds,
+		struct di_cta_hdmi_dsc *dsc, const uint8_t *data, size_t size,
+		const char *block_name)
 {
 	const ssize_t offset = -1; /* Spec gives offset relative to header */
-	const char block_name[] = "Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8";
-	struct di_cta_vendor_hdmi_forum_block *block = &priv->base;
-	struct di_cta_vendor_hdmi_forum_dsc *dsc = &priv->dsc;
 	uint8_t max_frl_rate;
 	uint8_t max_slices;
 	size_t i;
@@ -326,39 +323,39 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 		return false;
 	}
 
-	block->version = data[4 + offset];
-	if (block->version != 1) {
-		add_failure(cta, "%s: Unsupported version %d.", block_name, block->version);
+	scds->version = data[4 + offset];
+	if (scds->version != 1) {
+		add_failure(cta, "%s: Unsupported version %d.", block_name, scds->version);
 		return false;
 	}
 
-	block->max_tmds_char_rate_mhz = 5 * data[5 + offset];
-	if (block->max_tmds_char_rate_mhz != 0 && block->max_tmds_char_rate_mhz <= 340)
+	scds->max_tmds_char_rate_mhz = 5 * data[5 + offset];
+	if (scds->max_tmds_char_rate_mhz != 0 && scds->max_tmds_char_rate_mhz <= 340)
 		add_failure(cta, "%s: Max TMDS rate is != 0 and <= 340.", block_name);
 
-	block->supports_3d_osd_disparity = has_bit(data[6 + offset], 0);
-	block->supports_3d_dual_view = has_bit(data[6 + offset], 1);
-	block->supports_3d_independent_view = has_bit(data[6 + offset], 2);
-	block->supports_lte_340mcsc_scramble = has_bit(data[6 + offset], 3);
-	block->supports_ccbpci = has_bit(data[6 + offset], 4);
-	block->supports_cable_status = has_bit(data[6 + offset], 5);
-	block->supports_scdc_read_request = has_bit(data[6 + offset], 6);
-	block->supports_scdc = has_bit(data[6 + offset], 7);
-	block->supports_dc_30bit_420 = has_bit(data[7 + offset], 0);
-	block->supports_dc_36bit_420 = has_bit(data[7 + offset], 1);
-	block->supports_dc_48bit_420 = has_bit(data[7 + offset], 2);
-	block->supports_uhd_vic = has_bit(data[7 + offset], 3);
+	scds->supports_3d_osd_disparity = has_bit(data[6 + offset], 0);
+	scds->supports_3d_dual_view = has_bit(data[6 + offset], 1);
+	scds->supports_3d_independent_view = has_bit(data[6 + offset], 2);
+	scds->supports_lte_340mcsc_scramble = has_bit(data[6 + offset], 3);
+	scds->supports_ccbpci = has_bit(data[6 + offset], 4);
+	scds->supports_cable_status = has_bit(data[6 + offset], 5);
+	scds->supports_scdc_read_request = has_bit(data[6 + offset], 6);
+	scds->supports_scdc = has_bit(data[6 + offset], 7);
+	scds->supports_dc_30bit_420 = has_bit(data[7 + offset], 0);
+	scds->supports_dc_36bit_420 = has_bit(data[7 + offset], 1);
+	scds->supports_dc_48bit_420 = has_bit(data[7 + offset], 2);
+	scds->supports_uhd_vic = has_bit(data[7 + offset], 3);
 
 	max_frl_rate = get_bit_range(data[7 + offset], 7, 4);
 	switch (max_frl_rate) {
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_UNSUPPORTED:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_3GBPS_3LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_3LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_4LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_8GBPS_4LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_10GBPS_4LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_12GBPS_4LANES:
-		block->max_frl_rate = max_frl_rate;
+	case DI_CTA_HDMI_FRL_UNSUPPORTED:
+	case DI_CTA_HDMI_FRL_3GBPS_3LANES:
+	case DI_CTA_HDMI_FRL_6GBPS_3LANES:
+	case DI_CTA_HDMI_FRL_6GBPS_4LANES:
+	case DI_CTA_HDMI_FRL_8GBPS_4LANES:
+	case DI_CTA_HDMI_FRL_10GBPS_4LANES:
+	case DI_CTA_HDMI_FRL_12GBPS_4LANES:
+		scds->max_frl_rate = max_frl_rate;
 		break;
 	default:
 		add_failure(cta, "%s: Unknown Max Fixed Rate Link (0x%02x).",
@@ -366,13 +363,13 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 		break;
 	}
 
-	if (max_frl_rate == DI_CTA_VENDOR_HDMI_FORUM_FRL_3GBPS_3LANES &&
-	    block->max_tmds_char_rate_mhz < 300) {
+	if (max_frl_rate == DI_CTA_HDMI_FRL_3GBPS_3LANES &&
+	    scds->max_tmds_char_rate_mhz < 300) {
 		add_failure(cta, "%s: Max Fixed Rate Link is 1, but Max TMDS rate < 300.",
 			    block_name);
 	}
-	if (max_frl_rate >= DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_3LANES &&
-	    block->max_tmds_char_rate_mhz != 600) {
+	if (max_frl_rate >= DI_CTA_HDMI_FRL_6GBPS_3LANES &&
+	    scds->max_tmds_char_rate_mhz != 600) {
 		add_failure(cta, "%s: Max Fixed Rate Link is >= 2, but Max TMDS rate != 600.",
 			    block_name);
 	}
@@ -380,28 +377,28 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 	if (size < 8)
 		return true;
 
-	block->supports_fapa_start_location = has_bit(data[8 + offset], 0);
-	block->supports_allm = has_bit(data[8 + offset], 1);
-	block->supports_fva = has_bit(data[8 + offset], 2);
-	block->supports_neg_mvrr = has_bit(data[8 + offset], 3);
-	block->supports_cinema_vrr = has_bit(data[8 + offset], 4);
-	if (block->supports_cinema_vrr)
+	scds->supports_fapa_start_location = has_bit(data[8 + offset], 0);
+	scds->supports_allm = has_bit(data[8 + offset], 1);
+	scds->supports_fva = has_bit(data[8 + offset], 2);
+	scds->supports_neg_mvrr = has_bit(data[8 + offset], 3);
+	scds->supports_cinema_vrr = has_bit(data[8 + offset], 4);
+	if (scds->supports_cinema_vrr)
 		add_failure(cta, "%s: CinemaVRR is deprecated and must be cleared.", block_name);
-	block->m_delta = has_bit(data[8 + offset], 5);
-	block->supports_qms = has_bit(data[8 + offset], 6);
-	block->supports_fapa_end_extended = has_bit(data[8 + offset], 7);
+	scds->m_delta = has_bit(data[8 + offset], 5);
+	scds->supports_qms = has_bit(data[8 + offset], 6);
+	scds->supports_fapa_end_extended = has_bit(data[8 + offset], 7);
 
 	if (size < 10)
 		return true;
 
-	block->vrr_min_hz = get_bit_range(data[9 + offset], 5, 0);
-	block->vrr_max_hz = (get_bit_range(data[9 + offset], 7, 6) << 8) | data[10 + offset];
+	scds->vrr_min_hz = get_bit_range(data[9 + offset], 5, 0);
+	scds->vrr_max_hz = (get_bit_range(data[9 + offset], 7, 6) << 8) | data[10 + offset];
 
-	if (block->vrr_min_hz > 48)
+	if (scds->vrr_min_hz > 48)
 		add_failure(cta, "%s: VRRmin > 48.", block_name);
-	if (block->vrr_min_hz == 0 && block->vrr_max_hz != 0)
+	if (scds->vrr_min_hz == 0 && scds->vrr_max_hz != 0)
 		add_failure(cta, "%s: VRRmin == 0, but VRRmax isn't.", block_name);
-	if (block->vrr_max_hz < 100)
+	if (scds->vrr_max_hz < 100)
 		add_failure(cta, "%s: VRRmax < 100.", block_name);
 
 	if (size < 13)
@@ -411,12 +408,12 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 	dsc->supports_12bpc = has_bit(data[11 + offset], 1);
 	dsc->supports_all_bpc = has_bit(data[11 + offset], 3);
 
-	block->qms_tfr_min = has_bit(data[11 + offset], 4);
-	block->qms_tfr_max = has_bit(data[11 + offset], 5);
+	scds->qms_tfr_min = has_bit(data[11 + offset], 4);
+	scds->qms_tfr_max = has_bit(data[11 + offset], 5);
 
-	if (block->qms_tfr_min && !block->supports_qms)
+	if (scds->qms_tfr_min && !scds->supports_qms)
 		add_failure(cta, "%s: QMS_TFR_min is set but QMS is not.", block_name);
-	if (block->qms_tfr_max && !block->supports_qms)
+	if (scds->qms_tfr_max && !scds->supports_qms)
 		add_failure(cta, "%s: QMS_TFR_max is set but QMS is not.", block_name);
 
 	dsc->supports_native_420 = has_bit(data[11 + offset], 6);
@@ -427,14 +424,14 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 
 	max_slices = get_bit_range(data[12 + offset], 3, 0);
 	switch (max_slices) {
-	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_UNSUPPORTED:
-	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_1_340MHZ:
-	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_2_340MHZ:
-	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_4_340MHZ:
-	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_8_340MHZ:
-	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_8_400MHZ:
-	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_12_400MHZ:
-	case DI_CTA_VENDOR_HDMI_FORUM_DSC_MAX_SLICES_16_400MHZ:
+	case DI_CTA_HDMI_DSC_MAX_SLICES_UNSUPPORTED:
+	case DI_CTA_HDMI_DSC_MAX_SLICES_1_340MHZ:
+	case DI_CTA_HDMI_DSC_MAX_SLICES_2_340MHZ:
+	case DI_CTA_HDMI_DSC_MAX_SLICES_4_340MHZ:
+	case DI_CTA_HDMI_DSC_MAX_SLICES_8_340MHZ:
+	case DI_CTA_HDMI_DSC_MAX_SLICES_8_400MHZ:
+	case DI_CTA_HDMI_DSC_MAX_SLICES_12_400MHZ:
+	case DI_CTA_HDMI_DSC_MAX_SLICES_16_400MHZ:
 		dsc->max_slices = max_slices;
 		break;
 	default:
@@ -445,13 +442,13 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 
 	max_frl_rate = get_bit_range(data[12 + offset], 7, 4);
 	switch (max_frl_rate) {
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_UNSUPPORTED:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_3GBPS_3LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_3LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_6GBPS_4LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_8GBPS_4LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_10GBPS_4LANES:
-	case DI_CTA_VENDOR_HDMI_FORUM_FRL_12GBPS_4LANES:
+	case DI_CTA_HDMI_FRL_UNSUPPORTED:
+	case DI_CTA_HDMI_FRL_3GBPS_3LANES:
+	case DI_CTA_HDMI_FRL_6GBPS_3LANES:
+	case DI_CTA_HDMI_FRL_6GBPS_4LANES:
+	case DI_CTA_HDMI_FRL_8GBPS_4LANES:
+	case DI_CTA_HDMI_FRL_10GBPS_4LANES:
+	case DI_CTA_HDMI_FRL_12GBPS_4LANES:
 		dsc->max_frl_rate = max_frl_rate;
 		break;
 	default:
@@ -465,7 +462,7 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 		add_failure(cta, "%s: Bits 6 and 7 of byte 13 are reserved.", block_name);
 
 	if (has_bit(data[11 + offset], 7))
-		block->dsc = dsc;
+		scds->dsc = dsc;
 	else if (data[11 + offset] != 0 || data[12 + offset] != 0 || data[13 + offset] != 0) {
 		add_failure(cta, "%s: DSC_1p2 is unset but DSC bits are not zero.", block_name);
 	}
@@ -476,6 +473,21 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 	}
 
 	return true;
+}
+
+static bool
+parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
+			      struct di_cta_vendor_hdmi_forum_block_priv *priv,
+			      const uint8_t *data, size_t size)
+{
+	struct di_cta_vendor_hdmi_forum_block *block = &priv->base;
+	struct di_cta_hdmi_scds *scds = &block->scds;
+	struct di_cta_hdmi_dsc *dsc = &priv->dsc;
+	const char *block_name;
+
+	block_name = "Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8";
+
+	return parse_hdmi_scds(cta, scds, dsc, data, size, block_name);
 }
 
 static bool
