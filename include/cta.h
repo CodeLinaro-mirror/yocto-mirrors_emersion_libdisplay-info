@@ -208,6 +208,11 @@ struct di_cta_vendor_hdmi_forum_block_priv {
 	struct di_cta_hdmi_dsc dsc;
 };
 
+struct di_cta_hdmi_forum_sink_cap_priv {
+	struct di_cta_hdmi_forum_sink_cap base;
+	struct di_cta_hdmi_dsc dsc;
+};
+
 struct di_cta_data_block {
 	enum di_cta_data_block_tag tag;
 
@@ -251,6 +256,8 @@ struct di_cta_data_block {
 	struct di_cta_hdr10plus_block hdr10plus;
 	/* Used for DI_CTA_DATA_BLOCK_DOLBY_VIDEO */
 	struct di_cta_dolby_video_block_priv dolby_video;
+	/* Used for DI_CTA_DATA_BLOCK_HDMI_SINK_CAP */
+	struct di_cta_hdmi_forum_sink_cap_priv hdmi_sink_cap;
 	/* Used for DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM */
 	struct di_cta_vendor_hdmi_forum_block_priv vendor_hdmi_forum;
 };

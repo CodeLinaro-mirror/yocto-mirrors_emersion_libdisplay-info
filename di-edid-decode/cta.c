@@ -1377,6 +1377,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_cta_vendor_hdmi_block *vendor_hdmi;
 	const struct di_cta_hdr10plus_block *hdr10plus;
 	const struct di_cta_dolby_video_block *dolby_video;
+	const struct di_cta_hdmi_forum_sink_cap *hdmi_sink_cap;
 	const struct di_cta_vendor_hdmi_forum_block *hdmi_forum;
 	size_t i;
 	int vtdb_index = 0;
@@ -1512,6 +1513,10 @@ print_cta(const struct di_edid_cta *cta)
 		case DI_CTA_DATA_BLOCK_DOLBY_VIDEO:
 			dolby_video = di_cta_data_block_get_dolby_video(data_block);
 			print_cta_dolby_video(dolby_video);
+			break;
+		case DI_CTA_DATA_BLOCK_HDMI_SINK_CAP:
+			hdmi_sink_cap = di_cta_data_block_get_hdmi_sink_cap(data_block);
+			print_cta_hdmi_scds(&hdmi_sink_cap->scds);
 			break;
 		case DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM:
 			hdmi_forum = di_cta_data_block_get_vendor_hdmi_forum(data_block);

@@ -491,6 +491,21 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 }
 
 static bool
+parse_hdmi_forum_sink_cap(struct di_edid_cta *cta,
+			  struct di_cta_hdmi_forum_sink_cap_priv *priv,
+			  const uint8_t *data, size_t size)
+{
+	struct di_cta_hdmi_forum_sink_cap *block = &priv->base;
+	struct di_cta_hdmi_scds *scds = &block->scds;
+	struct di_cta_hdmi_dsc *dsc = &priv->dsc;
+	const char *block_name;
+
+	block_name = "HDMI Forum Sink Capability Data Block";
+
+	return parse_hdmi_scds(cta, scds, dsc, data, size, block_name);
+}
+
+static bool
 parse_ycbcr420_block(struct di_edid_cta *cta,
 		     struct di_cta_ycbcr420_video_block_priv *ycbcr420,
 		     const uint8_t *data, size_t size)
@@ -2580,6 +2595,15 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 			break;
 		case 121:
 			tag = DI_CTA_DATA_BLOCK_HDMI_SINK_CAP;
+			/**
+			 * This expects data to include the extended tag. Let's
+			 * get back one byte.
+			 */
+			data -= sizeof(data[0]);
+			size++;
+			if (!parse_hdmi_forum_sink_cap(cta, &data_block->hdmi_sink_cap,
+						       data, size))
+				goto skip;
 			break;
 		case 1: /* Vendor-Specific Video Data Block */
 			if (!parse_vendor_specific_video_block(cta, &tag,
@@ -2953,6 +2977,15 @@ di_cta_data_block_get_vendor_hdmi(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return &block->vendor_hdmi.base;
+}
+
+const struct di_cta_hdmi_forum_sink_cap *
+di_cta_data_block_get_hdmi_sink_cap(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_HDMI_SINK_CAP) {
+		return NULL;
+	}
+	return &block->hdmi_sink_cap.base;
 }
 
 const struct di_cta_vendor_hdmi_forum_block *

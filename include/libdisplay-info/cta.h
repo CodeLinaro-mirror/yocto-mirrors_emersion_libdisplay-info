@@ -1561,6 +1561,25 @@ struct di_cta_vendor_hdmi_forum_block {
 const struct di_cta_vendor_hdmi_forum_block *
 di_cta_data_block_get_vendor_hdmi_forum(const struct di_cta_data_block *block);
 
+/**
+ * HDMI Forum Sink Capability Data Block (HF-SCDB).
+ *
+ * This block is defined in HDMI 2.1a
+ */
+struct di_cta_hdmi_forum_sink_cap {
+	/* The content of a HF-SCDB is a HDMI SCDS. */
+	struct di_cta_hdmi_scds scds;
+};
+
+/**
+ * Get the HDMI Forum Sink Capability (HF-SCDB) from a CTA data block.
+ *
+ * Returns NULL if the data block tag is not
+ * DI_CTA_DATA_BLOCK_HDMI_SINK_CAP.
+ */
+const struct di_cta_hdmi_forum_sink_cap *
+di_cta_data_block_get_hdmi_sink_cap(const struct di_cta_data_block *block);
+
 enum di_cta_svr_type {
 	/* reference contains a VIC */
 	DI_CTA_SVR_TYPE_VIC,

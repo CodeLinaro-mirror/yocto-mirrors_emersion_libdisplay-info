@@ -20,16 +20,10 @@
    Video Capability Data Block:
      YCbCr quantization: Selectable (via AVI YQ)
      RGB quantization: Selectable (via AVI Q)
-@@ -106,22 +95,9 @@
-     IT scan behavior: Supports both over- and underscan
-     CE scan behavior: Supports both over- and underscan
-   HDMI Forum Sink Capability Data Block:
--    Version: 1
--    Maximum TMDS Character Rate: 600 MHz
--    SCDC Present
--    Supports Auto Low-Latency Mode
--    VRRmin: 40 Hz
--    VRRmax: 60 Hz
+@@ -112,16 +101,9 @@
+     Supports Auto Low-Latency Mode
+     VRRmin: 40 Hz
+     VRRmax: 60 Hz
 -  Vendor-Specific Data Block (AMD), OUI 00-00-1A:
 -    Version: 1
 -    Feature Caps: 0x01
@@ -43,7 +37,7 @@
    Detailed Timing Descriptors:
      DTD 3:  1360x768    60.015162 Hz  85:48    47.712 kHz     85.500000 MHz (521 mm x 293 mm)
                   Hfront   64 Hsync 112 Hback  256 Hpol N
-@@ -129,35 +105,13 @@
+@@ -129,35 +111,14 @@
      DTD 4:   720x480    59.940060 Hz   3:2     31.469 kHz     27.000000 MHz (391 mm x 293 mm)
                   Hfront   16 Hsync  62 Hback   60 Hpol N
                   Vfront    9 Vsync   6 Vback   30 Vpol N
@@ -73,12 +67,12 @@
 -  Detailed Timing Descriptor #2: Mismatch of image size 521x293 mm vs display size 890x490 mm.
  Block 1, CTA-861 Extension Block:
 -  HDMI Forum Sink Capability Data Block: HDMI Forum SCDB did not immediately follow the HDMI VSDB.
--  HDMI Forum Sink Capability Data Block: VRRmax < 100.
++  Vendor-Specific Data Block (HDMI), OUI 00-0C-03: Extended Video Details flag but HDMI VIC list size 0
+   HDMI Forum Sink Capability Data Block: VRRmax < 100.
 -  Detailed Timing Descriptor #3: Mismatch of image size 521x293 mm vs display size 890x490 mm.
 -  Detailed Timing Descriptor #4: Mismatch of image size 391x293 mm vs display size 890x490 mm.
 -EDID:
 -  CTA-861: Native progressive timings are a mix of several resolutions.
 -
-+  Vendor-Specific Data Block (HDMI), OUI 00-0C-03: Extended Video Details flag but HDMI VIC list size 0
 +  Colorimetry Data Block: Reserved bits MD0-MD3 must be 0.
  EDID conformity: FAIL
