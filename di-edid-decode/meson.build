@@ -5,6 +5,7 @@ di_edid_decode = executable(
 		'displayid.c',
 		'edid.c',
 		'main.c',
+		'util.c',
 	],
 	dependencies: [di_dep, math],
 	install: true,

@@ -36,4 +36,7 @@ void
 print_displayid_type_i_ii_vii_timing(const struct di_displayid_type_i_ii_vii_timing *t,
 				  int indent, const char *prefix);
 
+void
+compute_aspect_ratio(int width, int height, int *horiz_ratio, int *vert_ratio);
+
 #endif
