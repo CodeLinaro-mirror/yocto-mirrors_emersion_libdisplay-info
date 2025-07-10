@@ -64,6 +64,32 @@ const struct di_cta_video_format *
 di_cta_video_format_from_vic(uint8_t vic);
 
 /**
+ * A HDMI video format, not to be confused with a CTA-861 video format.
+ */
+struct di_cta_hdmi_video_format {
+	/* Video Identification Code (VIC) */
+	uint8_t vic;
+	/* Horizontal/vertical active pixels/lines */
+	int32_t h_active, v_active;
+	/* Horizontal/vertical front porch */
+	int32_t h_front, v_front;
+	/* Horizontal/vertical sync pulse */
+	int32_t h_sync, v_sync;
+	/* Horizontal/vertical back porch */
+	int32_t h_back, v_back;
+	/* Pixel clock in Hz */
+	int64_t pixel_clock_hz;
+};
+
+/**
+ * Get a HDMI video format from a HDMI VIC.
+ *
+ * Returns NULL if the HDMI VIC is unknown.
+ */
+const struct di_cta_hdmi_video_format *
+di_cta_hdmi_video_format_from_hdmi_vic(uint8_t hdmi_vic);
+
+/**
  * EDID CTA-861 extension block.
  */
 struct di_edid_cta;
@@ -174,6 +200,8 @@ enum di_cta_data_block_tag {
 	/* HDMI Forum Sink Capability Data Block */
 	DI_CTA_DATA_BLOCK_HDMI_SINK_CAP,
 
+	/* HDMI Vendor-Specific Data Block */
+	DI_CTA_DATA_BLOCK_VENDOR_HDMI,
 	/* Dolby Video Vendor-Specific Data Block */
 	DI_CTA_DATA_BLOCK_DOLBY_VIDEO,
 	/* HDR10+ Video Vendor-Specific Data Block */
@@ -1303,6 +1331,76 @@ struct di_cta_type_vii_timing_block {
  */
 const struct di_cta_type_vii_timing_block *
 di_cta_data_block_get_did_type_vii_timing(const struct di_cta_data_block *block);
+
+/**
+ * HDMI vendor-specific data block.
+ *
+ * This block is defined in HDMI 1.4b section 8.3.2.
+ */
+struct di_cta_vendor_hdmi_block {
+	/* Source physical address */
+	uint16_t source_phys_addr;
+	/* Supports AI */
+	bool supports_ai;
+	/* Supports DC 48-bit */
+	bool supports_dc_48bit;
+	/* Supports DC 36-bit */
+	bool supports_dc_36bit;
+	/* Supports DC 30-bit */
+	bool supports_dc_30bit;
+	/* Supports DC Y444 */
+	bool supports_dc_y444;
+	/* Supports DVI dual */
+	bool supports_dvi_dual;
+	/* Max TMDS clock (MHz). Zero if the sink doesn't support TMDS clock
+	 * frequencies > 165MHz */
+	int max_tmds_clock;
+	/* Supports content type graphics */
+	bool supports_content_graphics;
+	/* Supports content type photo */
+	bool supports_content_photo;
+	/* Supports content type cinema */
+	bool supports_content_cinema;
+	/* Supports content type game */
+	bool supports_content_game;
+	/**
+	 * If !has_latency and !has_interlaced_latency, we have no latency
+	 * information at all.
+	 *
+	 * If only has_latency, video/audio latency fields are valid and
+	 * should be used for both progressive and interlaced video/audio
+	 * formats.
+	 *
+	 * If both are valid, it means that video_latency and audio_latency
+	 * should be used for progressive video/audio formats, and their
+	 * interlaced counterpart for interlaced formats.
+	 */
+	bool has_latency;
+	bool has_interlaced_latency;
+	/* Latency values (miliseconds). Invalid if zeroed or unsupported. */
+	bool supports_progressive_video;
+	bool supports_progressive_audio;
+	bool supports_interlaced_video;
+	bool supports_interlaced_audio;
+	int progressive_video_latency;
+	int progressive_audio_latency;
+	int interlaced_video_latency;
+	int interlaced_audio_latency;
+	/* HDMI VIC's. List may be empty. */
+	size_t vics_len;
+	const uint8_t *vics;
+};
+
+/**
+ * Get the vendor-specific HDMI information from a CTA data block.
+ *
+ * Note, the HDMI and HDMI Forum vendor-specific data blocks are different.
+ *
+ * Returns NULL if the data block tag is not
+ * DI_CTA_DATA_BLOCK_VENDOR_HDMI.
+ */
+const struct di_cta_vendor_hdmi_block *
+di_cta_data_block_get_vendor_hdmi(const struct di_cta_data_block *block);
 
 enum di_cta_svr_type {
 	/* reference contains a VIC */

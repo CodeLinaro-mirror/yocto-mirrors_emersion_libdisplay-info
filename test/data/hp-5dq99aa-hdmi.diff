@@ -1,18 +1,6 @@
 --- ref
 +++ di
-@@ -60,24 +60,12 @@
-     VIC  18:   720x576    50.000000 Hz  16:9     31.250 kHz     27.000000 MHz
-     VIC  17:   720x576    50.000000 Hz   4:3     31.250 kHz     27.000000 MHz
-     VIC   1:   640x480    59.940476 Hz   4:3     31.469 kHz     25.175000 MHz
--  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
--    Source physical address: 1.0.0.0
--    DC_36bit
--    DC_30bit
--    DC_Y444
--    Maximum TMDS clock: 310 MHz
-   Video Capability Data Block:
-     YCbCr quantization: No Data
-     RGB quantization: No Data
+@@ -72,12 +72,6 @@
      PT scan behavior: Always Underscanned
      IT scan behavior: Always Underscanned
      CE scan behavior: Supports both over- and underscan
@@ -25,7 +13,7 @@
    Colorimetry Data Block:
      BT2020cYCC
      BT2020YCC
-@@ -105,23 +93,12 @@
+@@ -105,23 +99,12 @@
      DTD 5:  1920x1080   74.972503 Hz  16:9     83.894 kHz    174.500000 MHz (597 mm x 339 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
                   Vfront    3 Vsync   5 Vback   31 Vpol N

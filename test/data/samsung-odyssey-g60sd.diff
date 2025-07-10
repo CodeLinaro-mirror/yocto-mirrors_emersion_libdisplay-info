@@ -8,17 +8,10 @@
    Video Data Block:
      VIC  16:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz
      VIC   4:  1280x720    60.000000 Hz  16:9     45.000 kHz     74.250000 MHz
-@@ -79,39 +78,6 @@
-   Colorimetry Data Block:
-     BT2020YCC
-     BT2020RGB
--  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
--    Source physical address: 1.0.0.0
--    Supports_AI
--    DC_36bit
--    DC_30bit
--    DC_Y444
--    Maximum TMDS clock: 340 MHz
+@@ -86,32 +85,6 @@
+     DC_30bit
+     DC_Y444
+     Maximum TMDS clock: 340 MHz
 -  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
 -    Version: 1
 -    Maximum TMDS Character Rate: 600 MHz
@@ -48,7 +41,7 @@
    HDR Static Metadata Data Block:
      Electro optical transfer functions:
        Traditional gamma - SDR luminance range
-@@ -120,7 +86,6 @@
+@@ -120,7 +93,6 @@
        Static metadata type 1
      Desired content max luminance: 96 (400.000 cd/m^2)
      Desired content max frame-average luminance: 75 (253.810 cd/m^2)
@@ -56,7 +49,7 @@
    YCbCr 4:2:0 Capability Map Data Block:
      VIC  97:  3840x2160   60.000000 Hz  16:9    135.000 kHz    594.000000 MHz
    Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B:
-@@ -134,21 +99,8 @@
+@@ -134,21 +106,8 @@
      DTD 3:  2560x1440  119.997589 Hz  16:9    182.996 kHz    497.750000 MHz (598 mm x 336 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
                   Vfront    3 Vsync   5 Vback   77 Vpol N

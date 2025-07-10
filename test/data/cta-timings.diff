@@ -9,20 +9,10 @@
  Checksum: 0x0c
  
  ----------------
-@@ -88,21 +86,6 @@
-       Max channels: 2
-       Supported sample rates (kHz): 48 44.1 32
-       Supported sample sizes (bits): 24 20 16
--  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
--    Source physical address: 1.0.0.0
--    Maximum TMDS clock: 300 MHz
--    Supported Content Types:
--      Graphics
--    Extended HDMI video details:
--      HDMI VICs:
--        HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
--        HDMI VIC 2:  3840x2160   25.000000 Hz  16:9     56.250 kHz    297.000000 MHz
--        HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
+@@ -98,11 +96,6 @@
+         HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
+         HDMI VIC 2:  3840x2160   25.000000 Hz  16:9     56.250 kHz    297.000000 MHz
+         HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
 -  Vendor-Specific Data Block (HDMI Forum), OUI C4-5D-D8:
 -    Version: 1
 -    Maximum TMDS Character Rate: 600 MHz
@@ -31,7 +21,7 @@
    Video Capability Data Block:
      YCbCr quantization: Selectable (via AVI YQ)
      RGB quantization: Selectable (via AVI Q)
-@@ -111,13 +94,12 @@
+@@ -111,13 +104,12 @@
      CE scan behavior: Always Underscanned
    Video Format Preference Data Block:
      VTDB   1
@@ -49,7 +39,7 @@
    YCbCr 4:2:0 Capability Map Data Block:
      VIC  96:  3840x2160   50.000000 Hz  16:9    112.500 kHz    594.000000 MHz
    YCbCr 4:2:0 Video Data Block:
-@@ -127,14 +109,9 @@
+@@ -127,14 +119,9 @@
                    Hfront    8 Hsync  32 Hback   40 Hpol P
                    Vfront   48 Vsync   8 Vback    6 Vpol N
    DisplayID Type VIII Video Timing Data Block:
@@ -64,7 +54,7 @@
    Detailed Timing Descriptors:
      DTD 2:  3840x2160   59.996625 Hz  16:9    133.312 kHz    533.250000 MHz (960 mm x 540 mm)
                   Hfront   48 Hsync  32 Hback   80 Hpol P
-@@ -152,15 +129,14 @@
+@@ -152,15 +139,14 @@
    Native detailed modes: 1
    Detailed Timing Descriptors:
      DTD 3:  1280x720    59.855126 Hz  16:9     44.772 kHz     74.500000 MHz (analog composite, sync-on-green, 960 mm x 540 mm)

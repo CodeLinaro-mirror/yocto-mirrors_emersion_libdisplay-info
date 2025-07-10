@@ -63,6 +63,7 @@ di_lib = library(
 		'dmt-table.c',
 		'edid.c',
 		'gtf.c',
+		'hdmi-vic-table.c',
 		'info.c',
 		'log.c',
 		'memory-stream.c',

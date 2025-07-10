@@ -1,27 +1,14 @@
 --- ref
 +++ di
-@@ -110,20 +110,6 @@
+@@ -110,7 +110,6 @@
    Colorimetry Data Block:
      xvYCC601
      xvYCC709
 -    Gamut Boundary Description Metadata Profile P0
--  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
--    Source physical address: 4.0.0.0
--    Supports_AI
--    DC_36bit
--    DC_30bit
--    DC_Y444
--    Maximum TMDS clock: 300 MHz
--    Extended HDMI video details:
--      HDMI VICs:
--        HDMI VIC 1:  3840x2160   30.000000 Hz  16:9     67.500 kHz    297.000000 MHz
--        HDMI VIC 2:  3840x2160   25.000000 Hz  16:9     56.250 kHz    297.000000 MHz
--        HDMI VIC 3:  3840x2160   24.000000 Hz  16:9     54.000 kHz    297.000000 MHz
--        HDMI VIC 4:  4096x2160   24.000000 Hz 256:135   54.000 kHz    297.000000 MHz
-   HDR Static Metadata Data Block:
-     Electro optical transfer functions:
-       Traditional gamma - SDR luminance range
-@@ -141,33 +127,19 @@
+   Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
+     Source physical address: 4.0.0.0
+     Supports_AI
+@@ -141,33 +140,19 @@
      Full Frame Peak Luminance Index: 0
      Peak Luminance Index: 0
    Detailed Timing Descriptors:

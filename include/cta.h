@@ -190,6 +190,12 @@ struct di_cta_type_vii_timing_priv {
 	struct di_displayid_type_i_ii_vii_timing timing;
 };
 
+struct di_cta_vendor_hdmi_block_priv {
+	struct di_cta_vendor_hdmi_block base;
+	/* HDMI VIC's. */
+	uint8_t *vics;
+};
+
 struct di_cta_dolby_video_block_priv {
 	struct di_cta_dolby_video_block base;
 	struct di_cta_dolby_video_block_v0 v0;
@@ -234,6 +240,8 @@ struct di_cta_data_block {
 	struct di_cta_video_format_pref_priv video_format_pref;
 	/* Used for DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII */
 	struct di_cta_type_vii_timing_priv did_vii_timing;
+	/* Used for DI_CTA_DATA_BLOCK_VENDOR_HDMI */
+	struct di_cta_vendor_hdmi_block_priv vendor_hdmi;
 	/* Used for DI_CTA_DATA_BLOCK_HDR10PLUS */
 	struct di_cta_hdr10plus_block hdr10plus;
 	/* Used for DI_CTA_DATA_BLOCK_DOLBY_VIDEO */
@@ -242,6 +250,9 @@ struct di_cta_data_block {
 
 extern const struct di_cta_video_format _di_cta_video_formats[];
 extern const size_t _di_cta_video_formats_len;
+
+extern const struct di_cta_hdmi_video_format _di_cta_hdmi_video_formats[];
+extern const size_t _di_cta_hdmi_video_formats_len;
 
 bool
 _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,

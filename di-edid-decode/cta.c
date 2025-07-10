@@ -5,6 +5,7 @@
 
 #include <libdisplay-info/cta.h>
 
+#include "bits.h"
 #include "di-edid-decode.h"
 
 static const char *
@@ -80,6 +81,40 @@ printf_cta_svds(const struct di_cta_svd *const *svds)
 
 	for (i = 0; svds[i] != NULL; i++)
 		printf_cta_svd(svds[i]);
+}
+
+static void
+print_cta_hdmi_vic(uint8_t hdmi_vic)
+{
+	const struct di_cta_hdmi_video_format *fmt;
+	int32_t h_blank, v_blank;
+	double refresh, h_freq_hz, pixel_clock_mhz, h_total, v_total;
+	int horiz_ratio, vert_ratio;
+
+	printf("    HDMI VIC %" PRIu8, hdmi_vic);
+
+	fmt = di_cta_hdmi_video_format_from_hdmi_vic(hdmi_vic);
+	if (fmt == NULL)
+		return;
+
+	compute_aspect_ratio(fmt->h_active, fmt->v_active, &horiz_ratio, &vert_ratio);
+
+	h_blank = fmt->h_front + fmt->h_sync + fmt->h_back;
+	v_blank = fmt->v_front + fmt->v_sync + fmt->v_back;
+	h_total = fmt->h_active + h_blank;
+
+	v_total = fmt->v_active + v_blank;
+
+	refresh = (double) fmt->pixel_clock_hz / (h_total * v_total);
+	h_freq_hz = (double) fmt->pixel_clock_hz / h_total;
+	pixel_clock_mhz = (double) fmt->pixel_clock_hz / (1000 * 1000);
+
+	printf(":");
+	printf(" %5dx%-5d", fmt->h_active, fmt->v_active);
+	printf(" %10.6f Hz", refresh);
+	/* Not part of the spec, but edid-decode prints the aspect ratio. */
+	printf(" %3u:%-3u", horiz_ratio, vert_ratio);
+	printf(" %8.3f kHz %13.6f MHz", h_freq_hz / 1000, pixel_clock_mhz);
 }
 
 static const char *
@@ -817,6 +852,87 @@ print_hdmi_audio(const struct di_cta_hdmi_audio_block *hdmi_audio)
 	print_speaker_alloc (&audio_3d->speakers, "      ");
 }
 
+static void
+print_hdmi_latency(const char *type, bool supported, int latency)
+{
+	if (!supported) {
+		printf("    %s latency: %s not supported\n", type, type);
+		return;
+	}
+
+	if (latency == 0) {
+		printf("    %s latency: invalid or unknown\n", type);
+		return;
+	}
+
+	printf("    %s latency: %u ms\n", type, latency);
+}
+
+static void
+print_cta_hdmi(const struct di_cta_vendor_hdmi_block *hdmi)
+{
+	unsigned int i;
+
+	printf("    Source physical address: %x.%x.%x.%x\n",
+	       get_bit_range((uint8_t) (hdmi->source_phys_addr >> 8), 7, 4),
+	       get_bit_range((uint8_t) (hdmi->source_phys_addr >> 8), 3, 0),
+	       get_bit_range((uint8_t) (hdmi->source_phys_addr & 0xff), 7, 4),
+	       get_bit_range((uint8_t) (hdmi->source_phys_addr & 0xff), 3, 0));
+
+	if (hdmi->supports_ai)
+		printf("    Supports_AI\n");
+	if (hdmi->supports_dc_48bit)
+		printf("    DC_48bit\n");
+	if (hdmi->supports_dc_36bit)
+		printf("    DC_36bit\n");
+	if (hdmi->supports_dc_30bit)
+		printf("    DC_30bit\n");
+	if (hdmi->supports_dc_y444)
+		printf("    DC_Y444\n");
+	if (hdmi->supports_dvi_dual)
+		printf("    DVI_Dual\n");
+
+	if (hdmi->max_tmds_clock > 0)
+		printf("    Maximum TMDS clock: %u MHz\n", hdmi->max_tmds_clock);
+
+	if (hdmi->supports_content_graphics || hdmi->supports_content_photo ||
+	    hdmi->supports_content_cinema || hdmi->supports_content_game) {
+		printf("    Supported Content Types:\n");
+		if (hdmi->supports_content_graphics)
+			printf("      Graphics\n");
+		if (hdmi->supports_content_photo)
+			printf("      Photo\n");
+		if (hdmi->supports_content_cinema)
+			printf("      Cinema\n");
+		if (hdmi->supports_content_game)
+			printf("      Game\n");
+	}
+
+	if (hdmi->has_latency) {
+		print_hdmi_latency("Video", hdmi->supports_progressive_video,
+				   hdmi->progressive_video_latency);
+		print_hdmi_latency("Audio", hdmi->supports_progressive_audio,
+				   hdmi->progressive_audio_latency);
+	}
+
+	if (hdmi->has_interlaced_latency) {
+		print_hdmi_latency("Interlaced video", hdmi->supports_interlaced_video,
+				   hdmi->interlaced_video_latency);
+		print_hdmi_latency("Interlaced audio", hdmi->supports_interlaced_audio,
+				   hdmi->interlaced_audio_latency);
+	}
+
+	if (hdmi->vics_len > 0) {
+		printf("    Extended HDMI video details:\n");
+		printf("      HDMI VICs:\n");
+		for (i = 0; i < hdmi->vics_len; i++) {
+			printf("    ");
+			print_cta_hdmi_vic(hdmi->vics[i]);
+			printf("\n");
+		}
+	}
+}
+
 static int
 peak_lum_get_index(int peak_lum)
 {
@@ -1076,6 +1192,8 @@ cta_data_block_tag_name(enum di_cta_data_block_tag tag)
 		return "HDMI Forum EDID Extension Override Data Block";
 	case DI_CTA_DATA_BLOCK_HDMI_SINK_CAP:
 		return "HDMI Forum Sink Capability Data Block";
+	case DI_CTA_DATA_BLOCK_VENDOR_HDMI:
+		return "Vendor-Specific Data Block (HDMI), OUI 00-0C-03";
 	case DI_CTA_DATA_BLOCK_DOLBY_VIDEO:
 		return "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46";
 	case DI_CTA_DATA_BLOCK_HDR10PLUS:
@@ -1123,6 +1241,7 @@ print_cta(const struct di_edid_cta *cta)
 	const struct di_edid_detailed_timing_def *const *detailed_timing_defs;
 	const struct di_cta_type_vii_timing_block *type_vii_timing;
 	const struct di_cta_hdmi_audio_block *hdmi_audio;
+	const struct di_cta_vendor_hdmi_block *vendor_hdmi;
 	const struct di_cta_hdr10plus_block *hdr10plus;
 	const struct di_cta_dolby_video_block *dolby_video;
 	size_t i;
@@ -1247,6 +1366,10 @@ print_cta(const struct di_edid_cta *cta)
 		case DI_CTA_DATA_BLOCK_HDMI_AUDIO:
 			hdmi_audio = di_cta_data_block_get_hdmi_audio(data_block);
 			print_hdmi_audio(hdmi_audio);
+			break;
+		case DI_CTA_DATA_BLOCK_VENDOR_HDMI:
+			vendor_hdmi = di_cta_data_block_get_vendor_hdmi(data_block);
+			print_cta_hdmi(vendor_hdmi);
 			break;
 		case DI_CTA_DATA_BLOCK_HDR10PLUS:
 			hdr10plus = di_cta_data_block_get_hdr10plus(data_block);

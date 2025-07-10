@@ -1,22 +1,6 @@
 --- ref
 +++ di
-@@ -105,15 +105,6 @@
-     PT scan behavior: No Data
-     IT scan behavior: Always Underscanned
-     CE scan behavior: Supports both over- and underscan
--  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
--    Source physical address: 1.0.0.0
--    Supports_AI
--    DC_36bit
--    DC_30bit
--    DC_Y444
--    Maximum TMDS clock: 340 MHz
--    Supported Content Types:
--      Graphics
-   Detailed Timing Descriptors:
-     DTD 3:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (1209 mm x 680 mm)
-                  Hfront   88 Hsync  44 Hback  148 Hpol P
-@@ -121,31 +112,13 @@
+@@ -121,31 +121,13 @@
      DTD 4:  1280x720    60.000000 Hz  16:9     45.000 kHz     74.250000 MHz (1209 mm x 680 mm)
                   Hfront  110 Hsync  40 Hback  220 Hpol P
                   Vfront    5 Vsync   5 Vback   20 Vpol P

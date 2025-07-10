@@ -1,12 +1,6 @@
 --- ref
 +++ di
-@@ -72,43 +72,21 @@
-       Supported sample sizes (bits): 24 20 16
-   Speaker Allocation Data Block:
-     FL/FR - Front Left/Right
--  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
--    Source physical address: 1.0.0.0
-   Detailed Timing Descriptors:
+@@ -78,37 +78,17 @@
      DTD 2:  1920x1080   60.000000 Hz  16:9     67.500 kHz    148.500000 MHz (531 mm x 299 mm)
                   Hfront   88 Hsync  44 Hback  148 Hpol P
                   Vfront    4 Vsync   5 Vback   36 Vpol P

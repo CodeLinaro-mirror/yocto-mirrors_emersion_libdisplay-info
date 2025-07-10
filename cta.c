@@ -32,6 +32,7 @@
  */
 #define IEEE_OUI_DOLBY 0x00D046
 #define IEEE_OUI_HDR10PLUS 0x90848B
+#define IEEE_OUI_HDMI 0x000C03
 
 const struct di_cta_video_format *
 di_cta_video_format_from_vic(uint8_t vic)
@@ -40,6 +41,19 @@ di_cta_video_format_from_vic(uint8_t vic)
 	    _di_cta_video_formats[vic].vic == 0)
 		return NULL;
 	return &_di_cta_video_formats[vic];
+}
+
+const struct di_cta_hdmi_video_format *
+di_cta_hdmi_video_format_from_hdmi_vic(uint8_t hdmi_vic)
+{
+	size_t i;
+
+	for (i = 0; i < _di_cta_hdmi_video_formats_len; i++) {
+		if (_di_cta_hdmi_video_formats[i].vic == hdmi_vic)
+			return &_di_cta_hdmi_video_formats[i];
+	}
+
+	return NULL;
 }
 
 static void
@@ -120,6 +134,176 @@ parse_video_block(struct di_edid_cta *cta, struct di_cta_video_block_priv *video
 	}
 
 	video->base.svds = (const struct di_cta_svd *const *)video->svds;
+	return true;
+}
+
+static int
+hdmi_latency_from_raw(struct di_edid_cta *cta, const char *block_name,
+		      const char *type, uint8_t raw)
+{
+	/* Unknown latency.  */
+	if (raw == 0)
+		return 0;
+
+	/* Audio/video not supported. */
+	if (raw == 255)
+		return 0;
+
+	if (raw > 251) {
+		add_failure(cta,
+			    "%s: %s latency byte is %u, but the ceil supported by spec is 251.",
+			    block_name, type, raw);
+		return 0;
+	}
+
+	return 2 * (raw - 1);
+}
+
+static bool
+parse_vendor_hdmi_block(struct di_edid_cta *cta,
+			struct di_cta_vendor_hdmi_block_priv *priv,
+			const uint8_t *data, size_t size)
+{
+	const ssize_t offset = -1; /* Spec gives offset relative to header */
+	const char block_name[] = "Vendor-Specific Data Block (HDMI), OUI 00-0C-03";
+	struct di_cta_vendor_hdmi_block *block = &priv->base;
+	size_t len_vic;
+	size_t index;
+	size_t i;
+	uint8_t val;
+
+	if (size < 5) {
+		add_failure(cta, "%s: Empty Data Block", block_name);
+		return false;
+	}
+
+	block->source_phys_addr = (uint16_t)((uint16_t)data[4 + offset] << 8 | data[5 + offset]);
+
+	if (size < 6)
+		return true;
+
+	block->supports_ai = has_bit(data[6 + offset], 7);
+	block->supports_dc_48bit = has_bit(data[6 + offset], 6);
+	block->supports_dc_36bit = has_bit(data[6 + offset], 5);
+	block->supports_dc_30bit = has_bit(data[6 + offset], 4);
+	block->supports_dc_y444 = has_bit(data[6 + offset], 3);
+	if (get_bit_range(data[6 + offset], 2, 1) != 0)
+		add_failure(cta, "%s: Bits 2 and 1 of byte 6 are reserved.", block_name);
+	block->supports_dvi_dual = has_bit(data[6 + offset], 0);
+
+	if (size < 7)
+		return true;
+
+	block->max_tmds_clock = data[7 + offset] * 5;
+
+	if (size < 8)
+		return true;
+
+	block->supports_content_game = has_bit(data[8 + offset], 3);
+	block->supports_content_cinema = has_bit(data[8 + offset], 2);
+	block->supports_content_photo = has_bit(data[8 + offset], 1);
+	block->supports_content_graphics = has_bit(data[8 + offset], 0);
+
+	block->has_latency = has_bit(data[8 + offset], 7);
+	block->has_interlaced_latency = has_bit(data[8 + offset], 6);
+	/* Bit 5 is reserved on older HDMI spec versions but appears as the
+	 * HDMI_Video_present flag on newer ones. This flag is a bit useless,
+	 * because it tells us if extended video details are provided, but the
+	 * blob size itself already gives us this info and this approach works
+	 * for all versions. Let's ignore bit 5. */
+	if (has_bit(data[8 + offset], 4))
+		add_failure(cta, "%s: Bit 4 of byte 8 is reserved.", block_name);
+
+	if (block->has_interlaced_latency && !block->has_latency) {
+		add_failure(cta,
+			    "%s: Interlaced Latency support flag set, but Latency support flag is not",
+			    block_name);
+		return false;
+	}
+
+	/* The next features from the block do not have fixed position, so we
+	 * need to iterate simply incrementing the index. The next is byte 9. */
+	index = (size_t) (9 + offset);
+
+	if (block->has_latency) {
+		if (size <= index + 1) { /* we need 2 bytes */
+			add_failure(cta,
+				    "%s: Latency support flag set, but bytes are missing",
+				    block_name);
+			return false;
+		}
+
+		val = data[index++];
+		block->supports_progressive_video = (val != 255);
+		block->progressive_video_latency =
+			hdmi_latency_from_raw(cta, block_name, "Video", val);
+
+		val = data[index++];
+		block->supports_progressive_audio = (val != 255);
+		block->progressive_audio_latency =
+			hdmi_latency_from_raw(cta, block_name, "Audio", val);
+	}
+
+	if (block->has_interlaced_latency) {
+		if (size <= index + 1) { /* we need 2 bytes */
+			add_failure(cta,
+				    "%s: Interlaced Latency support flag set, but bytes are missing",
+				    block_name);
+			return false;
+		}
+
+		val = data[index++];
+		block->supports_interlaced_video = (val != 255);
+		block->interlaced_video_latency =
+			hdmi_latency_from_raw(cta, block_name, "Interlaced Video", val);
+
+		val = data[index++];
+		block->supports_interlaced_audio = (val != 255);
+		block->interlaced_audio_latency =
+			hdmi_latency_from_raw(cta, block_name, "Interlaced Audio", val);
+	}
+
+	if (size <= index)
+		return true;
+
+	/* Skip a byte, it should only be used when we decode HDMI 3D VIC */
+	index++;
+
+	if (size <= index)
+		return true;
+
+	len_vic = get_bit_range(data[index++], 7, 5);
+	if (len_vic == 0) {
+		add_failure(cta,
+			    "%s: Extended Video Details flag but HDMI VIC list size 0",
+			    block_name);
+		return false;
+	}
+
+	if (size <= index + len_vic - 1) {
+		add_failure(cta,
+			    "%s: HDMI VIC list size %u does not fit block of size %u",
+			    block_name, len_vic, size);
+		len_vic = size - index;
+	}
+
+	priv->vics = calloc(len_vic, sizeof(*priv->vics));
+	if (!priv->vics)
+		return false;
+
+	for (i = 0; i < len_vic; i++) {
+		val = data[index++];
+		if (val < 1 || val > 4) {
+			add_failure(cta,
+				    "%s: HDMI VIC %d is invalid", block_name, val);
+			continue;
+		}
+		priv->vics[block->vics_len++] = val;
+	}
+	block->vics = priv->vics;
+
+	/* TODO: parse HDMI 3D VIC */
+
 	return true;
 }
 
@@ -1923,6 +2107,7 @@ destroy_data_block(struct di_cta_data_block *data_block)
 	struct di_cta_speaker_location_priv *speaker_location;
 	struct di_cta_video_format_pref_priv *vfpdb;
 	struct di_cta_hdmi_audio_block_priv *hdmi_audio;
+	struct di_cta_vendor_hdmi_block_priv *vendor_hdmi;
 	struct di_cta_ycbcr420_video_block_priv *ycbcr420;
 
 	switch (data_block->tag) {
@@ -1930,6 +2115,10 @@ destroy_data_block(struct di_cta_data_block *data_block)
 		video = &data_block->video;
 		for (i = 0; i < video->svds_len; i++)
 			free(video->svds[i]);
+		break;
+	case DI_CTA_DATA_BLOCK_VENDOR_HDMI:
+		vendor_hdmi = &data_block->vendor_hdmi;
+		free(vendor_hdmi->vics);
 		break;
 	case DI_CTA_DATA_BLOCK_YCBCR420:
 		ycbcr420 = &data_block->ycbcr420;
@@ -2012,6 +2201,40 @@ skip:
 }
 
 static bool
+parse_vendor_specific_block(struct di_edid_cta *cta,
+			    enum di_cta_data_block_tag *tag,
+			    struct di_cta_data_block *data_block,
+			    const uint8_t *data, size_t size)
+{
+	uint32_t oui;
+
+	if (size < 3) {
+		add_failure(cta,
+			    "Vendor-Specific Data Block: Empty Data Block with length (%u).",
+			    size);
+		goto skip;
+	}
+
+	oui = ((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | data[0];
+
+	switch (oui) {
+	case IEEE_OUI_HDMI:
+		*tag = DI_CTA_DATA_BLOCK_VENDOR_HDMI;
+		if (!parse_vendor_hdmi_block(cta, &data_block->vendor_hdmi,
+					     data, size))
+			goto skip;
+		break;
+	default:
+		goto skip;
+	}
+
+	return true;
+
+skip:
+	return false;
+}
+
+static bool
 parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size)
 {
 	enum di_cta_data_block_tag tag;
@@ -2034,9 +2257,10 @@ parse_data_block(struct di_edid_cta *cta, uint8_t raw_tag, const uint8_t *data, 
 		if (!parse_video_block(cta, &data_block->video, data, size))
 			goto error;
 		break;
-	case 3:
-		/* Vendor-Specific Data Block */
-		goto skip;
+	case 3: /* Vendor-Specific Data Block */
+		if (!parse_vendor_specific_block(cta, &tag, data_block, data, size))
+			goto skip;
+		break;
 	case 4:
 		tag = DI_CTA_DATA_BLOCK_SPEAKER_ALLOC;
 		if (!parse_speaker_alloc_block(cta, &data_block->speaker_alloc,
@@ -2524,4 +2748,13 @@ di_cta_data_block_get_room_configuration(const struct di_cta_data_block *block)
 		return NULL;
 	}
 	return &block->room_config;
+}
+
+const struct di_cta_vendor_hdmi_block *
+di_cta_data_block_get_vendor_hdmi(const struct di_cta_data_block *block)
+{
+	if (block->tag != DI_CTA_DATA_BLOCK_VENDOR_HDMI) {
+		return NULL;
+	}
+	return &block->vendor_hdmi.base;
 }
