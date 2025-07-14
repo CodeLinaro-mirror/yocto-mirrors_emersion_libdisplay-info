@@ -2472,9 +2472,15 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
 		data_block_size = get_bit_range(data_block_header, 4, 0);
 
 		if (i + 1 + data_block_size > dtd_start) {
+			data_block_size = (uint8_t) (dtd_start - i - 1);
+			if (data_block_size == 0) {
+				add_failure(cta, "Data Block at offset %zu overlaps Detailed Timing "
+						 "Definitions. No room for other blocks, skipping "
+						 "all further Data Blocks.", i);
+				break;
+			}
 			add_failure(cta, "Data Block at offset %zu overlaps Detailed Timing "
-					 "Definitions. Skipping all further Data Blocks.", i);
-			break;
+					 "Definitions. Adjusted its size to attempt parsing.", i);
 		}
 
 		if (!parse_data_block(cta, data_block_tag,

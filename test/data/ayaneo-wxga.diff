@@ -1,10 +1,9 @@
 --- ref
 +++ di
-@@ -42,22 +42,6 @@
-   Supports YCbCr 4:4:4
+@@ -43,21 +43,6 @@
    Supports YCbCr 4:2:2
    Native detailed modes: 0
--  Video Format Data Block:
+   Video Format Data Block:
 -    NTSC fractional frame rates are preferred
 -    RID 16@24p:  5120x2880   24.000000 Hz  64:27    88.200 kHz    465.696000 MHz
 -    RID 16@30p:  5120x2880   30.000000 Hz  64:27    88.200 kHz    465.696000 MHz
@@ -23,7 +22,7 @@
    Detailed Timing Descriptors:
      DTD 4:   720x1152   59.001297 Hz   5:8     70.330 kHz     61.890000 MHz (94 mm x 151 mm)
                   Hfront   64 Hsync   8 Hback   88 Hpol P
-@@ -68,35 +52,13 @@
+@@ -68,35 +53,12 @@
      DTD 6:   600x800    58.958630 Hz   3:4     52.355 kHz     39.790000 MHz (94 mm x 151 mm)
                   Hfront   56 Hsync  16 Hback   88 Hpol P
                   Vfront    8 Vsync  36 Vback   44 Vpol P
@@ -59,6 +58,5 @@
 -  Required 640x480p60 timings are missing in the established timings and the SVD list (VIC 1).
 -  Missing VCDB, needed for Set Selectable RGB Quantization to avoid interop issues.
 -
-+  Data Block at offset 4 overlaps Detailed Timing Definitions. Skipping all further Data Blocks.
-+  Offset is 16, but should be 4.
++  Data Block at offset 4 overlaps Detailed Timing Definitions. Adjusted its size to attempt parsing.
  EDID conformity: FAIL
