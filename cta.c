@@ -2498,7 +2498,8 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
 
 	for (i = dtd_start; i + EDID_BYTE_DESCRIPTOR_SIZE <= CTA_DTD_END;
 	     i += EDID_BYTE_DESCRIPTOR_SIZE) {
-		if (data[i] == 0)
+		/* First two bytes being zeroed is reserved by spec. */
+		if (data[i] == 0 && data[i + 1] == 0)
 			break;
 
 		detailed_timing_def = _di_edid_parse_detailed_timing_def(&data[i]);
