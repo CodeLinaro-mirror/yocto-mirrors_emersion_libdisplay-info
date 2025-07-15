@@ -624,6 +624,14 @@ validate_checksum(const uint8_t *data, size_t size)
 	return sum == 0;
 }
 
+int
+_di_displayid_parse_version(const uint8_t *data, size_t size)
+{
+	if (size == 0)
+		return 0;
+	return get_bit_range(data[0x00], 7, 4);
+}
+
 bool
 _di_displayid_parse(struct di_displayid *displayid, const uint8_t *data,
 		    size_t size, struct di_logger *logger)
@@ -639,7 +647,7 @@ _di_displayid_parse(struct di_displayid *displayid, const uint8_t *data,
 
 	displayid->logger = logger;
 
-	displayid->version = get_bit_range(data[0x00], 7, 4);
+	displayid->version = _di_displayid_parse_version(data, size);
 	displayid->revision = get_bit_range(data[0x00], 3, 0);
 	if (displayid->version == 0 || displayid->version > 1) {
 		errno = ENOTSUP;

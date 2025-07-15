@@ -3,6 +3,7 @@ di_edid_decode = executable(
 	[
 		'cta.c',
 		'displayid.c',
+		'displayid2.c',
 		'edid.c',
 		'main.c',
 		'util.c',

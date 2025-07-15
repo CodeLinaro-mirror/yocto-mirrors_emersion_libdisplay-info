@@ -13,6 +13,7 @@
 
 #include "cta.h"
 #include "displayid.h"
+#include "displayid2.h"
 
 /**
  * The maximum number of EDID blocks (including the base block), defined in
@@ -130,7 +131,9 @@ struct di_edid_ext {
 	/* Used for DI_EDID_EXT_CEA */
 	struct di_edid_cta cta;
 	/* Used for DI_EDID_EXT_DISPLAYID */
+	int displayid_version;
 	struct di_displayid displayid;
+	struct di_displayid2 displayid2;
 };
 
 /**

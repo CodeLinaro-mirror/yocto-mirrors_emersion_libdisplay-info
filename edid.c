@@ -1152,6 +1152,9 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 	struct di_edid_ext *ext;
 	struct di_logger logger;
 	char section_name[64];
+	const uint8_t *ext_data;
+	size_t ext_size;
+	bool ok;
 
 	ext = calloc(1, sizeof(*ext));
 	if (!ext) {
@@ -1182,8 +1185,25 @@ parse_ext(struct di_edid *edid, const uint8_t data[static EDID_BLOCK_SIZE])
 		/* Supported */
 		break;
 	case DI_EDID_EXT_DISPLAYID:
-		if (!_di_displayid_parse(&ext->displayid, &data[1],
-					 EDID_BLOCK_SIZE - 2, &logger)) {
+		ext_data = &data[1];
+		ext_size = EDID_BLOCK_SIZE - 2;
+
+		ext->displayid_version = _di_displayid_parse_version(ext_data, ext_size);
+		switch (ext->displayid_version) {
+		case 1:
+			ok = _di_displayid_parse(&ext->displayid, ext_data,
+						 ext_size, &logger);
+			break;
+		case 2:
+			ok = _di_displayid2_parse(&ext->displayid2, ext_data,
+						  ext_size, &logger);
+			break;
+		default:
+			/* Unsupported */
+			free(ext);
+			return true;
+		}
+		if (!ok) {
 			free(ext);
 			return errno == ENOTSUP || errno == EINVAL;
 		}
@@ -1604,8 +1624,17 @@ di_edid_ext_get_cta(const struct di_edid_ext *ext)
 const struct di_displayid *
 di_edid_ext_get_displayid(const struct di_edid_ext *ext)
 {
-	if (ext->tag != DI_EDID_EXT_DISPLAYID) {
+	if (ext->tag != DI_EDID_EXT_DISPLAYID || ext->displayid_version != 1) {
 		return NULL;
 	}
 	return &ext->displayid;
+}
+
+const struct di_displayid2 *
+di_edid_ext_get_displayid2(const struct di_edid_ext *ext)
+{
+	if (ext->tag != DI_EDID_EXT_DISPLAYID || ext->displayid_version != 2) {
+		return NULL;
+	}
+	return &ext->displayid2;
 }

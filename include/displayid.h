@@ -99,4 +99,7 @@ _di_displayid_parse_type_1_7_timing(struct di_displayid_type_i_ii_vii_timing *ti
 				    const uint8_t *data,
 				    bool is_type7);
 
+int
+_di_displayid_parse_version(const uint8_t *data, size_t size);
+
 #endif

@@ -60,6 +60,7 @@ di_lib = library(
 		'cta-vic-table.c',
 		'cvt.c',
 		'displayid.c',
+		'displayid2.c',
 		'dmt-table.c',
 		'edid.c',
 		'gtf.c',

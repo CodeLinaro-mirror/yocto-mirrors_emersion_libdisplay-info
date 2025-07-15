@@ -56,6 +56,8 @@ static void
 print_ext(const struct di_edid_ext *ext, size_t ext_index)
 {
 	const char *tag_name;
+	const struct di_displayid *displayid;
+	const struct di_displayid2 *displayid2;
 
 	tag_name = ext_tag_name(di_edid_ext_get_tag(ext));
 	printf("\n----------------\n\n");
@@ -66,7 +68,12 @@ print_ext(const struct di_edid_ext *ext, size_t ext_index)
 		print_cta(di_edid_ext_get_cta(ext));
 		break;
 	case DI_EDID_EXT_DISPLAYID:
-		print_displayid(di_edid_ext_get_displayid(ext));
+		displayid = di_edid_ext_get_displayid(ext);
+		displayid2 = di_edid_ext_get_displayid2(ext);
+		if (displayid2)
+			print_displayid2(displayid2);
+		else if (displayid)
+			print_displayid(displayid);
 		break;
 	default:
 		break; /* Ignore */
