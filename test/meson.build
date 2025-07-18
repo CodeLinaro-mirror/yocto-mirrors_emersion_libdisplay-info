@@ -36,6 +36,7 @@ test_cases = [
 	'cta-vfpdb',
 	'philips-ftv-2017',
 	'cta-timings',
+	'amazon-fire-tv-48',
 ]
 
 test_env = [
