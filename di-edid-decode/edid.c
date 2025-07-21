@@ -524,7 +524,8 @@ print_display_desc(const struct di_edid *edid,
 	enum di_edid_display_range_limits_type range_limits_type;
 	const struct di_edid_standard_timing *const *standard_timings;
 	const struct di_edid_color_point *const *color_points;
-	const struct di_dmt_timing *const *established_timings_iii;
+	const struct di_edid_established_timings_iii *established_timings_iii;
+	const struct di_dmt_timing *dmt_timing;
 	const struct di_edid_color_management_data *color_management_data;
 	const struct di_edid_cvt_timing_code *const *cvt_timings;
 	size_t i;
@@ -646,8 +647,10 @@ print_display_desc(const struct di_edid *edid,
 		established_timings_iii = di_edid_display_descriptor_get_established_timings_iii(desc);
 
 		printf("\n");
-		for (i = 0; established_timings_iii[i] != NULL; i++) {
-			print_dmt_timing(established_timings_iii[i]);
+		for (i = 0; i < established_timings_iii->dmt_codes_len; i++) {
+			dmt_timing = di_dmt_timing_from_code(established_timings_iii->dmt_codes[i]);
+			if (dmt_timing)
+				print_dmt_timing(dmt_timing);
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_DCM_DATA:

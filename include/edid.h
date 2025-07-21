@@ -116,9 +116,8 @@ struct di_edid_display_descriptor {
 	/* Used for COLOR_POINT, NULL-terminated */
 	struct di_edid_color_point *color_points[EDID_MAX_DESCRIPTOR_COLOR_POINT_COUNT + 1];
 	size_t color_points_len;
-	/* Used for ESTABLISHED_TIMINGS_III, NULL-terminated */
-	const struct di_dmt_timing *established_timings_iii[EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT + 1];
-	size_t established_timings_iii_len;
+	/* Used for ESTABLISHED_TIMINGS_III */
+	struct di_edid_established_timings_iii established_timings_iii;
 	/* Used for DCM_DATA */
 	struct di_edid_color_management_data dcm_data;
 	/* Used for CVT_TIMING_CODES, NULL-terminated */

@@ -806,15 +806,16 @@ static_assert(EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT
 	      == sizeof(established_timings_iii) / sizeof(established_timings_iii[0]),
 	      "Invalid number of established timings III in table");
 
-static void
+static bool
 parse_established_timings_iii_descriptor(struct di_edid *edid,
 					 const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
-					 struct di_edid_display_descriptor *desc)
+					 struct di_edid_established_timings_iii *timings_iii)
 {
 	size_t i, offset, bit;
 	uint8_t dmt_id;
-	const struct di_dmt_timing *t;
 	bool has_zeroes;
+	uint8_t dmt_codes[EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT];
+	size_t dmt_codes_len = 0;
 
 	if (edid->revision < 4)
 		add_failure(edid, "Established timings III: Not allowed for EDID < 1.4.");
@@ -824,12 +825,21 @@ parse_established_timings_iii_descriptor(struct di_edid *edid,
 		offset = 0x06 + i / 8;
 		bit = 7 - i % 8;
 		assert(offset < EDID_BYTE_DESCRIPTOR_SIZE);
-		if (has_bit(data[offset], bit)) {
-			t = di_dmt_timing_from_code(dmt_id);
-			assert(t != NULL);
-			desc->established_timings_iii[desc->established_timings_iii_len++] = t;
-		}
+		if (has_bit(data[offset], bit))
+			dmt_codes[dmt_codes_len++] = dmt_id;
 	}
+
+	if (dmt_codes_len == 0) {
+		add_failure(edid, "Established timings III: No DMT codes.");
+		return true;
+	}
+
+	timings_iii->dmt_codes = calloc(1, dmt_codes_len);
+	if (!timings_iii->dmt_codes)
+		return false;
+
+	memcpy(timings_iii->dmt_codes, dmt_codes, dmt_codes_len);
+	timings_iii->dmt_codes_len = dmt_codes_len;
 
 	has_zeroes = get_bit_range(data[11], 3, 0) == 0;
 	for (i = 12; i < EDID_BYTE_DESCRIPTOR_SIZE; i++) {
@@ -839,6 +849,8 @@ parse_established_timings_iii_descriptor(struct di_edid *edid,
 		add_failure_until(edid, 4,
 				  "Established timings III: Reserved bits must be set to zero.");
 	}
+
+	return true;
 }
 
 static bool
@@ -1073,7 +1085,11 @@ parse_byte_descriptor(struct di_edid *edid,
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
-		parse_established_timings_iii_descriptor(edid, data, desc);
+		if (!parse_established_timings_iii_descriptor(edid, data,
+							      &desc->established_timings_iii)) {
+			free(desc);
+			return false;
+		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
 		if (!parse_color_point_descriptor(edid, data, desc)) {
@@ -1329,6 +1345,9 @@ destroy_display_descriptor(struct di_edid_display_descriptor *desc)
 			free(desc->color_points[i]);
 		}
 		break;
+	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
+		free(desc->established_timings_iii.dmt_codes);
+		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES:
 		for (i = 0; i < desc->cvt_timing_codes_len; i++) {
 			free(desc->cvt_timing_codes[i]);
@@ -1537,13 +1556,13 @@ di_edid_display_descriptor_get_color_points(const struct di_edid_display_descrip
 	return (const struct di_edid_color_point *const *) desc->color_points;
 }
 
-const struct di_dmt_timing *const *
+const struct di_edid_established_timings_iii *
 di_edid_display_descriptor_get_established_timings_iii(const struct di_edid_display_descriptor *desc)
 {
 	if (desc->tag != DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III) {
 		return NULL;
 	}
-	return desc->established_timings_iii;
+	return &desc->established_timings_iii;
 }
 
 const struct di_edid_color_management_data *
