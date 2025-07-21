@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <libdisplay-info/dmt.h>
+
 #include "bits.h"
-#include "dmt.h"
 #include "edid.h"
 #include "log.h"
 
@@ -805,21 +806,6 @@ static_assert(EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT
 	      == sizeof(established_timings_iii) / sizeof(established_timings_iii[0]),
 	      "Invalid number of established timings III in table");
 
-static const struct di_dmt_timing *
-get_dmt_timing(uint8_t dmt_id)
-{
-	size_t i;
-	const struct di_dmt_timing *t;
-
-	for (i = 0; i < _di_dmt_timings_len; i++) {
-		t = &_di_dmt_timings[i];
-		if (t->dmt_id == dmt_id)
-			return t;
-	}
-
-	return NULL;
-}
-
 static void
 parse_established_timings_iii_descriptor(struct di_edid *edid,
 					 const uint8_t data[static EDID_BYTE_DESCRIPTOR_SIZE],
@@ -839,7 +825,7 @@ parse_established_timings_iii_descriptor(struct di_edid *edid,
 		bit = 7 - i % 8;
 		assert(offset < EDID_BYTE_DESCRIPTOR_SIZE);
 		if (has_bit(data[offset], bit)) {
-			t = get_dmt_timing(dmt_id);
+			t = di_dmt_timing_from_code(dmt_id);
 			assert(t != NULL);
 			desc->established_timings_iii[desc->established_timings_iii_len++] = t;
 		}
@@ -1485,29 +1471,6 @@ di_edid_standard_timing_get_vert_video(const struct di_edid_standard_timing *t)
 		return t->horiz_video * 9 / 16;
 	}
 	abort(); /* unreachable */
-}
-
-const struct di_dmt_timing *
-di_edid_standard_timing_get_dmt(const struct di_edid_standard_timing *t)
-{
-	int32_t vert_video;
-	size_t i;
-	const struct di_dmt_timing *dmt;
-
-	vert_video = di_edid_standard_timing_get_vert_video(t);
-
-	for (i = 0; i < _di_dmt_timings_len; i++) {
-		dmt = &_di_dmt_timings[i];
-
-		if (dmt->horiz_video == t->horiz_video
-		    && dmt->vert_video == vert_video
-		    && dmt->refresh_rate_hz == (float)t->refresh_rate_hz
-		    && dmt->edid_std_id != 0) {
-			return dmt;
-		}
-	}
-
-	return 0;
 }
 
 const struct di_edid_standard_timing *const *

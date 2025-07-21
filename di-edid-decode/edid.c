@@ -40,7 +40,7 @@ print_standard_timing(const struct di_edid_standard_timing *t)
 	struct di_gtf_timing gtf;
 
 	vert_video = di_edid_standard_timing_get_vert_video(t);
-	dmt = di_edid_standard_timing_get_dmt(t);
+	dmt = di_dmt_timing_from_edid_standard_timing(t);
 
 	printf("    ");
 	if (dmt) {

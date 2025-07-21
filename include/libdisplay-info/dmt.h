@@ -9,6 +9,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 /**
  * A DMT timing.
@@ -37,5 +38,24 @@ struct di_dmt_timing {
 	/* Whether the timing has reduced blanking */
 	bool reduced_blanking;
 };
+
+/**
+ * Get a VESA Display Monitor Timing (DMT) from a DMT Timing Code.
+ *
+ * Returns NULL if the DMT Timing Code is unknown.
+ */
+const struct di_dmt_timing *
+di_dmt_timing_from_code(uint8_t dmt_id);
+
+/* See <libdisplay-info/edid.h> */
+struct di_edid_standard_timing;
+
+/**
+ * Get a VESA Display Monitor Timing (DMT), if any.
+ *
+ * NULL is returned if the standard timing doesn't have a DMT.
+ */
+const struct di_dmt_timing *
+di_dmt_timing_from_edid_standard_timing(const struct di_edid_standard_timing *t);
 
 #endif

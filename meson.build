@@ -60,6 +60,7 @@ di_lib = library(
 		'cvt.c',
 		'displayid.c',
 		'displayid2.c',
+		'dmt.c',
 		'dmt-table.c',
 		'edid.c',
 		'gtf.c',
