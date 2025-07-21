@@ -1,9 +1,11 @@
-#include "cta.h"
+#include <stddef.h>
+
+#include <libdisplay-info/hdmi-vic.h>
 
 /**
  * HDMI video format table. 8.2.3.1 section of the 1.4b HDMI spec.
  */
-const struct di_cta_hdmi_video_format _di_cta_hdmi_video_formats[] = {
+static const struct di_hdmi_vic_video_format _di_hdmi_vic_video_formats[] = {
 	{
 		.vic = 1,
 		.h_active = 3840,
@@ -54,5 +56,18 @@ const struct di_cta_hdmi_video_format _di_cta_hdmi_video_formats[] = {
 	},
 };
 
-const size_t _di_cta_hdmi_video_formats_len =
-	sizeof(_di_cta_hdmi_video_formats) / sizeof(_di_cta_hdmi_video_formats[0]);
+static const size_t _di_hdmi_vic_video_formats_len =
+	sizeof(_di_hdmi_vic_video_formats) / sizeof(_di_hdmi_vic_video_formats[0]);
+
+const struct di_hdmi_vic_video_format *
+di_hdmi_vic_video_format_from_vic(uint8_t vic)
+{
+	size_t i;
+
+	for (i = 0; i < _di_hdmi_vic_video_formats_len; i++) {
+		if (_di_hdmi_vic_video_formats[i].vic == vic)
+			return &_di_hdmi_vic_video_formats[i];
+	}
+
+	return NULL;
+}

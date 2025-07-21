@@ -36,28 +36,6 @@
 #define IEEE_OUI_HDMI 0x000C03
 #define IEEE_OUI_HDMI_FORUM 0xC45DD8
 
-const struct di_cta_video_format *
-di_cta_video_format_from_vic(uint8_t vic)
-{
-	if (vic > _di_cta_video_formats_len ||
-	    _di_cta_video_formats[vic].vic == 0)
-		return NULL;
-	return &_di_cta_video_formats[vic];
-}
-
-const struct di_cta_hdmi_video_format *
-di_cta_hdmi_video_format_from_hdmi_vic(uint8_t hdmi_vic)
-{
-	size_t i;
-
-	for (i = 0; i < _di_cta_hdmi_video_formats_len; i++) {
-		if (_di_cta_hdmi_video_formats[i].vic == hdmi_vic)
-			return &_di_cta_hdmi_video_formats[i];
-	}
-
-	return NULL;
-}
-
 static void
 add_failure(struct di_edid_cta *cta, const char fmt[], ...)
 {

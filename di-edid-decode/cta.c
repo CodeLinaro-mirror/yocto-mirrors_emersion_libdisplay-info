@@ -4,21 +4,23 @@
 #include <stdlib.h>
 
 #include <libdisplay-info/cta.h>
+#include <libdisplay-info/cta-vic.h>
+#include <libdisplay-info/hdmi-vic.h>
 
 #include "bits.h"
 #include "di-edid-decode.h"
 
 static const char *
-video_format_picture_aspect_ratio_name(enum di_cta_video_format_picture_aspect_ratio ar)
+video_format_picture_aspect_ratio_name(enum di_cta_vic_video_format_picture_aspect_ratio ar)
 {
 	switch (ar) {
-	case DI_CTA_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3:
+	case DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3:
 		return "  4:3  ";
-	case DI_CTA_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9:
+	case DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9:
 		return " 16:9  ";
-	case DI_CTA_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27:
+	case DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27:
 		return " 64:27 ";
-	case DI_CTA_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135:
+	case DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135:
 		return "256:135";
 	}
 	abort(); /* unreachable */
@@ -27,14 +29,14 @@ video_format_picture_aspect_ratio_name(enum di_cta_video_format_picture_aspect_r
 static void
 print_vic(uint8_t vic)
 {
-	const struct di_cta_video_format *fmt;
+	const struct di_cta_vic_video_format *fmt;
 	int32_t h_blank, v_blank, v_active;
 	double refresh, h_freq_hz, pixel_clock_mhz, h_total, v_total;
 	char buf[10];
 
 	printf("    VIC %3" PRIu8, vic);
 
-	fmt = di_cta_video_format_from_vic(vic);
+	fmt = di_cta_vic_video_format_from_vic(vic);
 	if (fmt == NULL)
 		return;
 
@@ -86,14 +88,14 @@ printf_cta_svds(const struct di_cta_svd *const *svds)
 static void
 print_cta_hdmi_vic(uint8_t hdmi_vic)
 {
-	const struct di_cta_hdmi_video_format *fmt;
+	const struct di_hdmi_vic_video_format *fmt;
 	int32_t h_blank, v_blank;
 	double refresh, h_freq_hz, pixel_clock_mhz, h_total, v_total;
 	int horiz_ratio, vert_ratio;
 
 	printf("    HDMI VIC %" PRIu8, hdmi_vic);
 
-	fmt = di_cta_hdmi_video_format_from_hdmi_vic(hdmi_vic);
+	fmt = di_hdmi_vic_video_format_from_vic(hdmi_vic);
 	if (fmt == NULL)
 		return;
 
