@@ -40,6 +40,7 @@ project:
 name | source
 ---- | ------
 amazon-fire-tv-48	| display
+asus-ux3405		| display
 ayaneo-wxga		| display
 cvt			| handcrafted
 goldstar-e2441		| display

@@ -13,6 +13,7 @@ test_cases = [
 	'acer-p1276',
 	'amazon-fire-tv-48',
 	'apple-xdr-dp',
+	'asus-ux3405',
 	'ayaneo-wxga',
 	'cta-timings',
 	'cta-timings',
