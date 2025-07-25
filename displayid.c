@@ -57,16 +57,6 @@ add_failure(struct di_displayid *displayid, const char fmt[], ...)
 }
 
 static void
-logger_add_failure(struct di_logger *logger, const char fmt[], ...)
-{
-	va_list args;
-
-	va_start(args, fmt);
-	_di_logger_va_add_failure(logger, fmt, args);
-	va_end(args);
-}
-
-static void
 check_data_block_revision(struct di_displayid *displayid,
 			  const uint8_t data[static DISPLAYID_DATA_BLOCK_HEADER_SIZE],
 			  const char *block_name, uint8_t max_revision)
@@ -175,8 +165,8 @@ _di_displayid_parse_type_1_7_timing(struct di_displayid_type_i_ii_vii_timing *t,
 		t->stereo_3d = stereo_3d;
 		break;
 	default:
-		logger_add_failure(logger, "%s: Reserved stereo 0x%02x.",
-				   prefix, stereo_3d);
+		_di_logger_add_failure(logger, "%s: Reserved stereo 0x%02x.",
+				       prefix, stereo_3d);
 		break;
 	}
 
@@ -185,8 +175,8 @@ _di_displayid_parse_type_1_7_timing(struct di_displayid_type_i_ii_vii_timing *t,
 		t->aspect_ratio = aspect_ratio;
 	} else {
 		t->aspect_ratio = DI_DISPLAYID_TIMING_ASPECT_RATIO_UNDEFINED;
-		logger_add_failure(logger, "%s: Unknown aspect 0x%02x.",
-				   prefix, aspect_ratio);
+		_di_logger_add_failure(logger, "%s: Unknown aspect 0x%02x.",
+				       prefix, aspect_ratio);
 	}
 
 	t->horiz_active = 1 + (data[4] | (data[5] << 8));
