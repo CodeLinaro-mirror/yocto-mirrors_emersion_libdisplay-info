@@ -8,7 +8,7 @@
      Alphanumeric Data String: 'ATNA40CU06-0 '
    Extension blocks: 1
  Checksum: 0x25
-@@ -35,82 +34,14 @@
+@@ -35,82 +34,19 @@
  
  Block 1, DisplayID Extension Block:
    Version: 2.0
@@ -17,7 +17,8 @@
 -  Product Identification Data Block (0x20), OUI 4C-83-00:
 -    Product Code: 16797
 -    Year of Manufacture: 2032
--  Display Parameters Data Block (0x21):
++  Product Identification Data Block (0x20):
+   Display Parameters Data Block (0x21):
 -    Image size: 300.0 mm x 190.0 mm
 -    Display native pixel format: 2880x1800
 -    Scan Orientation: Left to Right, Top to Bottom
@@ -35,16 +36,16 @@
 -    Native Color Depth: 12 bpc
 -    Display Device Technology: Organic LED
 -    Native Gamma EOTF: 2.20
--  Display Interface Features Data Block:
+   Display Interface Features Data Block:
 -    Supported bpc for RGB encoding: 6, 8, 10
 -    Supported bpc for YCbCr 4:4:4 encoding: 8, 10
 -    Supported bpc for YCbCr 4:2:2 encoding: 8, 10
 -    Supported color space and EOTF standard combination 1: DCI-P3, BT.2020/SMPTE ST 2084
--  Video Timing Modes Type 7 - Detailed Timings Data Block:
+   Video Timing Modes Type 7 - Detailed Timings Data Block:
 -    DTD:  2880x1800  120.000294 Hz  16:10   218.881 kHz    652.264000 MHz (aspect 16:10, no 3D stereo, preferred)
 -               Hfront   32 Hsync   8 Hback   60 Hpol N
 -               Vfront    8 Vsync   8 Vback    8 Vpol N
--  CTA-861 DisplayID Data Block:
+   CTA-861 DisplayID Data Block:
 -  Vendor-Specific Data Block (AMD), OUI 00-00-1A:
 -    Version: 3
 -    Feature Caps: 0x03

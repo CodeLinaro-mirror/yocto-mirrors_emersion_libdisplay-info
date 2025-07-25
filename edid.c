@@ -1380,6 +1380,7 @@ _di_edid_destroy(struct di_edid *edid)
 			break;
 		case DI_EDID_EXT_DISPLAYID:
 			_di_displayid_finish(&ext->displayid);
+			_di_displayid2_finish(&ext->displayid2);
 			break;
 		default:
 			break; /* Nothing to do */
