@@ -335,7 +335,6 @@ parse_vendor_hdmi_forum_block(struct di_edid_cta *cta,
 	block->max_tmds_char_rate_mhz = 5 * data[5 + offset];
 	if (block->max_tmds_char_rate_mhz != 0 && block->max_tmds_char_rate_mhz <= 340)
 		add_failure(cta, "%s: Max TMDS rate is != 0 and <= 340.", block_name);
-	if (block->max_tmds_char_rate_mhz > 600)
 
 	block->supports_3d_osd_disparity = has_bit(data[6 + offset], 0);
 	block->supports_3d_dual_view = has_bit(data[6 + offset], 1);
