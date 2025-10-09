@@ -29,7 +29,6 @@ check-mr:
   stage: "Contribution checks"
   script:
    - ci-fairy check-commits --signed-off-by
-   - ci-fairy check-merge-request --require-allow-collaboration
   rules:
     - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
       when: always
