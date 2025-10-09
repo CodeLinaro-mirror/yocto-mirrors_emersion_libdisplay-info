@@ -277,4 +277,11 @@ _di_edid_cta_parse(struct di_edid_cta *cta, const uint8_t *data, size_t size,
 void
 _di_edid_cta_finish(struct di_edid_cta *cta);
 
+bool
+_di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size,
+			 struct di_cta_data_block **data_block_out);
+
+void
+_di_cta_data_block_destroy(struct di_cta_data_block *data_block);
+
 #endif

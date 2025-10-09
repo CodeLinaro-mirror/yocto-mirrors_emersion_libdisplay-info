@@ -2274,8 +2274,8 @@ parse_dolby_video_block(struct di_cta *cta,
 	return true;
 }
 
-static void
-destroy_data_block(struct di_cta_data_block *data_block)
+void
+_di_cta_data_block_destroy(struct di_cta_data_block *data_block)
 {
 	size_t i;
 	struct di_cta_video_block_priv *video;
@@ -2417,9 +2417,9 @@ skip:
 	return false;
 }
 
-static bool
-parse_data_block(struct di_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size,
-		 struct di_cta_data_block **data_block_out)
+bool
+_di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size,
+			 struct di_cta_data_block **data_block_out)
 {
 	enum di_cta_data_block_tag tag;
 	uint8_t extended_tag;
@@ -2619,7 +2619,7 @@ skip:
 	return true;
 
 error:
-	destroy_data_block(data_block);
+	_di_cta_data_block_destroy(data_block);
 	return false;
 }
 
@@ -2683,8 +2683,8 @@ _di_edid_cta_parse(struct di_edid_cta *edid_cta, const uint8_t *data, size_t siz
 					 "Definitions. Adjusted its size to attempt parsing.", i);
 		}
 
-		if (!parse_data_block(cta, data_block_tag,
-				      &data[i + 1], data_block_size, &data_block)) {
+		if (!_di_cta_data_block_parse(cta, data_block_tag,
+					      &data[i + 1], data_block_size, &data_block)) {
 			_di_edid_cta_finish(edid_cta);
 			return false;
 		}
@@ -2734,7 +2734,7 @@ _di_edid_cta_finish(struct di_edid_cta *cta)
 	size_t i;
 
 	for (i = 0; i < cta->data_blocks_len; i++) {
-		destroy_data_block(cta->data_blocks[i]);
+		_di_cta_data_block_destroy(cta->data_blocks[i]);
 	}
 
 	for (i = 0; i < cta->detailed_timing_defs_len; i++) {
