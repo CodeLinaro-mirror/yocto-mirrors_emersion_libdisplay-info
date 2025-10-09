@@ -34,6 +34,50 @@ add_failure(struct di_displayid2 *displayid2, const char fmt[], ...)
 	va_end(args);
 }
 
+static bool
+parse_cta861_block(struct di_displayid2 *displayid2, struct di_displayid2_data_block *data_block,
+		   const uint8_t *data, size_t size)
+{
+	struct di_cta cta;
+	size_t i;
+	uint8_t data_block_tag, data_block_size;
+	struct di_cta_data_block *cta_data_block;
+
+	cta = (struct di_cta){
+		/* The DisplayID block doesn't specify the CTA revision. Use
+		 * the latest one to silence warnings. */
+		.revision = 3,
+		.logger = displayid2->logger,
+	};
+
+	i = 0x03;
+	while (i < size) {
+		data_block_size = get_bit_range(data[i], 4, 0);
+		data_block_tag = get_bit_range(data[i], 7, 5);
+
+		if (data_block_size > size - i - 1) {
+			add_failure(displayid2,
+				    "CTA data block size (%" PRIu8 ") exceeds number of remaining bytes (%zu)",
+				    data_block_size, size - i - 1);
+			break;
+		}
+
+		if (!_di_cta_data_block_parse(&cta, data_block_tag,
+					      &data[i + 1], data_block_size, &cta_data_block)) {
+			return false;
+		}
+
+		if (cta_data_block != NULL) {
+			assert(data_block->cta861.data_blocks_len < DISPLAYID2_CTA861_MAX_DATA_BLOCKS);
+			data_block->cta861.data_blocks[data_block->cta861.data_blocks_len++] = cta_data_block;
+		}
+
+		i += 1 + data_block_size;
+	}
+
+	return true;
+}
+
 static ssize_t
 parse_data_block(struct di_displayid2 *displayid2, const uint8_t *data,
 		 size_t size)
@@ -58,6 +102,11 @@ parse_data_block(struct di_displayid2 *displayid2, const uint8_t *data,
 		goto error;
 
 	switch (tag) {
+	case DI_DISPLAYID2_DATA_BLOCK_CTA861:
+		if (!parse_cta861_block(displayid2, data_block, data, data_block_size)) {
+			goto error;
+		}
+		break;
 	case DI_DISPLAYID2_DATA_BLOCK_PRODUCT_ID:
 	case DI_DISPLAYID2_DATA_BLOCK_DISPLAY_PARAMS:
 	case DI_DISPLAYID2_DATA_BLOCK_TYPE_VII_TIMING:
@@ -72,7 +121,6 @@ parse_data_block(struct di_displayid2 *displayid2, const uint8_t *data,
 	case DI_DISPLAYID2_DATA_BLOCK_ADAPTIVE_SYNC:
 	case DI_DISPLAYID2_DATA_BLOCK_ARVR_HMD:
 	case DI_DISPLAYID2_DATA_BLOCK_ARVR_LAYER:
-	case DI_DISPLAYID2_DATA_BLOCK_CTA861:
 		break; /* Supported */
 	case 0x7E:
 		goto skip; /* Vendor-specific */
@@ -211,13 +259,24 @@ _di_displayid2_parse(struct di_displayid2 *displayid2, const uint8_t *data,
 	return true;
 }
 
+static void
+data_block_destroy(struct di_displayid2_data_block *data_block)
+{
+	size_t i;
+
+	for (i = 0; i < data_block->cta861.data_blocks_len; i++)
+		_di_cta_data_block_destroy(data_block->cta861.data_blocks[i]);
+
+	free(data_block);
+}
+
 void
 _di_displayid2_finish(struct di_displayid2 *displayid2)
 {
 	size_t i;
 
 	for (i = 0; i < displayid2->data_blocks_len; i++)
-		free(displayid2->data_blocks[i]);
+		data_block_destroy(displayid2->data_blocks[i]);
 }
 
 int
@@ -242,4 +301,13 @@ enum di_displayid2_data_block_tag
 di_displayid2_data_block_get_tag(const struct di_displayid2_data_block *data_block)
 {
 	return data_block->tag;
+}
+
+const struct di_cta_data_block *const *
+di_displayid2_data_block_get_cta_data_blocks(const struct di_displayid2_data_block *data_block)
+{
+	if (data_block->tag != DI_DISPLAYID2_DATA_BLOCK_CTA861) {
+		return NULL;
+	}
+	return (const struct di_cta_data_block *const *) data_block->cta861.data_blocks;
 }

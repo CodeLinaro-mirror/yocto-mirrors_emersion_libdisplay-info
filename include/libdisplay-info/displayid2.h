@@ -108,4 +108,14 @@ di_displayid2_data_block_get_tag(const struct di_displayid2_data_block *data_blo
 enum di_displayid2_product_primary_use_case
 di_displayid2_get_product_primary_use_case(const struct di_displayid2 *displayid2);
 
+/**
+ * Get CTA data blocks from a DisplayID v2 CTA-861 data block.
+ *
+ * The returned array is NULL-terminated.
+ *
+ * Returns NULL if the data block tag isn't DI_DISPLAYID2_DATA_BLOCK_CTA861.
+ */
+const struct di_cta_data_block *const *
+di_displayid2_data_block_get_cta_data_blocks(const struct di_displayid2_data_block *data_block);
+
 #endif
