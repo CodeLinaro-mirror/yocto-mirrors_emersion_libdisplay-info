@@ -31,6 +31,10 @@ void
 print_cta(const struct di_edid_cta *cta);
 
 void
+print_cta_data_block(const struct di_cta_data_block *data_block,
+		     const struct di_cta_data_block *const *data_blocks);
+
+void
 print_displayid(const struct di_displayid *displayid);
 
 void
