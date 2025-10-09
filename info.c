@@ -36,6 +36,42 @@ cta_data_block_allowed_multiple(enum di_cta_data_block_tag tag)
 }
 
 static const struct di_cta_data_block *
+find_cta_data_block(const struct di_cta_data_block *const *blocks, enum di_cta_data_block_tag tag)
+{
+	size_t i;
+
+	for (i = 0; blocks[i] != NULL; i++) {
+		if (di_cta_data_block_get_tag(blocks[i]) == tag)
+			return blocks[i];
+	}
+
+	return NULL;
+}
+
+static const struct di_cta_data_block *
+displayid2_get_cta_data_block(const struct di_displayid2 *displayid2, enum di_cta_data_block_tag tag)
+{
+	size_t i;
+	const struct di_displayid2_data_block *const *data_blocks;
+	const struct di_cta_data_block *const *cta_data_blocks, *match;
+
+	data_blocks = di_displayid2_get_data_blocks(displayid2);
+	for (i = 0; data_blocks[i] != NULL; i++) {
+		cta_data_blocks = di_displayid2_data_block_get_cta_data_blocks(data_blocks[i]);
+		if (cta_data_blocks == NULL) {
+			continue;
+		}
+
+		match = find_cta_data_block(cta_data_blocks, tag);
+		if (match != NULL) {
+			return match;
+		}
+	}
+
+	return NULL;
+}
+
+static const struct di_cta_data_block *
 edid_get_cta_data_block(const struct di_edid *edid, enum di_cta_data_block_tag tag)
 {
 	const struct di_edid_ext *const *ext;
@@ -48,15 +84,28 @@ edid_get_cta_data_block(const struct di_edid *edid, enum di_cta_data_block_tag t
 
 	for (ext = di_edid_get_extensions(edid); *ext; ext++) {
 		const struct di_edid_cta *cta;
-		const struct di_cta_data_block *const *block;
+		const struct di_displayid2 *displayid2;
+		const struct di_cta_data_block *match;
 
-		if (di_edid_ext_get_tag(*ext) != DI_EDID_EXT_CEA)
-			continue;
+		match = NULL;
+		switch (di_edid_ext_get_tag(*ext)) {
+		case DI_EDID_EXT_CEA:
+			cta = di_edid_ext_get_cta(*ext);
+			match = find_cta_data_block(di_edid_cta_get_data_blocks(cta), tag);
+			break;
+		case DI_EDID_EXT_DISPLAYID:
+			displayid2 = di_edid_ext_get_displayid2(*ext);
+			if (displayid2 == NULL) {
+				break;
+			}
+			match = displayid2_get_cta_data_block(displayid2, tag);
+			break;
+		default:
+			break; /* Ignore */
+		}
 
-		cta = di_edid_ext_get_cta(*ext);
-		for (block = di_edid_cta_get_data_blocks(cta); *block; block++) {
-			if (di_cta_data_block_get_tag(*block) == tag)
-				return *block;
+		if (match != NULL) {
+			return match;
 		}
 	}
 
