@@ -8,7 +8,7 @@
      Alphanumeric Data String: 'ATNA40CU06-0 '
    Extension blocks: 1
  Checksum: 0x25
-@@ -35,82 +34,19 @@
+@@ -35,49 +34,12 @@
  
  Block 1, DisplayID Extension Block:
    Version: 2.0
@@ -56,18 +56,16 @@
 -    Maximum luminance: 116 (616.884 cd/m^2)
 -    Minimum luminance: 2 (0.000 cd/m^2)
 -    Unknown: 0x60 0x02
--  Colorimetry Data Block:
--    BT2020RGB
--  HDR Static Metadata Data Block:
--    Electro optical transfer functions:
--      Traditional gamma - SDR luminance range
--      SMPTE ST2084
--    Supported static metadata descriptors:
--      Static metadata type 1
--    Desired content max luminance: 116 (616.884 cd/m^2)
--    Desired content max frame-average luminance: 96 (400.000 cd/m^2)
+   Colorimetry Data Block:
+     BT2020RGB
+   HDR Static Metadata Data Block:
+@@ -88,29 +50,14 @@
+       Static metadata type 1
+     Desired content max luminance: 116 (616.884 cd/m^2)
+     Desired content max frame-average luminance: 96 (400.000 cd/m^2)
 -    Desired content min luminance: 2 (0.000 cd/m^2)
 -  Checksum: 0x91
++    Desired content min luminance: 1 (0.000 cd/m^2)
  Checksum: 0x90
  
  ----------------

@@ -69,13 +69,33 @@ displayid2_data_block_tag_name(enum di_displayid2_data_block_tag tag)
 	abort(); /* unreachable */
 }
 
+static void
+print_data_block(const struct di_displayid2_data_block *data_block)
+{
+	enum di_displayid2_data_block_tag tag;
+	const struct di_cta_data_block *const *cta_data_blocks;
+	size_t i;
+
+	tag = di_displayid2_data_block_get_tag(data_block);
+	printf("  %s:\n", displayid2_data_block_tag_name(tag));
+
+	switch (tag) {
+	case DI_DISPLAYID2_DATA_BLOCK_CTA861:
+		cta_data_blocks = di_displayid2_data_block_get_cta_data_blocks(data_block);
+		for (i = 0; cta_data_blocks[i] != NULL; i++) {
+			print_cta_data_block(cta_data_blocks[i], cta_data_blocks);
+		}
+		break;
+	default:
+		break; /* Ignore */
+	}
+}
+
 void
 print_displayid2(const struct di_displayid2 *displayid2)
 {
 	enum di_displayid2_product_primary_use_case use_case;
 	const struct di_displayid2_data_block *const *data_blocks;
-	const struct di_displayid2_data_block *data_block;
-	enum di_displayid2_data_block_tag tag;
 	size_t i;
 
 	printf("  Version: 2.%d\n", di_displayid2_get_revision(displayid2));
@@ -86,8 +106,6 @@ print_displayid2(const struct di_displayid2 *displayid2)
 
 	data_blocks = di_displayid2_get_data_blocks(displayid2);
 	for (i = 0; data_blocks[i] != NULL; i++) {
-		data_block = data_blocks[i];
-		tag = di_displayid2_data_block_get_tag(data_block);
-		printf("  %s:\n", displayid2_data_block_tag_name(tag));
+		print_data_block(data_blocks[i]);
 	}
 }
