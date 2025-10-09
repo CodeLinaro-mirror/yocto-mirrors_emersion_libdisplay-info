@@ -13,7 +13,7 @@ const char *
 pnp_id_table(const char *key);
 
 static bool
-di_cta_data_block_allowed_multiple(enum di_cta_data_block_tag tag)
+cta_data_block_allowed_multiple(enum di_cta_data_block_tag tag)
 {
 	/* See CTA-861-H, 7.6 Multiple Instances of Data Blocks. */
 	switch (tag) {
@@ -36,8 +36,7 @@ di_cta_data_block_allowed_multiple(enum di_cta_data_block_tag tag)
 }
 
 static const struct di_cta_data_block *
-di_edid_get_cta_data_block(const struct di_edid *edid,
-			   enum di_cta_data_block_tag tag)
+edid_get_cta_data_block(const struct di_edid *edid, enum di_cta_data_block_tag tag)
 {
 	const struct di_edid_ext *const *ext;
 
@@ -45,7 +44,7 @@ di_edid_get_cta_data_block(const struct di_edid *edid,
 	 * Here we do not handle blocks that are allowed to occur in
 	 * multiple instances.
 	 */
-	assert(!di_cta_data_block_allowed_multiple(tag));
+	assert(!cta_data_block_allowed_multiple(tag));
 
 	for (ext = di_edid_get_extensions(edid); *ext; ext++) {
 		const struct di_edid_cta *cta;
@@ -74,7 +73,7 @@ derive_edid_hdr_static_metadata(const struct di_edid *edid,
 	/* By default, everything unset and only traditional gamma supported. */
 	hsm->traditional_sdr = true;
 
-	block = di_edid_get_cta_data_block(edid, DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA);
+	block = edid_get_cta_data_block(edid, DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA);
 	if (!block)
 		return;
 
@@ -155,7 +154,7 @@ derive_edid_supported_signal_colorimetry(const struct di_edid *edid,
 
 	/* Defaults to all unsupported. */
 
-	block = di_edid_get_cta_data_block(edid, DI_CTA_DATA_BLOCK_COLORIMETRY);
+	block = edid_get_cta_data_block(edid, DI_CTA_DATA_BLOCK_COLORIMETRY);
 	if (!block)
 		return;
 
