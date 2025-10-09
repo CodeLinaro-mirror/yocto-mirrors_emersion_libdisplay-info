@@ -81,6 +81,16 @@
  */
 #define EDID_CTA_MAX_HDMI_AUDIO_BLOCK_ENTRIES 15
 
+/**
+ * Context for CTA parsing functions.
+ */
+struct di_cta {
+	int revision;
+	const struct di_edid_cta_flags *flags;
+
+	struct di_logger *logger;
+};
+
 struct di_edid_cta {
 	int revision;
 	struct di_edid_cta_flags flags;
@@ -92,8 +102,6 @@ struct di_edid_cta {
 	/* NULL-terminated */
 	struct di_edid_detailed_timing_def_priv *detailed_timing_defs[EDID_CTA_MAX_DETAILED_TIMING_DEFS + 1];
 	size_t detailed_timing_defs_len;
-
-	struct di_logger *logger;
 };
 
 struct di_cta_hdr_static_metadata_block_priv {
