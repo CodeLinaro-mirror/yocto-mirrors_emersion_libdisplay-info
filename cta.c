@@ -75,12 +75,12 @@ parse_svd(struct di_edid_cta *cta, uint8_t raw, uint8_t original_index,
 		return NULL;
 	} else if (raw <= 127 || raw >= 193) {
 		svd = (struct di_cta_svd) {
-			.vic = raw,
+			.vic = { .code = raw },
 			.original_index = original_index,
 		};
 	} else {
 		svd = (struct di_cta_svd) {
-			.vic = get_bit_range(raw, 6, 0),
+			.vic = { .code = get_bit_range(raw, 6, 0) },
 			.native = true,
 			.original_index = original_index,
 		};
@@ -278,7 +278,7 @@ parse_vendor_hdmi_block(struct di_edid_cta *cta,
 				    "%s: HDMI VIC %d is invalid", block_name, val);
 			continue;
 		}
-		priv->vics[block->vics_len++] = val;
+		priv->vics[block->vics_len++] = (struct di_hdmi_vic) { .code = val, };
 	}
 	block->vics = priv->vics;
 
@@ -1503,7 +1503,7 @@ parse_video_format_pref_block(struct di_edid_cta *cta,
 		if ((code >= 1 && code <= 127) ||
 		    (code >= 193 && code <= 253)) {
 			svr->type = DI_CTA_SVR_TYPE_VIC;
-			svr->vic = code;
+			svr->vic.code = code;
 		} else if (code >= 129 && code <= 144) {
 			svr->type = DI_CTA_SVR_TYPE_DTD_INDEX;
 			svr->dtd_index = code - 129;

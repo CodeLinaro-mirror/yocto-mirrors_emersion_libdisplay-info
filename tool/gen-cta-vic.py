@@ -65,7 +65,6 @@ def parse_timing_table(page, format_table):
             continue
         for vic in parse_vic_list(fields[0]):
             format_table[vic] = {
-                "vic": vic,
                 "h_active": parse_hactive(fields[1]),
                 "v_active": int(fields[2]),
                 "interlaced": parse_interlaced(fields[3]),
@@ -136,6 +135,7 @@ with open(out_path, "w+") as f:
     f.write("const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {\n")
     for vic in format_table:
         f.write("\t[{}] = {{\n".format(vic))
+        f.write("\t\t.vic = {{ .code = {} }},\n".format(vic))
         for k, v in format_table[vic].items():
             f.write("\t\t.{} = {},\n".format(k, v))
         f.write("\t},\n")

@@ -4,7 +4,7 @@
 
 const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 	[60] = {
-		.vic = 60,
+		.vic = { .code = 60 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -20,7 +20,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[65] = {
-		.vic = 65,
+		.vic = { .code = 65 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -36,7 +36,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[61] = {
-		.vic = 61,
+		.vic = { .code = 61 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -52,7 +52,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[66] = {
-		.vic = 66,
+		.vic = { .code = 66 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -68,7 +68,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[62] = {
-		.vic = 62,
+		.vic = { .code = 62 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -84,7 +84,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[67] = {
-		.vic = 67,
+		.vic = { .code = 67 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -100,7 +100,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[108] = {
-		.vic = 108,
+		.vic = { .code = 108 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -116,7 +116,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[109] = {
-		.vic = 109,
+		.vic = { .code = 109 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -132,7 +132,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[32] = {
-		.vic = 32,
+		.vic = { .code = 32 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -148,7 +148,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[72] = {
-		.vic = 72,
+		.vic = { .code = 72 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -164,7 +164,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[33] = {
-		.vic = 33,
+		.vic = { .code = 33 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -180,7 +180,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[73] = {
-		.vic = 73,
+		.vic = { .code = 73 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -196,7 +196,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[34] = {
-		.vic = 34,
+		.vic = { .code = 34 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -212,7 +212,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[74] = {
-		.vic = 74,
+		.vic = { .code = 74 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -228,7 +228,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[111] = {
-		.vic = 111,
+		.vic = { .code = 111 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -244,7 +244,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[112] = {
-		.vic = 112,
+		.vic = { .code = 112 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -260,7 +260,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[79] = {
-		.vic = 79,
+		.vic = { .code = 79 },
 		.h_active = 1680,
 		.v_active = 720,
 		.interlaced = false,
@@ -276,7 +276,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[80] = {
-		.vic = 80,
+		.vic = { .code = 80 },
 		.h_active = 1680,
 		.v_active = 720,
 		.interlaced = false,
@@ -292,7 +292,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[81] = {
-		.vic = 81,
+		.vic = { .code = 81 },
 		.h_active = 1680,
 		.v_active = 720,
 		.interlaced = false,
@@ -308,7 +308,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[110] = {
-		.vic = 110,
+		.vic = { .code = 110 },
 		.h_active = 1680,
 		.v_active = 720,
 		.interlaced = false,
@@ -324,7 +324,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[86] = {
-		.vic = 86,
+		.vic = { .code = 86 },
 		.h_active = 2560,
 		.v_active = 1080,
 		.interlaced = false,
@@ -340,7 +340,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[87] = {
-		.vic = 87,
+		.vic = { .code = 87 },
 		.h_active = 2560,
 		.v_active = 1080,
 		.interlaced = false,
@@ -356,7 +356,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[88] = {
-		.vic = 88,
+		.vic = { .code = 88 },
 		.h_active = 2560,
 		.v_active = 1080,
 		.interlaced = false,
@@ -372,7 +372,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[113] = {
-		.vic = 113,
+		.vic = { .code = 113 },
 		.h_active = 2560,
 		.v_active = 1080,
 		.interlaced = false,
@@ -388,7 +388,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[93] = {
-		.vic = 93,
+		.vic = { .code = 93 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -404,7 +404,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[103] = {
-		.vic = 103,
+		.vic = { .code = 103 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -420,7 +420,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[94] = {
-		.vic = 94,
+		.vic = { .code = 94 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -436,7 +436,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[104] = {
-		.vic = 104,
+		.vic = { .code = 104 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -452,7 +452,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[95] = {
-		.vic = 95,
+		.vic = { .code = 95 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -468,7 +468,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[105] = {
-		.vic = 105,
+		.vic = { .code = 105 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -484,7 +484,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[114] = {
-		.vic = 114,
+		.vic = { .code = 114 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -500,7 +500,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[116] = {
-		.vic = 116,
+		.vic = { .code = 116 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -516,7 +516,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[98] = {
-		.vic = 98,
+		.vic = { .code = 98 },
 		.h_active = 4096,
 		.v_active = 2160,
 		.interlaced = false,
@@ -532,7 +532,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135,
 	},
 	[99] = {
-		.vic = 99,
+		.vic = { .code = 99 },
 		.h_active = 4096,
 		.v_active = 2160,
 		.interlaced = false,
@@ -548,7 +548,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135,
 	},
 	[100] = {
-		.vic = 100,
+		.vic = { .code = 100 },
 		.h_active = 4096,
 		.v_active = 2160,
 		.interlaced = false,
@@ -564,7 +564,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135,
 	},
 	[115] = {
-		.vic = 115,
+		.vic = { .code = 115 },
 		.h_active = 4096,
 		.v_active = 2160,
 		.interlaced = false,
@@ -580,7 +580,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135,
 	},
 	[121] = {
-		.vic = 121,
+		.vic = { .code = 121 },
 		.h_active = 5120,
 		.v_active = 2160,
 		.interlaced = false,
@@ -596,7 +596,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[122] = {
-		.vic = 122,
+		.vic = { .code = 122 },
 		.h_active = 5120,
 		.v_active = 2160,
 		.interlaced = false,
@@ -612,7 +612,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[123] = {
-		.vic = 123,
+		.vic = { .code = 123 },
 		.h_active = 5120,
 		.v_active = 2160,
 		.interlaced = false,
@@ -628,7 +628,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[124] = {
-		.vic = 124,
+		.vic = { .code = 124 },
 		.h_active = 5120,
 		.v_active = 2160,
 		.interlaced = false,
@@ -644,7 +644,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[194] = {
-		.vic = 194,
+		.vic = { .code = 194 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -660,7 +660,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[202] = {
-		.vic = 202,
+		.vic = { .code = 202 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -676,7 +676,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[195] = {
-		.vic = 195,
+		.vic = { .code = 195 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -692,7 +692,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[203] = {
-		.vic = 203,
+		.vic = { .code = 203 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -708,7 +708,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[196] = {
-		.vic = 196,
+		.vic = { .code = 196 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -724,7 +724,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[204] = {
-		.vic = 204,
+		.vic = { .code = 204 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -740,7 +740,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[197] = {
-		.vic = 197,
+		.vic = { .code = 197 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -756,7 +756,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[205] = {
-		.vic = 205,
+		.vic = { .code = 205 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -772,7 +772,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[210] = {
-		.vic = 210,
+		.vic = { .code = 210 },
 		.h_active = 10240,
 		.v_active = 4320,
 		.interlaced = false,
@@ -788,7 +788,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[211] = {
-		.vic = 211,
+		.vic = { .code = 211 },
 		.h_active = 10240,
 		.v_active = 4320,
 		.interlaced = false,
@@ -804,7 +804,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[212] = {
-		.vic = 212,
+		.vic = { .code = 212 },
 		.h_active = 10240,
 		.v_active = 4320,
 		.interlaced = false,
@@ -820,7 +820,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[213] = {
-		.vic = 213,
+		.vic = { .code = 213 },
 		.h_active = 10240,
 		.v_active = 4320,
 		.interlaced = false,
@@ -836,7 +836,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[17] = {
-		.vic = 17,
+		.vic = { .code = 17 },
 		.h_active = 720,
 		.v_active = 576,
 		.interlaced = false,
@@ -852,7 +852,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[18] = {
-		.vic = 18,
+		.vic = { .code = 18 },
 		.h_active = 720,
 		.v_active = 576,
 		.interlaced = false,
@@ -868,7 +868,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[19] = {
-		.vic = 19,
+		.vic = { .code = 19 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -884,7 +884,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[68] = {
-		.vic = 68,
+		.vic = { .code = 68 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -900,7 +900,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[20] = {
-		.vic = 20,
+		.vic = { .code = 20 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = true,
@@ -916,7 +916,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[21] = {
-		.vic = 21,
+		.vic = { .code = 21 },
 		.h_active = 1440,
 		.v_active = 576,
 		.interlaced = true,
@@ -932,7 +932,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[22] = {
-		.vic = 22,
+		.vic = { .code = 22 },
 		.h_active = 1440,
 		.v_active = 576,
 		.interlaced = true,
@@ -948,7 +948,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[23] = {
-		.vic = 23,
+		.vic = { .code = 23 },
 		.h_active = 1440,
 		.v_active = 288,
 		.interlaced = false,
@@ -964,7 +964,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[24] = {
-		.vic = 24,
+		.vic = { .code = 24 },
 		.h_active = 1440,
 		.v_active = 288,
 		.interlaced = false,
@@ -980,7 +980,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[25] = {
-		.vic = 25,
+		.vic = { .code = 25 },
 		.h_active = 2880,
 		.v_active = 576,
 		.interlaced = true,
@@ -996,7 +996,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[26] = {
-		.vic = 26,
+		.vic = { .code = 26 },
 		.h_active = 2880,
 		.v_active = 576,
 		.interlaced = true,
@@ -1012,7 +1012,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[27] = {
-		.vic = 27,
+		.vic = { .code = 27 },
 		.h_active = 2880,
 		.v_active = 288,
 		.interlaced = false,
@@ -1028,7 +1028,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[28] = {
-		.vic = 28,
+		.vic = { .code = 28 },
 		.h_active = 2880,
 		.v_active = 288,
 		.interlaced = false,
@@ -1044,7 +1044,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[29] = {
-		.vic = 29,
+		.vic = { .code = 29 },
 		.h_active = 1440,
 		.v_active = 576,
 		.interlaced = false,
@@ -1060,7 +1060,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[30] = {
-		.vic = 30,
+		.vic = { .code = 30 },
 		.h_active = 1440,
 		.v_active = 576,
 		.interlaced = false,
@@ -1076,7 +1076,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[31] = {
-		.vic = 31,
+		.vic = { .code = 31 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1092,7 +1092,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[75] = {
-		.vic = 75,
+		.vic = { .code = 75 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1108,7 +1108,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[37] = {
-		.vic = 37,
+		.vic = { .code = 37 },
 		.h_active = 2880,
 		.v_active = 576,
 		.interlaced = false,
@@ -1124,7 +1124,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[38] = {
-		.vic = 38,
+		.vic = { .code = 38 },
 		.h_active = 2880,
 		.v_active = 576,
 		.interlaced = false,
@@ -1140,7 +1140,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[39] = {
-		.vic = 39,
+		.vic = { .code = 39 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = true,
@@ -1156,7 +1156,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[82] = {
-		.vic = 82,
+		.vic = { .code = 82 },
 		.h_active = 1680,
 		.v_active = 720,
 		.interlaced = false,
@@ -1172,7 +1172,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[89] = {
-		.vic = 89,
+		.vic = { .code = 89 },
 		.h_active = 2560,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1188,7 +1188,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[96] = {
-		.vic = 96,
+		.vic = { .code = 96 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1204,7 +1204,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[106] = {
-		.vic = 106,
+		.vic = { .code = 106 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1220,7 +1220,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[101] = {
-		.vic = 101,
+		.vic = { .code = 101 },
 		.h_active = 4096,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1236,7 +1236,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135,
 	},
 	[125] = {
-		.vic = 125,
+		.vic = { .code = 125 },
 		.h_active = 5120,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1252,7 +1252,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[198] = {
-		.vic = 198,
+		.vic = { .code = 198 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -1268,7 +1268,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[206] = {
-		.vic = 206,
+		.vic = { .code = 206 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -1284,7 +1284,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[214] = {
-		.vic = 214,
+		.vic = { .code = 214 },
 		.h_active = 10240,
 		.v_active = 4320,
 		.interlaced = false,
@@ -1300,7 +1300,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[1] = {
-		.vic = 1,
+		.vic = { .code = 1 },
 		.h_active = 640,
 		.v_active = 480,
 		.interlaced = false,
@@ -1316,7 +1316,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[2] = {
-		.vic = 2,
+		.vic = { .code = 2 },
 		.h_active = 720,
 		.v_active = 480,
 		.interlaced = false,
@@ -1332,7 +1332,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[3] = {
-		.vic = 3,
+		.vic = { .code = 3 },
 		.h_active = 720,
 		.v_active = 480,
 		.interlaced = false,
@@ -1348,7 +1348,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[4] = {
-		.vic = 4,
+		.vic = { .code = 4 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -1364,7 +1364,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[69] = {
-		.vic = 69,
+		.vic = { .code = 69 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -1380,7 +1380,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[5] = {
-		.vic = 5,
+		.vic = { .code = 5 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = true,
@@ -1396,7 +1396,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[6] = {
-		.vic = 6,
+		.vic = { .code = 6 },
 		.h_active = 1440,
 		.v_active = 480,
 		.interlaced = true,
@@ -1412,7 +1412,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[7] = {
-		.vic = 7,
+		.vic = { .code = 7 },
 		.h_active = 1440,
 		.v_active = 480,
 		.interlaced = true,
@@ -1428,7 +1428,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[8] = {
-		.vic = 8,
+		.vic = { .code = 8 },
 		.h_active = 1440,
 		.v_active = 240,
 		.interlaced = false,
@@ -1444,7 +1444,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[9] = {
-		.vic = 9,
+		.vic = { .code = 9 },
 		.h_active = 1440,
 		.v_active = 240,
 		.interlaced = false,
@@ -1460,7 +1460,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[10] = {
-		.vic = 10,
+		.vic = { .code = 10 },
 		.h_active = 2880,
 		.v_active = 480,
 		.interlaced = true,
@@ -1476,7 +1476,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[11] = {
-		.vic = 11,
+		.vic = { .code = 11 },
 		.h_active = 2880,
 		.v_active = 480,
 		.interlaced = true,
@@ -1492,7 +1492,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[12] = {
-		.vic = 12,
+		.vic = { .code = 12 },
 		.h_active = 2880,
 		.v_active = 240,
 		.interlaced = false,
@@ -1508,7 +1508,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[13] = {
-		.vic = 13,
+		.vic = { .code = 13 },
 		.h_active = 2880,
 		.v_active = 240,
 		.interlaced = false,
@@ -1524,7 +1524,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[14] = {
-		.vic = 14,
+		.vic = { .code = 14 },
 		.h_active = 1440,
 		.v_active = 480,
 		.interlaced = false,
@@ -1540,7 +1540,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[15] = {
-		.vic = 15,
+		.vic = { .code = 15 },
 		.h_active = 1440,
 		.v_active = 480,
 		.interlaced = false,
@@ -1556,7 +1556,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[16] = {
-		.vic = 16,
+		.vic = { .code = 16 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1572,7 +1572,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[76] = {
-		.vic = 76,
+		.vic = { .code = 76 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1588,7 +1588,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[35] = {
-		.vic = 35,
+		.vic = { .code = 35 },
 		.h_active = 2880,
 		.v_active = 480,
 		.interlaced = false,
@@ -1604,7 +1604,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[36] = {
-		.vic = 36,
+		.vic = { .code = 36 },
 		.h_active = 2880,
 		.v_active = 480,
 		.interlaced = false,
@@ -1620,7 +1620,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[83] = {
-		.vic = 83,
+		.vic = { .code = 83 },
 		.h_active = 1680,
 		.v_active = 720,
 		.interlaced = false,
@@ -1636,7 +1636,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[90] = {
-		.vic = 90,
+		.vic = { .code = 90 },
 		.h_active = 2560,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1652,7 +1652,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[97] = {
-		.vic = 97,
+		.vic = { .code = 97 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1668,7 +1668,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[107] = {
-		.vic = 107,
+		.vic = { .code = 107 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1684,7 +1684,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[102] = {
-		.vic = 102,
+		.vic = { .code = 102 },
 		.h_active = 4096,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1700,7 +1700,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135,
 	},
 	[126] = {
-		.vic = 126,
+		.vic = { .code = 126 },
 		.h_active = 5120,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1716,7 +1716,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[199] = {
-		.vic = 199,
+		.vic = { .code = 199 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -1732,7 +1732,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[207] = {
-		.vic = 207,
+		.vic = { .code = 207 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -1748,7 +1748,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[215] = {
-		.vic = 215,
+		.vic = { .code = 215 },
 		.h_active = 10240,
 		.v_active = 4320,
 		.interlaced = false,
@@ -1764,7 +1764,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[40] = {
-		.vic = 40,
+		.vic = { .code = 40 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = true,
@@ -1780,7 +1780,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[41] = {
-		.vic = 41,
+		.vic = { .code = 41 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -1796,7 +1796,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[70] = {
-		.vic = 70,
+		.vic = { .code = 70 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -1812,7 +1812,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[42] = {
-		.vic = 42,
+		.vic = { .code = 42 },
 		.h_active = 720,
 		.v_active = 576,
 		.interlaced = false,
@@ -1828,7 +1828,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[43] = {
-		.vic = 43,
+		.vic = { .code = 43 },
 		.h_active = 720,
 		.v_active = 576,
 		.interlaced = false,
@@ -1844,7 +1844,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[44] = {
-		.vic = 44,
+		.vic = { .code = 44 },
 		.h_active = 1440,
 		.v_active = 576,
 		.interlaced = true,
@@ -1860,7 +1860,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[45] = {
-		.vic = 45,
+		.vic = { .code = 45 },
 		.h_active = 1440,
 		.v_active = 576,
 		.interlaced = true,
@@ -1876,7 +1876,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[64] = {
-		.vic = 64,
+		.vic = { .code = 64 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1892,7 +1892,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[77] = {
-		.vic = 77,
+		.vic = { .code = 77 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1908,7 +1908,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[84] = {
-		.vic = 84,
+		.vic = { .code = 84 },
 		.h_active = 1680,
 		.v_active = 720,
 		.interlaced = false,
@@ -1924,7 +1924,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[91] = {
-		.vic = 91,
+		.vic = { .code = 91 },
 		.h_active = 2560,
 		.v_active = 1080,
 		.interlaced = false,
@@ -1940,7 +1940,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[117] = {
-		.vic = 117,
+		.vic = { .code = 117 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1956,7 +1956,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[119] = {
-		.vic = 119,
+		.vic = { .code = 119 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1972,7 +1972,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[127] = {
-		.vic = 127,
+		.vic = { .code = 127 },
 		.h_active = 5120,
 		.v_active = 2160,
 		.interlaced = false,
@@ -1988,7 +1988,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[200] = {
-		.vic = 200,
+		.vic = { .code = 200 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -2004,7 +2004,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[208] = {
-		.vic = 208,
+		.vic = { .code = 208 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -2020,7 +2020,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[216] = {
-		.vic = 216,
+		.vic = { .code = 216 },
 		.h_active = 10240,
 		.v_active = 4320,
 		.interlaced = false,
@@ -2036,7 +2036,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[218] = {
-		.vic = 218,
+		.vic = { .code = 218 },
 		.h_active = 4096,
 		.v_active = 2160,
 		.interlaced = false,
@@ -2052,7 +2052,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135,
 	},
 	[46] = {
-		.vic = 46,
+		.vic = { .code = 46 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = true,
@@ -2068,7 +2068,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[47] = {
-		.vic = 47,
+		.vic = { .code = 47 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -2084,7 +2084,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[71] = {
-		.vic = 71,
+		.vic = { .code = 71 },
 		.h_active = 1280,
 		.v_active = 720,
 		.interlaced = false,
@@ -2100,7 +2100,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[48] = {
-		.vic = 48,
+		.vic = { .code = 48 },
 		.h_active = 720,
 		.v_active = 480,
 		.interlaced = false,
@@ -2116,7 +2116,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[49] = {
-		.vic = 49,
+		.vic = { .code = 49 },
 		.h_active = 720,
 		.v_active = 480,
 		.interlaced = false,
@@ -2132,7 +2132,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[50] = {
-		.vic = 50,
+		.vic = { .code = 50 },
 		.h_active = 1440,
 		.v_active = 480,
 		.interlaced = true,
@@ -2148,7 +2148,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[51] = {
-		.vic = 51,
+		.vic = { .code = 51 },
 		.h_active = 1440,
 		.v_active = 480,
 		.interlaced = true,
@@ -2164,7 +2164,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[63] = {
-		.vic = 63,
+		.vic = { .code = 63 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -2180,7 +2180,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[78] = {
-		.vic = 78,
+		.vic = { .code = 78 },
 		.h_active = 1920,
 		.v_active = 1080,
 		.interlaced = false,
@@ -2196,7 +2196,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[85] = {
-		.vic = 85,
+		.vic = { .code = 85 },
 		.h_active = 1680,
 		.v_active = 720,
 		.interlaced = false,
@@ -2212,7 +2212,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[92] = {
-		.vic = 92,
+		.vic = { .code = 92 },
 		.h_active = 2560,
 		.v_active = 1080,
 		.interlaced = false,
@@ -2228,7 +2228,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[118] = {
-		.vic = 118,
+		.vic = { .code = 118 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -2244,7 +2244,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[120] = {
-		.vic = 120,
+		.vic = { .code = 120 },
 		.h_active = 3840,
 		.v_active = 2160,
 		.interlaced = false,
@@ -2260,7 +2260,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[193] = {
-		.vic = 193,
+		.vic = { .code = 193 },
 		.h_active = 5120,
 		.v_active = 2160,
 		.interlaced = false,
@@ -2276,7 +2276,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[201] = {
-		.vic = 201,
+		.vic = { .code = 201 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -2292,7 +2292,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[209] = {
-		.vic = 209,
+		.vic = { .code = 209 },
 		.h_active = 7680,
 		.v_active = 4320,
 		.interlaced = false,
@@ -2308,7 +2308,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[217] = {
-		.vic = 217,
+		.vic = { .code = 217 },
 		.h_active = 10240,
 		.v_active = 4320,
 		.interlaced = false,
@@ -2324,7 +2324,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_64_27,
 	},
 	[219] = {
-		.vic = 219,
+		.vic = { .code = 219 },
 		.h_active = 4096,
 		.v_active = 2160,
 		.interlaced = false,
@@ -2340,7 +2340,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_256_135,
 	},
 	[52] = {
-		.vic = 52,
+		.vic = { .code = 52 },
 		.h_active = 720,
 		.v_active = 576,
 		.interlaced = false,
@@ -2356,7 +2356,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[53] = {
-		.vic = 53,
+		.vic = { .code = 53 },
 		.h_active = 720,
 		.v_active = 576,
 		.interlaced = false,
@@ -2372,7 +2372,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[54] = {
-		.vic = 54,
+		.vic = { .code = 54 },
 		.h_active = 1440,
 		.v_active = 576,
 		.interlaced = true,
@@ -2388,7 +2388,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[55] = {
-		.vic = 55,
+		.vic = { .code = 55 },
 		.h_active = 1440,
 		.v_active = 576,
 		.interlaced = true,
@@ -2404,7 +2404,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[56] = {
-		.vic = 56,
+		.vic = { .code = 56 },
 		.h_active = 720,
 		.v_active = 480,
 		.interlaced = false,
@@ -2420,7 +2420,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[57] = {
-		.vic = 57,
+		.vic = { .code = 57 },
 		.h_active = 720,
 		.v_active = 480,
 		.interlaced = false,
@@ -2436,7 +2436,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_16_9,
 	},
 	[58] = {
-		.vic = 58,
+		.vic = { .code = 58 },
 		.h_active = 1440,
 		.v_active = 480,
 		.interlaced = true,
@@ -2452,7 +2452,7 @@ const struct di_cta_vic_video_format _di_cta_vic_video_formats[] = {
 		.picture_aspect_ratio = DI_CTA_VIC_VIDEO_FORMAT_PICTURE_ASPECT_RATIO_4_3,
 	},
 	[59] = {
-		.vic = 59,
+		.vic = { .code = 59 },
 		.h_active = 1440,
 		.v_active = 480,
 		.interlaced = true,

@@ -13,6 +13,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include <libdisplay-info/hdmi-vic.h>
+#include <libdisplay-info/cta-vic.h>
+
 /**
  * EDID CTA-861 extension block.
  */
@@ -771,8 +774,8 @@ di_cta_data_block_get_hdr_dynamic_metadata(const struct di_cta_data_block *block
  * A Short Video Descriptor (SVD).
  */
 struct di_cta_svd {
-	/* Video Identification Code (VIC) */
-	uint8_t vic;
+	/* CTA Video Identification Code (VIC) */
+	struct di_cta_vic vic;
 	/* Original index of the VIC in this block's array. Some maps refer to
 	 * this value, such as the YCbCr 4:2:0 Capability Map. */
 	uint8_t original_index;
@@ -1314,7 +1317,7 @@ struct di_cta_vendor_hdmi_block {
 	int interlaced_audio_latency;
 	/* HDMI VIC's. List may be empty. */
 	size_t vics_len;
-	const uint8_t *vics;
+	struct di_hdmi_vic *vics;
 };
 
 /**
@@ -1505,7 +1508,7 @@ const struct di_cta_hdmi_forum_sink_cap *
 di_cta_data_block_get_hdmi_sink_cap(const struct di_cta_data_block *block);
 
 enum di_cta_svr_type {
-	/* reference contains a VIC */
+	/* reference contains a CTA VIC */
 	DI_CTA_SVR_TYPE_VIC,
 	/* reference contains an index into DTDs */
 	DI_CTA_SVR_TYPE_DTD_INDEX,
@@ -1523,8 +1526,8 @@ enum di_cta_svr_type {
  */
 struct di_cta_svr {
 	enum di_cta_svr_type type;
-	/* A VIC if type is DI_CTA_SVR_TYPE_VIC */
-	uint8_t vic;
+	/* A CTA VIC if type is DI_CTA_SVR_TYPE_VIC */
+	struct di_cta_vic vic;
 	/* The index into DTDs in order of appearance if type is
 	 * DI_CTA_SVR_TYPE_DTD_INDEX */
 	uint8_t dtd_index;

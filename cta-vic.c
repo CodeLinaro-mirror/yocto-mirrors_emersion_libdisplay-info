@@ -4,15 +4,15 @@ extern const struct di_cta_vic_video_format _di_cta_vic_video_formats[];
 extern const size_t _di_cta_vic_video_formats_len;
 
 const struct di_cta_vic_video_format *
-di_cta_vic_video_format_from_vic(uint8_t vic)
+di_cta_vic_video_format_from_vic(struct di_cta_vic vic)
 {
-	if (vic > _di_cta_vic_video_formats_len ||
-	    _di_cta_vic_video_formats[vic].vic == 0)
+	if (vic.code > _di_cta_vic_video_formats_len ||
+	    _di_cta_vic_video_formats[vic.code].vic.code == 0)
 		return NULL;
-	return &_di_cta_vic_video_formats[vic];
+	return &_di_cta_vic_video_formats[vic.code];
 }
 
-uint8_t
+struct di_cta_vic
 di_cta_vic_video_format_to_vic(const struct di_cta_vic_video_format *format)
 {
 	size_t i;
@@ -20,7 +20,7 @@ di_cta_vic_video_format_to_vic(const struct di_cta_vic_video_format *format)
 	for (i = 0; i < _di_cta_vic_video_formats_len; i++) {
 		const struct di_cta_vic_video_format *candidate = &_di_cta_vic_video_formats[i];
 
-		if (candidate->vic != 0 &&
+		if (candidate->vic.code != 0 &&
 		    candidate->h_active == format->h_active &&
 		    candidate->v_active == format->v_active &&
 		    candidate->h_sync == format->h_sync &&
@@ -35,5 +35,5 @@ di_cta_vic_video_format_to_vic(const struct di_cta_vic_video_format *format)
 			return candidate->vic;
 	}
 
-	return 0;
+	return (struct di_cta_vic) { .code = 0 };
 }

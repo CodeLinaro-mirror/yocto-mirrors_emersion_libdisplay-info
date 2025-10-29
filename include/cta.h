@@ -193,7 +193,7 @@ struct di_cta_type_vii_timing_priv {
 struct di_cta_vendor_hdmi_block_priv {
 	struct di_cta_vendor_hdmi_block base;
 	/* HDMI VIC's. */
-	uint8_t *vics;
+	struct di_hdmi_vic *vics;
 };
 
 struct di_cta_dolby_video_block_priv {

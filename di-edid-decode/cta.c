@@ -27,14 +27,14 @@ video_format_picture_aspect_ratio_name(enum di_cta_vic_video_format_picture_aspe
 }
 
 static void
-print_vic(uint8_t vic)
+print_cta_vic(struct di_cta_vic vic)
 {
 	const struct di_cta_vic_video_format *fmt;
 	int32_t h_blank, v_blank, v_active;
 	double refresh, h_freq_hz, pixel_clock_mhz, h_total, v_total;
 	char buf[10];
 
-	printf("    VIC %3" PRIu8, vic);
+	printf("    VIC %3" PRIu8, vic.code);
 
 	fmt = di_cta_vic_video_format_from_vic(vic);
 	if (fmt == NULL)
@@ -70,7 +70,7 @@ print_vic(uint8_t vic)
 static void
 printf_cta_svd(const struct di_cta_svd *svd)
 {
-	print_vic(svd->vic);
+	print_cta_vic(svd->vic);
 	if (svd->native)
 		printf(" (native)");
 	printf("\n");
@@ -86,16 +86,16 @@ printf_cta_svds(const struct di_cta_svd *const *svds)
 }
 
 static void
-print_cta_hdmi_vic(uint8_t hdmi_vic)
+print_hdmi_vic(const struct di_hdmi_vic vic)
 {
 	const struct di_hdmi_vic_video_format *fmt;
 	int32_t h_blank, v_blank;
 	double refresh, h_freq_hz, pixel_clock_mhz, h_total, v_total;
 	int horiz_ratio, vert_ratio;
 
-	printf("    HDMI VIC %" PRIu8, hdmi_vic);
+	printf("    HDMI VIC %" PRIu8, vic.code);
 
-	fmt = di_hdmi_vic_video_format_from_vic(hdmi_vic);
+	fmt = di_hdmi_vic_video_format_from_vic(vic);
 	if (fmt == NULL)
 		return;
 
@@ -722,7 +722,7 @@ printf_cta_svrs(const struct di_cta_svr *const *svrs)
 
 		switch (svr->type) {
 		case DI_CTA_SVR_TYPE_VIC:
-			printf("    VIC %3u\n", svr->vic);
+			printf("    VIC %3u\n", svr->vic.code);
 			break;
 		case DI_CTA_SVR_TYPE_DTD_INDEX:
 			printf("    DTD %3u\n", svr->dtd_index + 1);
@@ -929,7 +929,7 @@ print_cta_hdmi(const struct di_cta_vendor_hdmi_block *hdmi)
 		printf("      HDMI VICs:\n");
 		for (i = 0; i < hdmi->vics_len; i++) {
 			printf("    ");
-			print_cta_hdmi_vic(hdmi->vics[i]);
+			print_hdmi_vic(hdmi->vics[i]);
 			printf("\n");
 		}
 	}
