@@ -71,3 +71,27 @@ di_hdmi_vic_video_format_from_vic(uint8_t vic)
 
 	return NULL;
 }
+
+uint8_t
+di_hdmi_vic_video_format_to_vic(const struct di_hdmi_vic_video_format *format)
+{
+	size_t i;
+
+	for (i = 0; i < _di_hdmi_vic_video_formats_len; i++) {
+		const struct di_hdmi_vic_video_format *candidate = &_di_hdmi_vic_video_formats[i];
+
+		if (candidate->vic != 0 &&
+		    candidate->h_active == format->h_active &&
+		    candidate->v_active == format->v_active &&
+		    candidate->h_front == format->h_front &&
+		    candidate->v_front == format->v_front &&
+		    candidate->h_sync == format->h_sync &&
+		    candidate->v_sync == format->v_sync &&
+		    candidate->h_back == format->h_back &&
+		    candidate->v_back == format->v_back &&
+		    candidate->pixel_clock_hz == format->pixel_clock_hz)
+			return candidate->vic;
+	}
+
+	return 0;
+}

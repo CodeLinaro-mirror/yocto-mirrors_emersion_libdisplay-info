@@ -47,6 +47,14 @@ struct di_dmt_timing {
 const struct di_dmt_timing *
 di_dmt_timing_from_code(uint8_t dmt_id);
 
+/**
+ * Get a DMT Timing Code from a VESA Display Monitor Timing (DMT).
+ *
+ * Returns 0 if the DMT Timing Code is unknown.
+ */
+uint8_t
+di_dmt_timing_to_code(const struct di_dmt_timing *timing);
+
 /* See <libdisplay-info/edid.h> */
 struct di_edid_standard_timing;
 

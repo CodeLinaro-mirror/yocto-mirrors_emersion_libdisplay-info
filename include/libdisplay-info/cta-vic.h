@@ -59,4 +59,12 @@ struct di_cta_vic_video_format {
 const struct di_cta_vic_video_format *
 di_cta_vic_video_format_from_vic(uint8_t cta_vic);
 
+/**
+ * Get a CTA VIC from a CTA-861 video format.
+ *
+ * Returns 0 if the video format is unknown.
+ */
+uint8_t
+di_cta_vic_video_format_to_vic(const struct di_cta_vic_video_format *format);
+
 #endif

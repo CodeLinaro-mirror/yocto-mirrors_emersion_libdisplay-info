@@ -35,4 +35,12 @@ struct di_hdmi_vic_video_format {
 const struct di_hdmi_vic_video_format *
 di_hdmi_vic_video_format_from_vic(uint8_t hdmi_vic);
 
+/**
+ * Get a HDMI VIC from a HDMI video format.
+ *
+ * Returns 0 if the video format is unknown.
+ */
+uint8_t
+di_hdmi_vic_video_format_to_vic(const struct di_hdmi_vic_video_format *format);
+
 #endif
