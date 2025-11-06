@@ -198,7 +198,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 		add_failure(cta,
 			    "%s: Interlaced Latency support flag set, but Latency support flag is not",
 			    block_name);
-		return false;
+		return true;
 	}
 
 	/* The next features from the block do not have fixed position, so we
@@ -210,7 +210,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 			add_failure(cta,
 				    "%s: Latency support flag set, but bytes are missing",
 				    block_name);
-			return false;
+			return true;
 		}
 
 		val = data[index++];
@@ -229,7 +229,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 			add_failure(cta,
 				    "%s: Interlaced Latency support flag set, but bytes are missing",
 				    block_name);
-			return false;
+			return true;
 		}
 
 		val = data[index++];
@@ -257,7 +257,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 		add_failure(cta,
 			    "%s: Extended Video Details flag but HDMI VIC list size 0",
 			    block_name);
-		return false;
+		return true;
 	}
 
 	if (size <= index + len_vic - 1) {

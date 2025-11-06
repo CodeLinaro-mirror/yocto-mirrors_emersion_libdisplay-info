@@ -1,26 +1,14 @@
 --- ref
 +++ di
-@@ -86,19 +86,8 @@
+@@ -86,7 +86,6 @@
      DTS-HD:
        Max channels: 8
        Supported sample rates (kHz): 192 176.4 96 88.2 48 44.1
 -      Audio Format Code dependent value: 0x01
    Speaker Allocation Data Block:
      FL/FR - Front Left/Right
--  Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
--    Source physical address: 2.0.0.0
--    DC_36bit
--    DC_30bit
--    DC_Y444
--    Maximum TMDS clock: 225 MHz
--    Video latency: 2 ms
--    Audio latency: 2 ms
--    Interlaced video latency: 2 ms
--    Interlaced audio latency: 2 ms
-   Video Capability Data Block:
-     YCbCr quantization: Selectable (via AVI YQ)
-     RGB quantization: Selectable (via AVI Q)
-@@ -112,16 +101,9 @@
+   Vendor-Specific Data Block (HDMI), OUI 00-0C-03:
+@@ -112,16 +111,9 @@
      Supports Auto Low-Latency Mode
      VRRmin: 40 Hz
      VRRmax: 60 Hz
@@ -37,7 +25,7 @@
    Detailed Timing Descriptors:
      DTD 3:  1360x768    60.015162 Hz  85:48    47.712 kHz     85.500000 MHz (521 mm x 293 mm)
                   Hfront   64 Hsync 112 Hback  256 Hpol N
-@@ -129,35 +111,14 @@
+@@ -129,35 +121,14 @@
      DTD 4:   720x480    59.940060 Hz   3:2     31.469 kHz     27.000000 MHz (391 mm x 293 mm)
                   Hfront   16 Hsync  62 Hback   60 Hpol N
                   Vfront    9 Vsync   6 Vback   30 Vpol N
