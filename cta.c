@@ -100,8 +100,11 @@ parse_video_block(struct di_cta *cta, struct di_cta_video_block_priv *video,
 	uint8_t i;
 	struct di_cta_svd *svd;
 
-	if (size == 0)
+	if (size == 0) {
 		add_failure(cta, "Video Data Block: Empty Data Block");
+		errno = EINVAL;
+		return false;
+	}
 
 	assert(size < (1 << 8));
 
@@ -495,8 +498,11 @@ parse_ycbcr420_block(struct di_cta *cta,
 	uint8_t i;
 	struct di_cta_svd *svd;
 
-	if (size == 0)
+	if (size == 0) {
 		add_failure(cta, "YCbCr 4:2:0 Video Data Block: Empty Data Block");
+		errno = EINVAL;
+		return false;
+	}
 
 	assert(size < (1 << 8));
 
