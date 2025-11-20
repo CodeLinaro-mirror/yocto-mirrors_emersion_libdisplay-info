@@ -96,11 +96,12 @@ parse_vendor_product(struct di_edid *edid,
 	out->manufacturer[1] = ((man >> 5) & 0x1F) + '@';
 	out->manufacturer[2] = ((man >> 0) & 0x1F) + '@';
 
-	out->product = (uint16_t) (data[0x0A] | (data[0x0B] << 8));
-	out->serial = (uint32_t) (data[0x0C] |
-				  (data[0x0D] << 8) |
-				  (data[0x0E] << 16) |
-				  (data[0x0F] << 24));
+	out->product = (uint16_t) ((uint16_t)data[0x0A] |
+				   ((uint16_t)data[0x0B] << 8));
+	out->serial = (uint32_t) ((uint32_t)data[0x0C] |
+				  ((uint32_t)data[0x0D] << 8) |
+				  ((uint32_t)data[0x0E] << 16) |
+				  ((uint32_t)data[0x0F] << 24));
 
 	raw_week = data[0x10];
 	raw_year = data[0x11];
