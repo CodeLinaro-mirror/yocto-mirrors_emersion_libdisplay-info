@@ -10,6 +10,7 @@ acer-p1276		| ./Analog/Acer/ACR1616/4108C2D271EB		| cff7fe4d44
 goldstar-37lg5000       | ./Digital/Goldstar/GSM75F2/7E4E421EBEFD       | a4a460983d
 goldstar-ite6604-hdmi	| ./Digital/Goldstar/GSM7666/FE91A60D5B6E	| cff7fe4d44
 hitachi-55r6+		| ./Digital/Hitachi/HEC0000/58C711CBA787	| cff7fe4d44
+lenovo-t24s28		| ./Digital/Lenovo/LEN62C7/938C202E7A3C		| a4a460983d
 lenovo-t27p10           | ./Digital/Lenovo/LEN61DA/75037CFDD4F5         | 6074fb4434
 msi-mag321curv-dp	| ./Digital/MSI/MSI3DA2/9BD6EC4AFDBD		| cff7fe4d44
 panasonic-mei96a2-dp	| ./Digital/Panasonic/MEI96A2/7CA47BE65E1E	| cff7fe4d44
