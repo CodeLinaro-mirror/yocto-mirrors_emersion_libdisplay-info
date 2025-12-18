@@ -814,8 +814,9 @@ parse_established_timings_iii_descriptor(struct di_edid *edid,
 	size_t i, offset, bit;
 	uint8_t dmt_id;
 	bool has_zeroes;
-	uint8_t dmt_codes[EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT];
+	struct di_dmt_code dmt_codes[EDID_MAX_DESCRIPTOR_ESTABLISHED_TIMING_III_COUNT];
 	size_t dmt_codes_len = 0;
+	size_t size;
 
 	if (edid->revision < 4)
 		add_failure(edid, "Established timings III: Not allowed for EDID < 1.4.");
@@ -826,7 +827,7 @@ parse_established_timings_iii_descriptor(struct di_edid *edid,
 		bit = 7 - i % 8;
 		assert(offset < EDID_BYTE_DESCRIPTOR_SIZE);
 		if (has_bit(data[offset], bit))
-			dmt_codes[dmt_codes_len++] = dmt_id;
+			dmt_codes[dmt_codes_len++] = (struct di_dmt_code) { .code = dmt_id };
 	}
 
 	if (dmt_codes_len == 0) {
@@ -834,11 +835,12 @@ parse_established_timings_iii_descriptor(struct di_edid *edid,
 		return true;
 	}
 
-	timings_iii->dmt_codes = calloc(1, dmt_codes_len);
+	size = dmt_codes_len * sizeof(*dmt_codes);
+	timings_iii->dmt_codes = calloc(1, size);
 	if (!timings_iii->dmt_codes)
 		return false;
 
-	memcpy(timings_iii->dmt_codes, dmt_codes, dmt_codes_len);
+	memcpy(timings_iii->dmt_codes, dmt_codes, size);
 	timings_iii->dmt_codes_len = dmt_codes_len;
 
 	has_zeroes = get_bit_range(data[11], 3, 0) == 0;

@@ -12,11 +12,19 @@
 #include <stddef.h>
 
 /**
+ * A DMT Timing Code.
+ */
+struct di_dmt_code {
+	/* Timing Code */
+	uint8_t code;
+};
+
+/**
  * A DMT timing.
  */
 struct di_dmt_timing {
-	/* DMT ID */
-	uint8_t dmt_id;
+	/* DMT Timing Code */
+	struct di_dmt_code dmt_code;
 	/* EDID standard timing 2-byte code, zero if unset */
 	uint16_t edid_std_id;
 	/* CVT 3-byte code, zero if unset */
@@ -45,14 +53,14 @@ struct di_dmt_timing {
  * Returns NULL if the DMT Timing Code is unknown.
  */
 const struct di_dmt_timing *
-di_dmt_timing_from_code(uint8_t dmt_id);
+di_dmt_timing_from_code(struct di_dmt_code dmt_code);
 
 /**
  * Get a DMT Timing Code from a VESA Display Monitor Timing (DMT).
  *
- * Returns 0 if the DMT Timing Code is unknown.
+ * Returns a code of 0 if the DMT Timing Code is unknown.
  */
-uint8_t
+struct di_dmt_code
 di_dmt_timing_to_code(const struct di_dmt_timing *timing);
 
 /* See <libdisplay-info/edid.h> */

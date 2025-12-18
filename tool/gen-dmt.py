@@ -97,7 +97,7 @@ def parse_timing(page):
     assert(vert_border == parse_line_param(params["// V Top Border"]))
 
     return {
-        "dmt_id": dmt_id,
+        "dmt_code": "{{ .code = {} }}".format(dmt_id),
         "edid_std_id": 0 if edid_std_id is None else edid_std_id,
         "cvt_id": 0 if cvt_id is None else cvt_id,
         "horiz_video": horiz_video,

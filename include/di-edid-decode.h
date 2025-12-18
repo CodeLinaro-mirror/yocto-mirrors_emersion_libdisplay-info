@@ -47,7 +47,7 @@ void
 print_hdmi_vic_timing(const struct di_hdmi_vic vic);
 
 void
-print_dmt_timing_code(uint8_t dmt_code);
+print_dmt_timing_code(struct di_dmt_code dmt_code);
 
 void
 print_cvt_timing(struct di_cvt_timing *t, struct di_cvt_options *options,

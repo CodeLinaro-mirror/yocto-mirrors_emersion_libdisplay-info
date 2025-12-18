@@ -52,7 +52,7 @@ print_standard_timing(const struct di_edid_standard_timing *t)
 		horiz_freq_hz = (double) dmt->pixel_clock_hz / horiz_total;
 		pixel_clock_mhz = (double) dmt->pixel_clock_hz / (1000 * 1000);
 
-		printf("DMT 0x%02x", dmt ? dmt->dmt_id : 0);
+		printf("DMT 0x%02x", dmt ? dmt->dmt_code.code : 0);
 	} else {
 		/* TODO: CVT timings */
 

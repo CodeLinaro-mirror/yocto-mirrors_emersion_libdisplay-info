@@ -8,21 +8,21 @@ extern const struct di_dmt_timing _di_dmt_timings[];
 extern const size_t _di_dmt_timings_len;
 
 const struct di_dmt_timing *
-di_dmt_timing_from_code(uint8_t dmt_id)
+di_dmt_timing_from_code(struct di_dmt_code dmt_code)
 {
 	size_t i;
 
 	for (i = 0; i < _di_dmt_timings_len; i++) {
 		const struct di_dmt_timing *t = &_di_dmt_timings[i];
 
-		if (t->dmt_id == dmt_id)
+		if (t->dmt_code.code == dmt_code.code)
 			return t;
 	}
 
 	return NULL;
 }
 
-uint8_t
+struct di_dmt_code
 di_dmt_timing_to_code(const struct di_dmt_timing *timing)
 {
 	size_t i;
@@ -43,10 +43,10 @@ di_dmt_timing_to_code(const struct di_dmt_timing *timing)
 		    t->horiz_border == timing->horiz_border &&
 		    t->vert_border == timing->vert_border &&
 		    t->reduced_blanking == timing->reduced_blanking)
-			return t->dmt_id;
+			return t->dmt_code;
 	}
 
-	return 0;
+	return (struct di_dmt_code) { .code = 0 };
 }
 
 const struct di_dmt_timing *

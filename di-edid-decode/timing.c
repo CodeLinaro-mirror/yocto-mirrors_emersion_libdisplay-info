@@ -102,7 +102,7 @@ print_hdmi_vic_timing(const struct di_hdmi_vic vic)
 }
 
 void
-print_dmt_timing_code(uint8_t dmt_code)
+print_dmt_timing_code(struct di_dmt_code dmt_code)
 {
 	const struct di_dmt_timing *t;
 	int hbl, vbl, horiz_total, vert_total, horiz_ratio, vert_ratio;
@@ -112,7 +112,7 @@ print_dmt_timing_code(uint8_t dmt_code)
 
 	t = di_dmt_timing_from_code(dmt_code);
 	if (!t) {
-		printf("DMT 0x%02x: Unknown\n", t->dmt_id);
+		printf("DMT 0x%02x: Unknown\n", t->dmt_code.code);
 	}
 
 	compute_aspect_ratio(t->horiz_video, t->vert_video,
@@ -126,7 +126,7 @@ print_dmt_timing_code(uint8_t dmt_code)
 	horiz_freq_hz = (double) t->pixel_clock_hz / horiz_total;
 	pixel_clock_mhz = (double) t->pixel_clock_hz / (1000 * 1000);
 
-	printf("DMT 0x%02x:", t->dmt_id);
+	printf("DMT 0x%02x:", t->dmt_code.code);
 	printf(" %5dx%-5d", t->horiz_video, t->vert_video);
 	printf(" %10.6f Hz", refresh);
 	printf(" %3u:%-3u", horiz_ratio, vert_ratio);

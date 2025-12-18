@@ -656,7 +656,7 @@ di_edid_display_descriptor_get_color_points(const struct di_edid_display_descrip
  */
 struct di_edid_established_timings_iii {
 	size_t dmt_codes_len;
-	uint8_t *dmt_codes;
+	struct di_dmt_code *dmt_codes;
 };
 
 /**
