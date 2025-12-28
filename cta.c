@@ -982,11 +982,11 @@ parse_video_cap_block(struct di_cta *cta,
 
 	switch (video_cap->it_over_underscan) {
 	case DI_CTA_VIDEO_CAP_ALWAYS_OVERSCAN:
-		if (cta->flags->it_underscan)
+		if (cta->flags && cta->flags->it_underscan)
 			add_failure(cta, "Video Capability Data Block: IT video formats are always overscanned, but bit 7 of Byte 3 of the CTA-861 Extension header is set to underscanned.");
 		break;
 	case DI_CTA_VIDEO_CAP_ALWAYS_UNDERSCAN:
-		if (!cta->flags->it_underscan)
+		if (cta->flags && !cta->flags->it_underscan)
 			add_failure(cta, "Video Capability Data Block: IT video formats are always underscanned, but bit 7 of Byte 3 of the CTA-861 Extension header is set to overscanned.");
 	default:
 		break;

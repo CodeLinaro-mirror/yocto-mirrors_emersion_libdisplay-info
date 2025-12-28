@@ -86,7 +86,7 @@
  */
 struct di_cta {
 	int revision;
-	const struct di_edid_cta_flags *flags;
+	const struct di_edid_cta_flags *flags; /* may be NULL for non-EDID blocks */
 
 	struct di_logger *logger;
 };
