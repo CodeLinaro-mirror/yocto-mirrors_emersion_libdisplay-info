@@ -814,7 +814,7 @@ destroy_data_block(struct di_displayid_data_block *data_block)
 	case DI_DISPLAYID_DATA_BLOCK_TYPE_IV_TIMING:
 		free((struct di_dmt_code *) data_block->type_iv_timing.dmts);
 		free((struct di_cta_vic *) data_block->type_iv_timing.cta_vics);
-		free((struct di_hdmi_vic *) data_block->type_iv_timing.cta_vics);
+		free((struct di_hdmi_vic *) data_block->type_iv_timing.hdmi_vics);
 		break;
 	default:
 		break; /* Nothing to do */
