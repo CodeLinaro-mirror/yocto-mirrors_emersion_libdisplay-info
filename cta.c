@@ -1887,6 +1887,7 @@ parse_speaker_location_block(struct di_cta *cta,
 
 	while (size >= 2) {
 		speaker_loc.has_coords = has_bit(data[0], 6);
+		speaker_loc.x = speaker_loc.y = speaker_loc.z = 0;
 		speaker_loc.is_active = has_bit(data[0], 5);
 		speaker_loc.channel_index = get_bit_range(data[0], 4, 0);
 		speaker_loc.speaker_id = get_bit_range(data[1], 4, 0);
