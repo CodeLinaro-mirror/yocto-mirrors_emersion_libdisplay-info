@@ -388,7 +388,7 @@ print_cvt_timing_code(const struct di_edid_cvt_timing_code *t)
 	struct di_cvt_timing timing;
 	struct di_cvt_options options;
 	enum di_edid_cvt_timing_code_preferred_vrate pref = t->preferred_vertical_rate;
-	int hratio, vratio;
+	int hratio = 0, vratio = 0;
 
 	options.int_rqd = false;
 	options.margins_rqd = false;
