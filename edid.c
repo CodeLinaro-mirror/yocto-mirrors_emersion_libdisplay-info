@@ -29,6 +29,9 @@
 static const uint8_t header[] = { 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00 };
 
 static void
+destroy_display_descriptor(struct di_edid_display_descriptor *desc);
+
+static void
 add_failure(struct di_edid *edid, const char fmt[], ...)
 {
 	va_list args;
@@ -1029,7 +1032,6 @@ parse_byte_descriptor(struct di_edid *edid,
 {
 	struct di_edid_display_descriptor *desc;
 	struct di_edid_detailed_timing_def_priv *detailed_timing_def;
-	uint8_t tag;
 	char *newline;
 
 	if (data[0] || data[1]) {
@@ -1061,8 +1063,8 @@ parse_byte_descriptor(struct di_edid *edid,
 		return false;
 	}
 
-	tag = data[3];
-	switch (tag) {
+	desc->tag = data[3];
+	switch (desc->tag) {
 	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_SERIAL:
 	case DI_EDID_DISPLAY_DESCRIPTOR_DATA_STRING:
 	case DI_EDID_DISPLAY_DESCRIPTOR_PRODUCT_NAME:
@@ -1076,26 +1078,26 @@ parse_byte_descriptor(struct di_edid *edid,
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_RANGE_LIMITS:
 		if (!parse_display_range_limits(edid, data, &desc->range_limits)) {
-			free(desc);
+			destroy_display_descriptor(desc);
 			return true;
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_STD_TIMING_IDS:
 		if (!parse_standard_timings_descriptor(edid, data, desc)) {
-			free(desc);
+			destroy_display_descriptor(desc);
 			return false;
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_ESTABLISHED_TIMINGS_III:
 		if (!parse_established_timings_iii_descriptor(edid, data,
 							      &desc->established_timings_iii)) {
-			free(desc);
+			destroy_display_descriptor(desc);
 			return false;
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_COLOR_POINT:
 		if (!parse_color_point_descriptor(edid, data, desc)) {
-			free(desc);
+			destroy_display_descriptor(desc);
 			return false;
 		}
 		break;
@@ -1104,23 +1106,22 @@ parse_byte_descriptor(struct di_edid *edid,
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_CVT_TIMING_CODES:
 		if (!parse_cvt_timing_codes_descriptor(edid, data, desc)) {
-			free(desc);
+			destroy_display_descriptor(desc);
 			return false;
 		}
 		break;
 	case DI_EDID_DISPLAY_DESCRIPTOR_DUMMY:
 		break; /* Ignore */
 	default:
-		free(desc);
-		if (tag <= 0x0F) {
+		if (desc->tag <= 0x0F) {
 			/* Manufacturer-specific */
 		} else {
-			add_failure_until(edid, 4, "Unknown Type 0x%02hhx.", tag);
+			add_failure_until(edid, 4, "Unknown Type 0x%02hhx.", desc->tag);
 		}
+		destroy_display_descriptor(desc);
 		return true;
 	}
 
-	desc->tag = tag;
 	assert(edid->display_descriptors_len < EDID_BYTE_DESCRIPTOR_COUNT);
 	edid->display_descriptors[edid->display_descriptors_len++] = desc;
 	return true;
