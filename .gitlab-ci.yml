@@ -89,7 +89,12 @@ build-gcc:
   extends: .fdo.distribution-image@alpine
   stage: "Build and test"
   script:
-    - CC=gcc meson setup build/ --fatal-meson-warnings -Dwerror=true -Db_coverage=true
+    - CC=gcc
+      CFLAGS=" -Wnull-dereference -fanalyzer -O1"
+      meson setup build/
+        --fatal-meson-warnings
+        -Dwerror=true
+        -Db_coverage=true
     - ninja -C build/
     - ninja -C build/ test
     - ninja -C build/ -j1 coverage-xml coverage-html
@@ -109,7 +114,12 @@ build-clang:
   extends: .fdo.distribution-image@alpine
   stage: "Build and test"
   script:
-    - CC=clang meson setup build/ --fatal-meson-warnings -Dwerror=true -Db_sanitize=address,undefined -Db_lundef=false
+    - CC=clang
+      meson setup build/
+        --fatal-meson-warnings
+        -Dwerror=true
+        -Db_sanitize=address,undefined
+        -Db_lundef=false
     - ninja -C build/
     - UBSAN_OPTIONS=halt_on_error=1 ninja -C build/ test
   artifacts:
