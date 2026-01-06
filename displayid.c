@@ -394,6 +394,8 @@ parse_type_iv_timing_block(struct di_displayid *displayid,
 	switch (type) {
 	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_DMT:
 		dmts = calloc(type_iv_timing->codes_len, sizeof(*dmts));
+		if (!dmts)
+			return false;
 
 		for (i = 0; i < type_iv_timing->codes_len; i++) {
 			code = data[DISPLAYID_DATA_BLOCK_HEADER_SIZE + i];
@@ -402,6 +404,8 @@ parse_type_iv_timing_block(struct di_displayid *displayid,
 		break;
 	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_CTA:
 		cta_vics = calloc(type_iv_timing->codes_len, sizeof(*cta_vics));
+		if (!cta_vics)
+			return false;
 
 		for (i = 0; i < type_iv_timing->codes_len; i++) {
 			code = data[DISPLAYID_DATA_BLOCK_HEADER_SIZE + i];
@@ -410,6 +414,8 @@ parse_type_iv_timing_block(struct di_displayid *displayid,
 		break;
 	case DI_DISPLAYID_TYPE_IV_TIMING_CODE_TYPE_VIC_HDMI:
 		hdmi_vics = calloc(type_iv_timing->codes_len, sizeof(*hdmi_vics));
+		if (!hdmi_vics)
+			return false;
 
 		for (i = 0; i < type_iv_timing->codes_len; i++) {
 			code = data[DISPLAYID_DATA_BLOCK_HEADER_SIZE + i];
