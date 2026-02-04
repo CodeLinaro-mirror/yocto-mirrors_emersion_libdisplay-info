@@ -1964,10 +1964,9 @@ parse_did_type_vii_timing(struct di_cta *cta,
 	data += 1;
 	size -= 1;
 
-	if (!_di_displayid_parse_type_1_7_timing(&t->timing, cta->logger,
-						 "DisplayID Type VII Video Timing Data Block",
-						 data, true))
-		return false;
+	_di_displayid_parse_type_1_7_timing(&t->timing, cta->logger,
+					    "DisplayID Type VII Video Timing Data Block",
+					    data, true);
 
 	t->base.timing = &t->timing;
 	return true;

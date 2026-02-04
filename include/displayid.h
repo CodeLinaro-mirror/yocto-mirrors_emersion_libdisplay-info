@@ -95,7 +95,7 @@ _di_displayid_parse(struct di_displayid *displayid, const uint8_t *data,
 void
 _di_displayid_finish(struct di_displayid *displayid);
 
-bool
+void
 _di_displayid_parse_type_1_7_timing(struct di_displayid_type_i_ii_vii_timing *timing,
 				    struct di_logger *logger,
 				    const char *prefix,

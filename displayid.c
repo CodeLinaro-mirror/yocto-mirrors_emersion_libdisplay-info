@@ -147,7 +147,7 @@ timing_aspect_ratio_is_valid(uint8_t raw)
 	}
 }
 
-bool
+void
 _di_displayid_parse_type_1_7_timing(struct di_displayid_type_i_ii_vii_timing *t,
 				    struct di_logger *logger,
 				    const char *prefix,
@@ -198,8 +198,6 @@ _di_displayid_parse_type_1_7_timing(struct di_displayid_type_i_ii_vii_timing *t,
 	t->vert_offset = 1 + (data[16] | (get_bit_range(data[17], 6, 0) << 8));
 	t->vert_sync_polarity = has_bit(data[17], 7);
 	t->vert_sync_width = 1 + (data[18] | (data[19] << 8));
-
-	return true;
 }
 
 static bool
@@ -209,10 +207,9 @@ parse_type_i_timing(struct di_displayid *displayid,
 {
 	struct di_displayid_type_i_ii_vii_timing timing, *t;
 
-	if (!_di_displayid_parse_type_1_7_timing(&timing, displayid->logger,
-						 "Video Timing Modes Type 1 - Detailed Timings Data Block",
-						 data, false))
-		return false;
+	_di_displayid_parse_type_1_7_timing(&timing, displayid->logger,
+					    "Video Timing Modes Type 1 - Detailed Timings Data Block",
+					    data, false);
 
 	t = calloc(1, sizeof(*t));
 	if (t == NULL) {
