@@ -154,6 +154,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 
 	if (size < 5) {
 		add_failure(cta, "%s: Empty Data Block", block_name);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -299,12 +300,14 @@ parse_hdmi_scds(struct di_cta *cta, struct di_cta_hdmi_scds *scds,
 
 	if (size < 7) {
 		add_failure(cta, "%s: Empty Data Block", block_name);
+		errno = EINVAL;
 		return false;
 	}
 
 	scds->version = data[4 + offset];
 	if (scds->version != 1) {
 		add_failure(cta, "%s: Unsupported version %d.", block_name, scds->version);
+		errno = ENOTSUP;
 		return false;
 	}
 
@@ -947,6 +950,7 @@ parse_speaker_alloc_block(struct di_cta *cta,
 		add_failure(cta,
 			    "Speaker Allocation Data Block: Empty Data Block with length %zu.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -965,6 +969,7 @@ parse_video_cap_block(struct di_cta *cta,
 		add_failure(cta,
 			    "Video Capability Data Block: Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1056,6 +1061,7 @@ parse_vesa_display_device(struct di_cta *cta, struct di_cta_vesa_display_device_
 
 	if (size + offset != 32) {
 		add_failure(cta, "VESA Video Display Device Data Block: Invalid length %u.", size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1123,6 +1129,7 @@ parse_vesa_display_device(struct di_cta *cta, struct di_cta_vesa_display_device_
 		add_failure(cta,
 			    "VESA Video Display Device Data Block: Unknown interface type 0x%x.",
 			    interface_type);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1256,6 +1263,7 @@ parse_colorimetry_block(struct di_cta *cta,
 	if (size < 2) {
 		add_failure(cta, "Colorimetry Data Block: Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1304,6 +1312,7 @@ parse_hdr_static_metadata_block(struct di_cta *cta,
 	if (size < 2) {
 		add_failure(cta, "HDR Static Metadata Data Block: Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1361,6 +1370,7 @@ parse_hdr_dynamic_metadata_block(struct di_cta *cta,
 	if (size < 3) {
 		add_failure(cta, "HDR Dynamic Metadata Data Block: Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1369,11 +1379,13 @@ parse_hdr_dynamic_metadata_block(struct di_cta *cta,
 
 		if (size < length + 1) {
 			add_failure(cta, "HDR Dynamic Metadata Data Block: Length of type bigger than block size.");
+			errno = EINVAL;
 			return false;
 		}
 
 		if (length < 2) {
 			add_failure(cta, "HDR Dynamic Metadata Data Block: Type has wrong length.");
+			errno = EINVAL;
 			return false;
 		}
 
@@ -1460,6 +1472,7 @@ parse_vesa_transfer_characteristics_block(struct di_cta *cta,
 
 	if (size != 7 && size != 15 && size != 31) {
 		add_failure(cta, "Invalid length %u.", size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1605,6 +1618,7 @@ parse_hdmi_audio_block(struct di_cta *cta,
 
 	if (size < 1) {
 		add_failure(cta, "HDMI Audio Data Block: Empty Data Block with length 0.");
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1749,6 +1763,7 @@ parse_infoframe_block(struct di_cta *cta,
 	if (size < 2) {
 		add_failure(cta, "InfoFrame Data Block: Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1765,6 +1780,7 @@ parse_infoframe_block(struct di_cta *cta,
 			break;
 		if (index > size) {
 			add_failure(cta, "InfoFrame Data Block: Payload length exceeds block size.");
+			errno = EINVAL;
 			return false;
 		}
 
@@ -1773,6 +1789,7 @@ parse_infoframe_block(struct di_cta *cta,
 
 		if (type == 0) {
 			add_failure(cta, "InfoFrame Data Block: Short InfoFrame Descriptor with type 0 is forbidden.");
+			errno = EINVAL;
 			return false;
 		} else if (type == 1) {
 			length += 4;
@@ -1782,6 +1799,7 @@ parse_infoframe_block(struct di_cta *cta,
 
 		if (index + length > size) {
 			add_failure(cta, "InfoFrame Data Block: Payload length exceeds block size.");
+			errno = EINVAL;
 			return false;
 		}
 
@@ -1816,6 +1834,7 @@ parse_room_config_block(struct di_cta *cta,
 	if (size < 4) {
 		add_failure(cta, "Room Configuration Data Block: Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1882,6 +1901,7 @@ parse_speaker_location_block(struct di_cta *cta,
 	if (size < 2) {
 		add_failure(cta, "Speaker Location Data Block: Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1905,6 +1925,7 @@ parse_speaker_location_block(struct di_cta *cta,
 		} else if (speaker_loc.has_coords) {
 			add_failure(cta, "Speaker Location Data Block: COORD bit "
 					 "set but contains no Coordinates.");
+			errno = EINVAL;
 			return false;
 		} else {
 			size -= 2;
@@ -1935,12 +1956,14 @@ parse_did_type_vii_timing(struct di_cta *cta,
 	if (size != 21) {
 		add_failure(cta, "DisplayID Type VII Video Timing Data Block: "
 				 "Empty Data Block with length %u.", size);
+		errno = EINVAL;
 		return false;
 	}
 
 	if (get_bit_range(data[0], 6, 4) != 0) {
 		add_failure(cta, "DisplayID Type VII Video Timing Data Block: "
 				 "T7_M shall be 000b.");
+		errno = EINVAL;
 		return false;
 	}
 
@@ -1949,6 +1972,7 @@ parse_did_type_vii_timing(struct di_cta *cta,
 		add_failure(cta, "DisplayID Type VII Video Timing Data Block: "
 				 "Unexpected revision (%u != %u).",
 			    revision, 2);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -2056,6 +2080,7 @@ parse_hdr10plus_block(struct di_cta *cta,
 		add_failure(cta, "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B: "
 				 "Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -2064,6 +2089,7 @@ parse_hdr10plus_block(struct di_cta *cta,
 		add_failure(cta, "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B: "
 				 "We were expecting application version 1, but got %d.",
 			    block->version);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -2098,6 +2124,7 @@ parse_dolby_video_block(struct di_cta *cta,
 		add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
 				 "Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 	version = get_bit_range(data[0], 7, 5);
@@ -2110,6 +2137,7 @@ parse_dolby_video_block(struct di_cta *cta,
 			add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
 					 "Expected length of 17 for Version 0, but got length %u.",
 				    size);
+			errno = EINVAL;
 			return false;
 		}
 
@@ -2147,6 +2175,7 @@ parse_dolby_video_block(struct di_cta *cta,
 					 "Expected length of at least 7 for Version 1, "
 					 "but got length %u.",
 				    size);
+			errno = EINVAL;
 			return false;
 		}
 
@@ -2217,6 +2246,7 @@ parse_dolby_video_block(struct di_cta *cta,
 					 "Expected length of at least 7 for Version 2, "
 					 "but got length %u.",
 				    size);
+			errno = EINVAL;
 			return false;
 		}
 
@@ -2255,6 +2285,7 @@ parse_dolby_video_block(struct di_cta *cta,
 			add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
 					 "Reserved YUV444 mode 0x%02x.",
 				    v2->yuv444);
+			errno = EINVAL;
 			return false;
 		}
 
@@ -2346,6 +2377,7 @@ parse_vendor_specific_video_block(struct di_cta *cta,
 		add_failure(cta,
 			    "Vendor-Specific Video Data Block: Empty Data Block with length %u.",
 			    size);
+		errno = EINVAL;
 		return false;
 	}
 
@@ -2368,6 +2400,7 @@ parse_vendor_specific_video_block(struct di_cta *cta,
 			goto skip;
 		break;
 	default:
+		errno = EINVAL;
 		goto skip;
 	}
 
@@ -2389,6 +2422,7 @@ parse_vendor_specific_block(struct di_cta *cta,
 		add_failure(cta,
 			    "Vendor-Specific Data Block: Empty Data Block with length (%u).",
 			    size);
+		errno = EINVAL;
 		goto skip;
 	}
 
@@ -2408,6 +2442,7 @@ parse_vendor_specific_block(struct di_cta *cta,
 			goto skip;
 		break;
 	default:
+		errno = EINVAL;
 		goto skip;
 	}
 
@@ -2467,6 +2502,7 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 		/* Use Extended Tag */
 		if (size < 1) {
 			add_failure(cta, "Empty block with extended tag.");
+			errno = EINVAL;
 			goto skip;
 		}
 
@@ -2594,12 +2630,14 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 				goto skip;
 			break;
 		case 17: /* Vendor-Specific Audio Data Block */
+			errno = EINVAL;
 			goto skip;
 		default:
 			/* Reserved */
 			add_failure_until(cta, 3,
 					  "Unknown CTA-861 Data Block (extended tag 0x"PRIx8", length %zu).",
 					  extended_tag, size);
+			errno = EINVAL;
 			goto skip;
 		}
 		break;
@@ -2607,6 +2645,7 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 		/* Reserved */
 		add_failure_until(cta, 3, "Unknown CTA-861 Data Block (tag 0x"PRIx8", length %zu).",
 				  raw_tag, size);
+		errno = EINVAL;
 		goto skip;
 	}
 
