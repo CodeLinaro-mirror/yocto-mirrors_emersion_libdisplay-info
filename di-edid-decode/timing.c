@@ -113,6 +113,7 @@ print_dmt_timing_code(struct di_dmt_code dmt_code)
 	t = di_dmt_timing_from_code(dmt_code);
 	if (!t) {
 		printf("DMT 0x%02x: Unknown\n", dmt_code.code);
+		return;
 	}
 
 	compute_aspect_ratio(t->horiz_video, t->vert_video,
