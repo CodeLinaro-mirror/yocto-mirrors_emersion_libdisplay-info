@@ -6,7 +6,7 @@ extern const size_t _di_cta_vic_video_formats_len;
 const struct di_cta_vic_video_format *
 di_cta_vic_video_format_from_vic(struct di_cta_vic vic)
 {
-	if (vic.code > _di_cta_vic_video_formats_len ||
+	if (vic.code >= _di_cta_vic_video_formats_len ||
 	    _di_cta_vic_video_formats[vic.code].vic.code == 0)
 		return NULL;
 	return &_di_cta_vic_video_formats[vic.code];
