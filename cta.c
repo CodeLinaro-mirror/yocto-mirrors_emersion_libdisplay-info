@@ -2460,7 +2460,6 @@ bool
 _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *data, size_t size,
 			 struct di_cta_data_block **data_block_out)
 {
-	enum di_cta_data_block_tag tag;
 	uint8_t extended_tag;
 	struct di_cta_data_block *data_block;
 
@@ -2473,34 +2472,34 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 
 	switch (raw_tag) {
 	case 1:
-		tag = DI_CTA_DATA_BLOCK_AUDIO;
+		data_block->tag = DI_CTA_DATA_BLOCK_AUDIO;
 		if (!parse_audio_block(cta, &data_block->audio, data, size))
 			goto error;
 		break;
 	case 2:
-		tag = DI_CTA_DATA_BLOCK_VIDEO;
+		data_block->tag = DI_CTA_DATA_BLOCK_VIDEO;
 		if (!parse_video_block(cta, &data_block->video, data, size))
 			goto error;
 		break;
 	case 3: /* Vendor-Specific Data Block */
-		if (!parse_vendor_specific_block(cta, &tag, data_block, data, size))
+		if (!parse_vendor_specific_block(cta, &data_block->tag, data_block, data, size))
 			goto skip;
 		break;
 	case 4:
-		tag = DI_CTA_DATA_BLOCK_SPEAKER_ALLOC;
+		data_block->tag = DI_CTA_DATA_BLOCK_SPEAKER_ALLOC;
 		if (!parse_speaker_alloc_block(cta, &data_block->speaker_alloc,
 					       data, size))
 			goto error;
 		break;
 	case 5:
-		tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC;
+		data_block->tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC;
 		if (!parse_vesa_transfer_characteristics_block(cta,
 							       &data_block->vesa_transfer_characteristics,
 							       data, size))
 			goto error;
 		break;
 	case 6:
-		tag = DI_CTA_DATA_BLOCK_VIDEO_FORMAT;
+		data_block->tag = DI_CTA_DATA_BLOCK_VIDEO_FORMAT;
 		break;
 	case 7:
 		/* Use Extended Tag */
@@ -2516,107 +2515,107 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 
 		switch (extended_tag) {
 		case 0:
-			tag = DI_CTA_DATA_BLOCK_VIDEO_CAP;
+			data_block->tag = DI_CTA_DATA_BLOCK_VIDEO_CAP;
 			if (!parse_video_cap_block(cta, &data_block->video_cap,
 						   data, size))
 				goto skip;
 			break;
 		case 2:
-			tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE;
+			data_block->tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE;
 			if (!parse_vesa_display_device(cta, &data_block->vesa_display_device,
 					     data, size))
 				goto skip;
 			break;
 		case 5:
-			tag = DI_CTA_DATA_BLOCK_COLORIMETRY;
+			data_block->tag = DI_CTA_DATA_BLOCK_COLORIMETRY;
 			if (!parse_colorimetry_block(cta,
 						     &data_block->colorimetry,
 						     data, size))
 				goto skip;
 			break;
 		case 6:
-			tag = DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA;
+			data_block->tag = DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA;
 			if (!parse_hdr_static_metadata_block(cta,
 							     &data_block->hdr_static_metadata,
 							     data, size))
 				goto skip;
 			break;
 		case 7:
-			tag = DI_CTA_DATA_BLOCK_HDR_DYNAMIC_METADATA;
+			data_block->tag = DI_CTA_DATA_BLOCK_HDR_DYNAMIC_METADATA;
 			if (!parse_hdr_dynamic_metadata_block(cta,
 							      &data_block->hdr_dynamic_metadata,
 							      data, size))
 				goto skip;
 			break;
 		case 8:
-			tag = DI_CTA_DATA_BLOCK_NATIVE_VIDEO_RESOLUTION;
+			data_block->tag = DI_CTA_DATA_BLOCK_NATIVE_VIDEO_RESOLUTION;
 			break;
 		case 13:
-			tag = DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF;
+			data_block->tag = DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF;
 			if (!parse_video_format_pref_block(cta,
 							   &data_block->video_format_pref,
 							   data, size))
 				goto skip;
 			break;
 		case 14:
-			tag = DI_CTA_DATA_BLOCK_YCBCR420;
+			data_block->tag = DI_CTA_DATA_BLOCK_YCBCR420;
 			if (!parse_ycbcr420_block(cta,
 						  &data_block->ycbcr420,
 						  data, size))
 				goto skip;
 			break;
 		case 15:
-			tag = DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP;
+			data_block->tag = DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP;
 			parse_ycbcr420_cap_map(cta,
 					       &data_block->ycbcr420_cap_map,
 					       data, size);
 			break;
 		case 18:
-			tag = DI_CTA_DATA_BLOCK_HDMI_AUDIO;
+			data_block->tag = DI_CTA_DATA_BLOCK_HDMI_AUDIO;
 			if (!parse_hdmi_audio_block(cta,
 						    &data_block->hdmi_audio,
 						    data, size))
 				goto skip;
 			break;
 		case 19:
-			tag = DI_CTA_DATA_BLOCK_ROOM_CONFIG;
+			data_block->tag = DI_CTA_DATA_BLOCK_ROOM_CONFIG;
 			if (!parse_room_config_block(cta,
 						     &data_block->room_config,
 						     data, size))
 				goto skip;
 			break;
 		case 20:
-			tag = DI_CTA_DATA_BLOCK_SPEAKER_LOCATION;
+			data_block->tag = DI_CTA_DATA_BLOCK_SPEAKER_LOCATION;
 			if (!parse_speaker_location_block(cta,
 							  &data_block->speaker_location,
 							  data, size))
 				goto skip;
 			break;
 		case 32:
-			tag = DI_CTA_DATA_BLOCK_INFOFRAME;
+			data_block->tag = DI_CTA_DATA_BLOCK_INFOFRAME;
 			if (!parse_infoframe_block(cta,
 						   &data_block->infoframe,
 						   data, size))
 				goto skip;
 			break;
 		case 34:
-			tag = DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII;
+			data_block->tag = DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII;
 			if (!parse_did_type_vii_timing(cta,
 						       &data_block->did_vii_timing,
 						       data, size))
 				goto skip;
 			break;
 		case 35:
-			tag = DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VIII;
+			data_block->tag = DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VIII;
 			break;
 		case 42:
-			tag = DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_X;
+			data_block->tag = DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_X;
 			break;
 		case 120:
-			tag = DI_CTA_DATA_BLOCK_HDMI_EDID_EXT_OVERRIDE;
+			data_block->tag = DI_CTA_DATA_BLOCK_HDMI_EDID_EXT_OVERRIDE;
 			break;
 		case 121:
-			tag = DI_CTA_DATA_BLOCK_HDMI_SINK_CAP;
+			data_block->tag = DI_CTA_DATA_BLOCK_HDMI_SINK_CAP;
 			/**
 			 * This expects data to include the extended tag. Let's
 			 * get back one byte.
@@ -2628,7 +2627,7 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 				goto skip;
 			break;
 		case 1: /* Vendor-Specific Video Data Block */
-			if (!parse_vendor_specific_video_block(cta, &tag,
+			if (!parse_vendor_specific_video_block(cta, &data_block->tag,
 							       data_block,
 							       data, size))
 				goto skip;
@@ -2653,12 +2652,11 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 		goto skip;
 	}
 
-	data_block->tag = tag;
 	*data_block_out = data_block;
 	return true;
 
 skip:
-	free(data_block);
+	_di_cta_data_block_destroy(data_block);
 	return true;
 
 error:
