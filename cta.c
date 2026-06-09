@@ -2359,7 +2359,11 @@ _di_cta_data_block_destroy(struct di_cta_data_block *data_block)
 			free(hdmi_audio->sads[i]);
 		break;
 	default:
-		break; /* Nothing to do */
+		/* Nothing to do. Blocks that we failed to fully initialize may
+		 * not contain a tag (zeroed), and these should only need the
+		 * base block destruction. And some types of data blocks simply
+		 * don't have specific data to be released. */
+		break;
 	}
 
 	free(data_block);
