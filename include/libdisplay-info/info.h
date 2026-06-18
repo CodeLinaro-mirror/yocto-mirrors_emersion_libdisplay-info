@@ -29,6 +29,16 @@ struct di_info *
 di_info_parse_edid(const void *data, size_t size);
 
 /**
+ * Parse a DisplayID blob.
+ *
+ * Callers do not need to keep the provided data pointer valid after calling
+ * this function. Callers should destroy the returned pointer via
+ * di_info_destroy().
+ */
+struct di_info *
+di_info_parse_displayid(const void *data, size_t size);
+
+/**
  * Destroy a display device information structure.
  */
 void

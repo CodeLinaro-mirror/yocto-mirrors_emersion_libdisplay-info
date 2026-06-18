@@ -18,7 +18,10 @@ struct di_derived_info {
 };
 
 struct di_info {
+	/* Only one of these fields is populated */
 	struct di_edid *edid;
+	struct di_displayid *displayid;
+	struct di_displayid2 *displayid2;
 
 	char *failure_msg;
 
