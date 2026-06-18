@@ -58,6 +58,32 @@ const struct di_edid *
 di_info_get_edid(const struct di_info *info);
 
 /**
+ * Returns the DisplayID v1 the display device information was constructed with.
+ *
+ * The returned struct di_displayid can be used to query low-level EDID
+ * information, see <libdisplay-info/displayid.h>. Users should prefer the
+ * high-level API if possible.
+ *
+ * NULL is returned if the struct di_info doesn't contain a DisplayID v1. The
+ * returned struct di_displayid is valid until di_info_destroy().
+ */
+const struct di_displayid *
+di_info_get_displayid(const struct di_info *info);
+
+/**
+ * Returns the DisplayID v2 the display device information was constructed with.
+ *
+ * The returned struct di_displayid can be used to query low-level EDID
+ * information, see <libdisplay-info/displayid2.h>. Users should prefer the
+ * high-level API if possible.
+ *
+ * NULL is returned if the struct di_info doesn't contain a DisplayID v2. The
+ * returned struct di_displayid2 is valid until di_info_destroy().
+ */
+const struct di_displayid2 *
+di_info_get_displayid2(const struct di_info *info);
+
+/**
  * Get the failure messages for this blob.
  *
  * NULL is returned if the blob conforms to the relevant specifications.
