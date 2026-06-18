@@ -257,10 +257,90 @@ err_failure_msg_file:
 	return NULL;
 }
 
+struct di_info *
+di_info_parse_displayid(const void *data, size_t size)
+{
+	struct memory_stream failure_msg;
+	struct di_logger logger;
+	int version;
+	bool ok;
+	struct di_displayid *displayid = NULL;
+	struct di_displayid2 *displayid2 = NULL;
+	struct di_info *info;
+	char *failure_msg_str = NULL;
+
+	if (!memory_stream_open(&failure_msg))
+		return NULL;
+
+	logger = (struct di_logger) {
+		.f = failure_msg.fp,
+		.section = "DisplayID",
+	};
+
+	version = _di_displayid_parse_version(data, size);
+	switch (version) {
+	case 1:
+		displayid = calloc(1, sizeof(*displayid));
+		if (!displayid)
+			goto err_failure_msg;
+		ok = _di_displayid_parse(displayid, data, size, &logger);
+		break;
+	case 2:
+		displayid2 = calloc(1, sizeof(*displayid2));
+		if (!displayid2)
+			goto err_failure_msg;
+		ok = _di_displayid2_parse(displayid2, data, size, &logger);
+		break;
+	default:
+		/* Unsupported */
+		ok = false;
+	}
+	if (!ok) {
+		goto err_displayid;
+	}
+
+	info = calloc(1, sizeof(*info));
+	if (!info)
+		goto err_displayid;
+
+	info->displayid = displayid;
+	info->displayid2 = displayid2;
+
+	failure_msg_str = memory_stream_close(&failure_msg);
+	if (failure_msg_str && failure_msg_str[0] != '\0')
+		info->failure_msg = failure_msg_str;
+	else
+		free(failure_msg_str);
+
+	return info;
+
+err_displayid:
+	if (displayid) {
+		_di_displayid_finish(displayid);
+		free(displayid);
+	}
+	if (displayid2) {
+		_di_displayid2_finish(displayid2);
+		free(displayid2);
+	}
+err_failure_msg:
+	memory_stream_cleanup(&failure_msg);
+	return NULL;
+}
+
 void
 di_info_destroy(struct di_info *info)
 {
-	_di_edid_destroy(info->edid);
+	if (info->edid)
+		_di_edid_destroy(info->edid);
+	if (info->displayid) {
+		_di_displayid_finish(info->displayid);
+		free(info->displayid);
+	}
+	if (info->displayid2) {
+		_di_displayid2_finish(info->displayid2);
+		free(info->displayid2);
+	}
 	free(info->failure_msg);
 	free(info);
 }
