@@ -351,6 +351,18 @@ di_info_get_edid(const struct di_info *info)
 	return info->edid;
 }
 
+const struct di_displayid *
+di_info_get_displayid(const struct di_info *info)
+{
+	return info->displayid;
+}
+
+const struct di_displayid2 *
+di_info_get_displayid2(const struct di_info *info)
+{
+	return info->displayid2;
+}
+
 const char *
 di_info_get_failure_msg(const struct di_info *info)
 {
