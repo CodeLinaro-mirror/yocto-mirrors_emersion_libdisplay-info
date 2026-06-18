@@ -93,7 +93,7 @@ parse_svd(struct di_cta *cta, uint8_t raw, uint8_t original_index,
 	return svd_ptr;
 }
 
-static bool
+static int
 parse_video_block(struct di_cta *cta, struct di_cta_video_block_priv *video,
 		  const uint8_t *data, size_t size)
 {
@@ -102,8 +102,7 @@ parse_video_block(struct di_cta *cta, struct di_cta_video_block_priv *video,
 
 	if (size == 0) {
 		add_failure(cta, "Video Data Block: Empty Data Block");
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	assert(size < (1 << 8));
@@ -117,7 +116,7 @@ parse_video_block(struct di_cta *cta, struct di_cta_video_block_priv *video,
 	}
 
 	video->base.svds = (const struct di_cta_svd *const *)video->svds;
-	return true;
+	return 0;
 }
 
 static int
@@ -142,7 +141,7 @@ hdmi_latency_from_raw(struct di_cta *cta, const char *block_name,
 	return 2 * (raw - 1);
 }
 
-static bool
+static int
 parse_vendor_hdmi_block(struct di_cta *cta,
 			struct di_cta_vendor_hdmi_block_priv *priv,
 			const uint8_t *data, size_t size)
@@ -157,14 +156,13 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 
 	if (size < 5) {
 		add_failure(cta, "%s: Empty Data Block", block_name);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	block->source_phys_addr = (uint16_t)((uint16_t)data[4 + offset] << 8 | data[5 + offset]);
 
 	if (size < 6)
-		return true;
+		return 0;
 
 	block->supports_ai = has_bit(data[6 + offset], 7);
 	block->supports_dc_48bit = has_bit(data[6 + offset], 6);
@@ -176,12 +174,12 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 	block->supports_dvi_dual = has_bit(data[6 + offset], 0);
 
 	if (size < 7)
-		return true;
+		return 0;
 
 	block->max_tmds_clock = data[7 + offset] * 5;
 
 	if (size < 8)
-		return true;
+		return 0;
 
 	block->supports_content_game = has_bit(data[8 + offset], 3);
 	block->supports_content_cinema = has_bit(data[8 + offset], 2);
@@ -202,7 +200,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 		add_failure(cta,
 			    "%s: Interlaced Latency support flag set, but Latency support flag is not",
 			    block_name);
-		return true;
+		return 0;
 	}
 
 	/* The next features from the block do not have fixed position, so we
@@ -214,7 +212,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 			add_failure(cta,
 				    "%s: Latency support flag set, but bytes are missing",
 				    block_name);
-			return true;
+			return 0;
 		}
 
 		val = data[index++];
@@ -233,7 +231,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 			add_failure(cta,
 				    "%s: Interlaced Latency support flag set, but bytes are missing",
 				    block_name);
-			return true;
+			return 0;
 		}
 
 		val = data[index++];
@@ -248,20 +246,20 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 	}
 
 	if (size <= index)
-		return true;
+		return 0;
 
 	/* Skip a byte, it should only be used when we decode HDMI 3D VIC */
 	index++;
 
 	if (size <= index)
-		return true;
+		return 0;
 
 	len_vic = get_bit_range(data[index++], 7, 5);
 	if (len_vic == 0) {
 		add_failure(cta,
 			    "%s: Extended Video Details flag but HDMI VIC list size 0",
 			    block_name);
-		return true;
+		return 0;
 	}
 
 	if (size <= index + len_vic - 1) {
@@ -273,7 +271,7 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 
 	priv->vics = calloc(len_vic, sizeof(*priv->vics));
 	if (!priv->vics)
-		return false;
+		return -errno;
 
 	for (i = 0; i < len_vic; i++) {
 		val = data[index++];
@@ -288,10 +286,10 @@ parse_vendor_hdmi_block(struct di_cta *cta,
 
 	/* TODO: parse HDMI 3D VIC */
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_hdmi_scds(struct di_cta *cta, struct di_cta_hdmi_scds *scds,
 		struct di_cta_hdmi_dsc *dsc, const uint8_t *data, size_t size,
 		const char *block_name)
@@ -303,15 +301,13 @@ parse_hdmi_scds(struct di_cta *cta, struct di_cta_hdmi_scds *scds,
 
 	if (size < 7) {
 		add_failure(cta, "%s: Empty Data Block", block_name);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	scds->version = data[4 + offset];
 	if (scds->version != 1) {
 		add_failure(cta, "%s: Unsupported version %d.", block_name, scds->version);
-		errno = ENOTSUP;
-		return false;
+		return -ENOTSUP;
 	}
 
 	scds->max_tmds_char_rate_mhz = 5 * data[5 + offset];
@@ -360,7 +356,7 @@ parse_hdmi_scds(struct di_cta *cta, struct di_cta_hdmi_scds *scds,
 	}
 
 	if (size < 8)
-		return true;
+		return 0;
 
 	scds->supports_fapa_start_location = has_bit(data[8 + offset], 0);
 	scds->supports_allm = has_bit(data[8 + offset], 1);
@@ -374,7 +370,7 @@ parse_hdmi_scds(struct di_cta *cta, struct di_cta_hdmi_scds *scds,
 	scds->supports_fapa_end_extended = has_bit(data[8 + offset], 7);
 
 	if (size < 10)
-		return true;
+		return 0;
 
 	scds->vrr_min_hz = get_bit_range(data[9 + offset], 5, 0);
 	scds->vrr_max_hz = (get_bit_range(data[9 + offset], 7, 6) << 8) | data[10 + offset];
@@ -387,7 +383,7 @@ parse_hdmi_scds(struct di_cta *cta, struct di_cta_hdmi_scds *scds,
 		add_failure(cta, "%s: VRRmax < 100.", block_name);
 
 	if (size < 13)
-		return true;
+		return 0;
 
 	dsc->supports_10bpc = has_bit(data[11 + offset], 0);
 	dsc->supports_12bpc = has_bit(data[11 + offset], 1);
@@ -457,10 +453,10 @@ parse_hdmi_scds(struct di_cta *cta, struct di_cta_hdmi_scds *scds,
 			add_failure(cta, "%s: Byte %d is reserved.", block_name);
 	}
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_vendor_hdmi_forum_block(struct di_cta *cta,
 			      struct di_cta_vendor_hdmi_forum_block_priv *priv,
 			      const uint8_t *data, size_t size)
@@ -475,7 +471,7 @@ parse_vendor_hdmi_forum_block(struct di_cta *cta,
 	return parse_hdmi_scds(cta, scds, dsc, data, size, block_name);
 }
 
-static bool
+static int
 parse_hdmi_forum_sink_cap(struct di_cta *cta,
 			  struct di_cta_hdmi_forum_sink_cap_priv *priv,
 			  const uint8_t *data, size_t size)
@@ -490,7 +486,7 @@ parse_hdmi_forum_sink_cap(struct di_cta *cta,
 	return parse_hdmi_scds(cta, scds, dsc, data, size, block_name);
 }
 
-static bool
+static int
 parse_ycbcr420_block(struct di_cta *cta,
 		     struct di_cta_ycbcr420_video_block_priv *ycbcr420,
 		     const uint8_t *data, size_t size)
@@ -500,8 +496,7 @@ parse_ycbcr420_block(struct di_cta *cta,
 
 	if (size == 0) {
 		add_failure(cta, "YCbCr 4:2:0 Video Data Block: Empty Data Block");
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	assert(size < (1 << 8));
@@ -515,7 +510,7 @@ parse_ycbcr420_block(struct di_cta *cta,
 	}
 
 	ycbcr420->base.svds = (const struct di_cta_svd *const *)ycbcr420->svds;
-	return true;
+	return 0;
 }
 
 static bool
@@ -611,7 +606,7 @@ parse_sad_format(struct di_cta *cta, uint8_t code, uint8_t code_ext,
 	return true;
 }
 
-static bool
+static int
 parse_sad(struct di_cta *cta, struct di_cta_audio_block_priv *audio,
 	  const uint8_t data[static CTA_SAD_SIZE])
 {
@@ -633,11 +628,11 @@ parse_sad(struct di_cta *cta, struct di_cta_audio_block_priv *audio,
 	code_ext = get_bit_range(data[2], 7, 3);
 
 	if (!parse_sad_format(cta, code, code_ext, &format, "Audio Data Block"))
-		return true;
+		return -EINVAL;
 
 	priv = calloc(1, sizeof(*priv));
 	if (!priv)
-		return false;
+		return -errno;
 
 	sad = &priv->base;
 	sample_rates = &priv->supported_sample_rates;
@@ -885,25 +880,30 @@ parse_sad(struct di_cta *cta, struct di_cta_audio_block_priv *audio,
 
 	assert(audio->sads_len < EDID_CTA_MAX_AUDIO_BLOCK_ENTRIES);
 	audio->sads[audio->sads_len++] = priv;
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_audio_block(struct di_cta *cta, struct di_cta_audio_block_priv *audio,
 		  const uint8_t *data, size_t size)
 {
 	size_t i;
+	int ret;
 
 	if (size % 3 != 0)
 		add_failure(cta, "Broken CTA-861 audio block length %d.", size);
 
 	for (i = 0; i + 3 <= size; i += 3) {
-		if (!parse_sad(cta, audio, &data[i]))
-			return false;
+		ret = parse_sad(cta, audio, &data[i]);
+		if (ret != 0 && ret != -EINVAL)
+			return ret;
 	}
 
+	if (audio->sads_len == 0)
+		return -EINVAL;
+
 	audio->audio.sads = (const struct di_cta_sad *const *) audio->sads;
-	return true;
+	return 0;
 }
 
 static bool
@@ -947,7 +947,7 @@ parse_speaker_alloc(struct di_cta *cta, struct di_cta_speaker_allocation *speake
 	return true;
 }
 
-static bool
+static int
 parse_speaker_alloc_block(struct di_cta *cta,
 			  struct di_cta_speaker_alloc_block *speaker_alloc,
 			  const uint8_t *data, size_t size)
@@ -956,17 +956,16 @@ parse_speaker_alloc_block(struct di_cta *cta,
 		add_failure(cta,
 			    "Speaker Allocation Data Block: Empty Data Block with length %zu.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	parse_speaker_alloc(cta, &speaker_alloc->speakers, data,
 			    "Speaker Allocation Data Block");
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_video_cap_block(struct di_cta *cta,
 		      struct di_cta_video_cap_block *video_cap,
 		      const uint8_t *data, size_t size)
@@ -975,8 +974,7 @@ parse_video_cap_block(struct di_cta *cta,
 		add_failure(cta,
 			    "Video Capability Data Block: Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	video_cap->selectable_ycc_quantization_range = has_bit(data[0], 7);
@@ -1003,7 +1001,7 @@ parse_video_cap_block(struct di_cta *cta,
 		break;
 	}
 
-	return true;
+	return 0;
 }
 
 static bool
@@ -1057,7 +1055,7 @@ parse_vesa_display_device_additional_primary_chromaticity(struct di_cta_vesa_dis
 	};
 }
 
-static bool
+static int
 parse_vesa_display_device(struct di_cta *cta, struct di_cta_vesa_display_device_block *dddb,
 		const uint8_t *data, size_t size)
 {
@@ -1067,8 +1065,7 @@ parse_vesa_display_device(struct di_cta *cta, struct di_cta_vesa_display_device_
 
 	if (size + offset != 32) {
 		add_failure(cta, "VESA Video Display Device Data Block: Invalid length %u.", size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	interface_type = get_bit_range(data[0x02 - offset], 7, 4);
@@ -1091,7 +1088,7 @@ parse_vesa_display_device(struct di_cta *cta, struct di_cta_vesa_display_device_
 			add_failure(cta,
 				    "VESA Video Display Device Data Block: Unknown analog interface type 0x%x.",
 				    num_channels);
-			return false;
+			return -EINVAL;
 		}
 		num_channels = 0;
 		break;
@@ -1135,8 +1132,7 @@ parse_vesa_display_device(struct di_cta *cta, struct di_cta_vesa_display_device_
 		add_failure(cta,
 			    "VESA Video Display Device Data Block: Unknown interface type 0x%x.",
 			    interface_type);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	if (check_vesa_display_device_num_channels(dddb->interface_type, num_channels))
@@ -1258,10 +1254,10 @@ parse_vesa_display_device(struct di_cta *cta, struct di_cta_vesa_display_device_
 	dddb->overscan_horiz_pct = get_bit_range(data[0x1F - offset], 7, 4);
 	dddb->overscan_vert_pct = get_bit_range(data[0x1F - offset], 3, 0);
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_colorimetry_block(struct di_cta *cta,
 			struct di_cta_colorimetry_block *colorimetry,
 			const uint8_t *data, size_t size)
@@ -1269,8 +1265,7 @@ parse_colorimetry_block(struct di_cta *cta,
 	if (size < 2) {
 		add_failure(cta, "Colorimetry Data Block: Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	colorimetry->bt2020_rgb = has_bit(data[0], 7);
@@ -1289,7 +1284,7 @@ parse_colorimetry_block(struct di_cta *cta,
 		add_failure_until(cta, 3,
 				  "Colorimetry Data Block: Reserved bits MD0-MD3 must be 0.");
 
-	return true;
+	return 0;
 }
 
 static float
@@ -1308,7 +1303,7 @@ parse_min_luminance(uint8_t raw, float max)
 	return max * powf((float) raw / 255, 2) / 100;
 }
 
-static bool
+static int
 parse_hdr_static_metadata_block(struct di_cta *cta,
 				struct di_cta_hdr_static_metadata_block_priv *metadata,
 				const uint8_t *data, size_t size)
@@ -1318,8 +1313,7 @@ parse_hdr_static_metadata_block(struct di_cta *cta,
 	if (size < 2) {
 		add_failure(cta, "HDR Static Metadata Data Block: Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	metadata->base.eotfs = &metadata->eotfs;
@@ -1350,9 +1344,10 @@ parse_hdr_static_metadata_block(struct di_cta *cta,
 				parse_min_luminance(data[4], metadata->base.desired_content_max_luminance);
 	}
 
-	return true;
+	return 0;
 }
-static bool
+
+static int
 parse_hdr_dynamic_metadata_block(struct di_cta *cta,
 				 struct di_cta_hdr_dynamic_metadata_block_priv *priv,
 				 const uint8_t *data, size_t size)
@@ -1376,8 +1371,7 @@ parse_hdr_dynamic_metadata_block(struct di_cta *cta,
 	if (size < 3) {
 		add_failure(cta, "HDR Dynamic Metadata Data Block: Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	while (size >= 3) {
@@ -1385,14 +1379,12 @@ parse_hdr_dynamic_metadata_block(struct di_cta *cta,
 
 		if (size < length + 1) {
 			add_failure(cta, "HDR Dynamic Metadata Data Block: Length of type bigger than block size.");
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		}
 
 		if (length < 2) {
 			add_failure(cta, "HDR Dynamic Metadata Data Block: Type has wrong length.");
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		}
 
 		type = (data[2] << 8) | data[1];
@@ -1466,10 +1458,10 @@ parse_hdr_dynamic_metadata_block(struct di_cta *cta,
 		data += length + 1;
 	}
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_vesa_transfer_characteristics_block(struct di_cta *cta,
 					  struct di_cta_vesa_transfer_characteristics_block *tf,
 					  const uint8_t *data, size_t size)
@@ -1478,8 +1470,7 @@ parse_vesa_transfer_characteristics_block(struct di_cta *cta,
 
 	if (size != 7 && size != 15 && size != 31) {
 		add_failure(cta, "Invalid length %u.", size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	tf->points_len = (uint8_t) size + 1;
@@ -1490,10 +1481,10 @@ parse_vesa_transfer_characteristics_block(struct di_cta *cta,
 		tf->points[i] = tf->points[i - 1] + data[i] / 1023.0f;
 	tf->points[i] = 1.0f;
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_video_format_pref_block(struct di_cta *cta,
 			      struct di_cta_video_format_pref_priv *vfpdb,
 			      const uint8_t *data, size_t size)
@@ -1517,7 +1508,7 @@ parse_video_format_pref_block(struct di_cta *cta,
 
 		svr = calloc(1, sizeof(*svr));
 		if (!svr)
-			return false;
+			return -errno;
 
 		if ((code >= 1 && code <= 127) ||
 		    (code >= 193 && code <= 253)) {
@@ -1540,7 +1531,7 @@ parse_video_format_pref_block(struct di_cta *cta,
 	}
 
 	vfpdb->base.svrs = (const struct di_cta_svr *const *)vfpdb->svrs;
-	return true;
+	return 0;
 }
 
 
@@ -1607,7 +1598,7 @@ parse_hdmi_audio_3d_descriptor(struct di_cta *cta,
 	return true;
 }
 
-static bool
+static int
 parse_hdmi_audio_block(struct di_cta *cta,
 		       struct di_cta_hdmi_audio_block_priv *priv,
 		       const uint8_t *data, size_t size)
@@ -1624,8 +1615,7 @@ parse_hdmi_audio_block(struct di_cta *cta,
 
 	if (size < 1) {
 		add_failure(cta, "HDMI Audio Data Block: Empty Data Block with length 0.");
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	multi_stream = get_bit_range(data[0], 1, 0);
@@ -1641,11 +1631,11 @@ parse_hdmi_audio_block(struct di_cta *cta,
 	}
 
 	if (size < 2)
-		return true;
+		return 0;
 
 	num_3d_audio_descs = get_bit_range(data[1], 2, 0);
 	if (num_3d_audio_descs == 0)
-		return true;
+		return 0;
 
 	/* If there are 3d Audio Descriptors, there is one last Speaker Allocation Descriptor */
 	num_descs = num_3d_audio_descs + 1;
@@ -1657,7 +1647,7 @@ parse_hdmi_audio_block(struct di_cta *cta,
 	/* Make sure there is enough space for the descriptors */
 	if (num_descs > size / CTA_HDMI_AUDIO_3D_DESCRIPTOR_SIZE) {
 		add_failure(cta, "HDMI Audio Data Block: More descriptors indicated than block size allows.");
-		return true;
+		return 0;
 	}
 
 	hdmi_audio->audio_3d = a3d;
@@ -1667,7 +1657,7 @@ parse_hdmi_audio_block(struct di_cta *cta,
 	while (num_descs > 1) {
 		sad_priv = calloc(1, sizeof(*sad_priv));
 		if (!sad_priv)
-			return false;
+			return -errno;
 
 		if (!parse_hdmi_audio_3d_descriptor(cta, sad_priv, data, size)) {
 			free(sad_priv);
@@ -1699,7 +1689,7 @@ skip:
 
 	parse_speaker_alloc(cta, &a3d->speakers, data, "Room Configuration Data Block");
 
-	return true;
+	return 0;
 }
 
 static struct di_cta_infoframe_descriptor *
@@ -1757,7 +1747,7 @@ parse_infoframe(struct di_cta *cta, uint8_t type,
 	return ifp;
 }
 
-static bool
+static int
 parse_infoframe_block(struct di_cta *cta,
 		      struct di_cta_infoframe_block_priv *ifb,
 		      const uint8_t *data, size_t size)
@@ -1769,8 +1759,7 @@ parse_infoframe_block(struct di_cta *cta,
 	if (size < 2) {
 		add_failure(cta, "InfoFrame Data Block: Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	ifb->base.num_simultaneous_vsifs = data[1] + 1;
@@ -1786,8 +1775,7 @@ parse_infoframe_block(struct di_cta *cta,
 			break;
 		if (index > size) {
 			add_failure(cta, "InfoFrame Data Block: Payload length exceeds block size.");
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		}
 
 		length = get_bit_range(data[index], 7, 5);
@@ -1795,8 +1783,7 @@ parse_infoframe_block(struct di_cta *cta,
 
 		if (type == 0) {
 			add_failure(cta, "InfoFrame Data Block: Short InfoFrame Descriptor with type 0 is forbidden.");
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		} else if (type == 1) {
 			length += 4;
 		} else {
@@ -1805,8 +1792,7 @@ parse_infoframe_block(struct di_cta *cta,
 
 		if (index + length > size) {
 			add_failure(cta, "InfoFrame Data Block: Payload length exceeds block size.");
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		}
 
 		infoframe = parse_infoframe(cta, type, &data[index], length);
@@ -1818,7 +1804,7 @@ parse_infoframe_block(struct di_cta *cta,
 		index += length;
 	}
 
-	return true;
+	return 0;
 }
 
 static double
@@ -1829,7 +1815,7 @@ decode_coord(unsigned char x)
 	return s / 64.0;
 }
 
-static bool
+static int
 parse_room_config_block(struct di_cta *cta,
 			struct di_cta_room_configuration_block *rc,
 			const uint8_t *data, size_t size)
@@ -1840,8 +1826,7 @@ parse_room_config_block(struct di_cta *cta,
 	if (size < 4) {
 		add_failure(cta, "Room Configuration Data Block: Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	has_display_coords = has_bit(data[0], 7);
@@ -1876,7 +1861,7 @@ parse_room_config_block(struct di_cta *cta,
 		if (has_display_coords)
 			add_failure(cta, "Room Configuration Data Block: "
 					 "'Display' flag is 1, but the Display and Maximum coordinates are not present.");
-		return true;
+		return 0;
 	}
 
 	rc->max_x = data[4];
@@ -1887,17 +1872,17 @@ parse_room_config_block(struct di_cta *cta,
 		if (has_display_coords)
 			add_failure(cta, "Room Configuration Data Block: "
 					 "'Display' flag is 1, but the Display coordinates are not present.");
-		return true;
+		return 0;
 	}
 
 	rc->display_x = decode_coord(data[7]);
 	rc->display_y = decode_coord(data[8]);
 	rc->display_z = decode_coord(data[9]);
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_speaker_location_block(struct di_cta *cta,
 			     struct di_cta_speaker_location_priv *sldb,
 			     const uint8_t *data, size_t size)
@@ -1907,8 +1892,7 @@ parse_speaker_location_block(struct di_cta *cta,
 	if (size < 2) {
 		add_failure(cta, "Speaker Location Data Block: Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	while (size >= 2) {
@@ -1931,8 +1915,7 @@ parse_speaker_location_block(struct di_cta *cta,
 		} else if (speaker_loc.has_coords) {
 			add_failure(cta, "Speaker Location Data Block: COORD bit "
 					 "set but contains no Coordinates.");
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		} else {
 			size -= 2;
 			data += 2;
@@ -1940,7 +1923,7 @@ parse_speaker_location_block(struct di_cta *cta,
 
 		slp = calloc(1, sizeof(*slp));
 		if (!slp)
-			return false;
+			return -errno;
 
 		*slp = speaker_loc;
 		assert(sldb->locations_len < EDID_CTA_MAX_SPEAKER_LOCATION_BLOCK_ENTRIES);
@@ -1949,10 +1932,10 @@ parse_speaker_location_block(struct di_cta *cta,
 
 	sldb->base.locations =
 		(const struct di_cta_speaker_location_descriptor *const *)sldb->locations;
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_did_type_vii_timing(struct di_cta *cta,
 			  struct di_cta_type_vii_timing_priv *t,
 			  const uint8_t *data, size_t size)
@@ -1962,15 +1945,13 @@ parse_did_type_vii_timing(struct di_cta *cta,
 	if (size != 21) {
 		add_failure(cta, "DisplayID Type VII Video Timing Data Block: "
 				 "Empty Data Block with length %u.", size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	if (get_bit_range(data[0], 6, 4) != 0) {
 		add_failure(cta, "DisplayID Type VII Video Timing Data Block: "
 				 "T7_M shall be 000b.");
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	revision = get_bit_range(data[0], 2, 0);
@@ -1978,8 +1959,7 @@ parse_did_type_vii_timing(struct di_cta *cta,
 		add_failure(cta, "DisplayID Type VII Video Timing Data Block: "
 				 "Unexpected revision (%u != %u).",
 			    revision, 2);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	if (has_bit(data[0], 3)) {
@@ -1999,7 +1979,7 @@ parse_did_type_vii_timing(struct di_cta *cta,
 					    data, true);
 
 	t->base.timing = &t->timing;
-	return true;
+	return 0;
 }
 
 static int
@@ -2075,7 +2055,7 @@ ff_peak_lum_index_to_nits(int index, int peak_lum)
 	return (int)roundf((float)peak_lum * mult);
 }
 
-static bool
+static int
 parse_hdr10plus_block(struct di_cta *cta,
 		      struct di_cta_hdr10plus_block *block,
 		      const uint8_t *data, size_t size)
@@ -2086,8 +2066,7 @@ parse_hdr10plus_block(struct di_cta *cta,
 		add_failure(cta, "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B: "
 				 "Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	block->version = get_bit_range(data[0], 1, 0);
@@ -2095,8 +2074,7 @@ parse_hdr10plus_block(struct di_cta *cta,
 		add_failure(cta, "Vendor-Specific Video Data Block (HDR10+), OUI 90-84-8B: "
 				 "We were expecting application version 1, but got %d.",
 			    block->version);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	/* Index 0 is reserved and > 15 invalid (but 4 bits goes up to 15). */
@@ -2112,10 +2090,10 @@ parse_hdr10plus_block(struct di_cta *cta,
 	block->ff_peak_lum = ff_peak_lum_index_to_nits(ff_peak_lum_index,
 						       block->peak_lum);
 
-	return true;
+	return 0;
 }
 
-static bool
+static int
 parse_dolby_video_block(struct di_cta *cta,
 			 struct di_cta_dolby_video_block_priv *dv_priv,
 			 const uint8_t *data, size_t size)
@@ -2130,8 +2108,7 @@ parse_dolby_video_block(struct di_cta *cta,
 		add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
 				 "Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 	version = get_bit_range(data[0], 7, 5);
 
@@ -2143,8 +2120,7 @@ parse_dolby_video_block(struct di_cta *cta,
 			add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
 					 "Expected length of 17 for Version 0, but got length %u.",
 				    size);
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		}
 
 		v0->global_dimming = has_bit(data[0], 2);
@@ -2181,8 +2157,7 @@ parse_dolby_video_block(struct di_cta *cta,
 					 "Expected length of at least 7 for Version 1, "
 					 "but got length %u.",
 				    size);
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		}
 
 		v1->dynamic_metadata_version = get_bit_range(data[0], 4, 2) + 2;
@@ -2252,8 +2227,7 @@ parse_dolby_video_block(struct di_cta *cta,
 					 "Expected length of at least 7 for Version 2, "
 					 "but got length %u.",
 				    size);
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		}
 
 		v2->dynamic_metadata_version = get_bit_range(data[0], 4, 2) + 2;
@@ -2291,8 +2265,7 @@ parse_dolby_video_block(struct di_cta *cta,
 			add_failure(cta, "Vendor-Specific Video Data Block (Dolby), OUI 00-D0-46: "
 					 "Reserved YUV444 mode 0x%02x.",
 				    v2->yuv444);
-			errno = EINVAL;
-			return false;
+			return -EINVAL;
 		}
 
 		v2->target_pq_12b_level_min = 20 * get_bit_range(data[1], 7, 3);
@@ -2308,7 +2281,7 @@ parse_dolby_video_block(struct di_cta *cta,
 		v2->blue_y = 0.03125 + get_bit_range(data[6], 2, 0) / 256.0;
 	}
 
-	return true;
+	return 0;
 }
 
 void
@@ -2375,7 +2348,7 @@ _di_cta_data_block_destroy(struct di_cta_data_block *data_block)
 	free(data_block);
 }
 
-static bool
+static int
 parse_vendor_specific_video_block(struct di_cta *cta,
 				  enum di_cta_data_block_tag *tag,
 				  struct di_cta_data_block *data_block,
@@ -2387,8 +2360,7 @@ parse_vendor_specific_video_block(struct di_cta *cta,
 		add_failure(cta,
 			    "Vendor-Specific Video Data Block: Empty Data Block with length %u.",
 			    size);
-		errno = EINVAL;
-		return false;
+		return -EINVAL;
 	}
 
 	oui = ((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | data[0];
@@ -2399,28 +2371,18 @@ parse_vendor_specific_video_block(struct di_cta *cta,
 	switch (oui) {
 	case IEEE_OUI_DOLBY:
 		*tag = DI_CTA_DATA_BLOCK_DOLBY_VIDEO;
-		if (!parse_dolby_video_block(cta, &data_block->dolby_video,
-					     data, size))
-			goto skip;
-		break;
+		return parse_dolby_video_block(cta, &data_block->dolby_video,
+					       data, size);
 	case IEEE_OUI_HDR10PLUS:
 		*tag = DI_CTA_DATA_BLOCK_HDR10PLUS;
-		if (!parse_hdr10plus_block(cta, &data_block->hdr10plus,
-					   data, size))
-			goto skip;
-		break;
+		return parse_hdr10plus_block(cta, &data_block->hdr10plus,
+					     data, size);
 	default:
-		errno = EINVAL;
-		goto skip;
+		return -EINVAL;
 	}
-
-	return true;
-
-skip:
-	return false;
 }
 
-static bool
+static int
 parse_vendor_specific_block(struct di_cta *cta,
 			    enum di_cta_data_block_tag *tag,
 			    struct di_cta_data_block *data_block,
@@ -2432,8 +2394,7 @@ parse_vendor_specific_block(struct di_cta *cta,
 		add_failure(cta,
 			    "Vendor-Specific Data Block: Empty Data Block with length (%u).",
 			    size);
-		errno = EINVAL;
-		goto skip;
+		return -EINVAL;
 	}
 
 	oui = ((uint32_t)data[2] << 16) | ((uint32_t)data[1] << 8) | data[0];
@@ -2441,25 +2402,15 @@ parse_vendor_specific_block(struct di_cta *cta,
 	switch (oui) {
 	case IEEE_OUI_HDMI:
 		*tag = DI_CTA_DATA_BLOCK_VENDOR_HDMI;
-		if (!parse_vendor_hdmi_block(cta, &data_block->vendor_hdmi,
-					     data, size))
-			goto skip;
-		break;
+		return parse_vendor_hdmi_block(cta, &data_block->vendor_hdmi,
+					       data, size);
 	case IEEE_OUI_HDMI_FORUM:
 		*tag = DI_CTA_DATA_BLOCK_VENDOR_HDMI_FORUM;
-		if (!parse_vendor_hdmi_forum_block(cta, &data_block->vendor_hdmi_forum,
-						   data, size))
-			goto skip;
-		break;
+		return parse_vendor_hdmi_forum_block(cta, &data_block->vendor_hdmi_forum,
+						     data, size);
 	default:
-		errno = EINVAL;
-		goto skip;
+		return -EINVAL;
 	}
-
-	return true;
-
-skip:
-	return false;
 }
 
 bool
@@ -2468,6 +2419,7 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 {
 	uint8_t extended_tag;
 	struct di_cta_data_block *data_block;
+	int ret;
 
 	*data_block_out = NULL;
 
@@ -2476,33 +2428,29 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 		return false;
 	}
 
+	ret = 0;
 	switch (raw_tag) {
 	case 1:
 		data_block->tag = DI_CTA_DATA_BLOCK_AUDIO;
-		if (!parse_audio_block(cta, &data_block->audio, data, size))
-			goto not_parsed;
+		ret = parse_audio_block(cta, &data_block->audio, data, size);
 		break;
 	case 2:
 		data_block->tag = DI_CTA_DATA_BLOCK_VIDEO;
-		if (!parse_video_block(cta, &data_block->video, data, size))
-			goto not_parsed;
+		ret = parse_video_block(cta, &data_block->video, data, size);
 		break;
 	case 3: /* Vendor-Specific Data Block */
-		if (!parse_vendor_specific_block(cta, &data_block->tag, data_block, data, size))
-			goto not_parsed;
+		ret = parse_vendor_specific_block(cta, &data_block->tag, data_block, data, size);
 		break;
 	case 4:
 		data_block->tag = DI_CTA_DATA_BLOCK_SPEAKER_ALLOC;
-		if (!parse_speaker_alloc_block(cta, &data_block->speaker_alloc,
-					       data, size))
-			goto not_parsed;
+		ret = parse_speaker_alloc_block(cta, &data_block->speaker_alloc,
+					        data, size);
 		break;
 	case 5:
 		data_block->tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_TRANSFER_CHARACTERISTIC;
-		if (!parse_vesa_transfer_characteristics_block(cta,
-							       &data_block->vesa_transfer_characteristics,
-							       data, size))
-			goto not_parsed;
+		ret = parse_vesa_transfer_characteristics_block(cta,
+							        &data_block->vesa_transfer_characteristics,
+							        data, size);
 		break;
 	case 6:
 		data_block->tag = DI_CTA_DATA_BLOCK_VIDEO_FORMAT;
@@ -2511,8 +2459,8 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 		/* Use Extended Tag */
 		if (size < 1) {
 			add_failure(cta, "Empty block with extended tag.");
-			errno = EINVAL;
-			goto not_parsed;
+			ret = -EINVAL;
+			break;
 		}
 
 		extended_tag = data[0];
@@ -2522,53 +2470,46 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 		switch (extended_tag) {
 		case 0:
 			data_block->tag = DI_CTA_DATA_BLOCK_VIDEO_CAP;
-			if (!parse_video_cap_block(cta, &data_block->video_cap,
-						   data, size))
-				goto not_parsed;
+			ret = parse_video_cap_block(cta, &data_block->video_cap,
+						   data, size);
 			break;
 		case 2:
 			data_block->tag = DI_CTA_DATA_BLOCK_VESA_DISPLAY_DEVICE;
-			if (!parse_vesa_display_device(cta, &data_block->vesa_display_device,
-					     data, size))
-				goto not_parsed;
+			ret = parse_vesa_display_device(cta, &data_block->vesa_display_device,
+							data, size);
 			break;
 		case 5:
 			data_block->tag = DI_CTA_DATA_BLOCK_COLORIMETRY;
-			if (!parse_colorimetry_block(cta,
-						     &data_block->colorimetry,
-						     data, size))
-				goto not_parsed;
+			ret = parse_colorimetry_block(cta,
+						      &data_block->colorimetry,
+						      data, size);
 			break;
 		case 6:
 			data_block->tag = DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA;
-			if (!parse_hdr_static_metadata_block(cta,
-							     &data_block->hdr_static_metadata,
-							     data, size))
-				goto not_parsed;
+			ret = parse_hdr_static_metadata_block(cta,
+							      &data_block->hdr_static_metadata,
+							      data, size);
 			break;
 		case 7:
 			data_block->tag = DI_CTA_DATA_BLOCK_HDR_DYNAMIC_METADATA;
-			if (!parse_hdr_dynamic_metadata_block(cta,
-							      &data_block->hdr_dynamic_metadata,
-							      data, size))
-				goto not_parsed;
+			ret = parse_hdr_dynamic_metadata_block(cta,
+							       &data_block->hdr_dynamic_metadata,
+							       data, size);
 			break;
 		case 8:
 			data_block->tag = DI_CTA_DATA_BLOCK_NATIVE_VIDEO_RESOLUTION;
 			break;
 		case 13:
 			data_block->tag = DI_CTA_DATA_BLOCK_VIDEO_FORMAT_PREF;
-			if (!parse_video_format_pref_block(cta,
-							   &data_block->video_format_pref,
-							   data, size))
-				goto not_parsed;
+			ret = parse_video_format_pref_block(cta,
+							    &data_block->video_format_pref,
+							    data, size);
 			break;
 		case 14:
 			data_block->tag = DI_CTA_DATA_BLOCK_YCBCR420;
-			if (!parse_ycbcr420_block(cta,
-						  &data_block->ycbcr420,
-						  data, size))
-				goto not_parsed;
+			ret = parse_ycbcr420_block(cta,
+						   &data_block->ycbcr420,
+						   data, size);
 			break;
 		case 15:
 			data_block->tag = DI_CTA_DATA_BLOCK_YCBCR420_CAP_MAP;
@@ -2578,38 +2519,33 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 			break;
 		case 18:
 			data_block->tag = DI_CTA_DATA_BLOCK_HDMI_AUDIO;
-			if (!parse_hdmi_audio_block(cta,
-						    &data_block->hdmi_audio,
-						    data, size))
-				goto not_parsed;
+			ret = parse_hdmi_audio_block(cta,
+						     &data_block->hdmi_audio,
+						     data, size);
 			break;
 		case 19:
 			data_block->tag = DI_CTA_DATA_BLOCK_ROOM_CONFIG;
-			if (!parse_room_config_block(cta,
-						     &data_block->room_config,
-						     data, size))
-				goto not_parsed;
+			ret = parse_room_config_block(cta,
+						      &data_block->room_config,
+						      data, size);
 			break;
 		case 20:
 			data_block->tag = DI_CTA_DATA_BLOCK_SPEAKER_LOCATION;
-			if (!parse_speaker_location_block(cta,
-							  &data_block->speaker_location,
-							  data, size))
-				goto not_parsed;
+			ret = parse_speaker_location_block(cta,
+							   &data_block->speaker_location,
+							   data, size);
 			break;
 		case 32:
 			data_block->tag = DI_CTA_DATA_BLOCK_INFOFRAME;
-			if (!parse_infoframe_block(cta,
-						   &data_block->infoframe,
-						   data, size))
-				goto not_parsed;
+			ret = parse_infoframe_block(cta,
+						    &data_block->infoframe,
+						    data, size);
 			break;
 		case 34:
 			data_block->tag = DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VII;
-			if (!parse_did_type_vii_timing(cta,
-						       &data_block->did_vii_timing,
-						       data, size))
-				goto not_parsed;
+			ret = parse_did_type_vii_timing(cta,
+						        &data_block->did_vii_timing,
+						        data, size);
 			break;
 		case 35:
 			data_block->tag = DI_CTA_DATA_BLOCK_DISPLAYID_VIDEO_TIMING_VIII;
@@ -2628,42 +2564,40 @@ _di_cta_data_block_parse(struct di_cta *cta, uint8_t raw_tag, const uint8_t *dat
 			 */
 			data -= sizeof(data[0]);
 			size++;
-			if (!parse_hdmi_forum_sink_cap(cta, &data_block->hdmi_sink_cap,
-						       data, size))
-				goto not_parsed;
+			ret = parse_hdmi_forum_sink_cap(cta, &data_block->hdmi_sink_cap,
+						        data, size);
 			break;
 		case 1: /* Vendor-Specific Video Data Block */
-			if (!parse_vendor_specific_video_block(cta, &data_block->tag,
-							       data_block,
-							       data, size))
-				goto not_parsed;
+			ret = parse_vendor_specific_video_block(cta, &data_block->tag,
+							        data_block,
+							        data, size);
 			break;
 		case 17: /* Vendor-Specific Audio Data Block */
-			errno = EINVAL;
-			goto not_parsed;
+			ret = -EINVAL;
+			break;
 		default:
 			/* Reserved */
 			add_failure_until(cta, 3,
 					  "Unknown CTA-861 Data Block (extended tag 0x"PRIx8", length %zu).",
 					  extended_tag, size);
-			errno = EINVAL;
-			goto not_parsed;
+			ret = -EINVAL;
+			break;
 		}
 		break;
 	default:
 		/* Reserved */
 		add_failure_until(cta, 3, "Unknown CTA-861 Data Block (tag 0x"PRIx8", length %zu).",
 				  raw_tag, size);
-		errno = EINVAL;
-		goto not_parsed;
+		ret = -EINVAL;
+		break;
+	}
+	if (ret != 0) {
+		_di_cta_data_block_destroy(data_block);
+		return ret == -EINVAL || ret == -ENOTSUP;
 	}
 
 	*data_block_out = data_block;
 	return true;
-
-not_parsed:
-	_di_cta_data_block_destroy(data_block);
-	return errno == EINVAL || errno == ENOTSUP;
 }
 
 bool
