@@ -6,8 +6,8 @@ cleanup() {
 }
 trap cleanup EXIT
 
-edid="$1"
-ref="${edid%.edid}.print"
-"$DI_EDID_PRINT" <"$edid" >"$workdir/printout"
+blob="$1"
+ref="${blob%.edid}.print"
+"$DI_PRINT" <"$blob" >"$workdir/printout"
 
 diff -u "$ref" "$workdir/printout"
