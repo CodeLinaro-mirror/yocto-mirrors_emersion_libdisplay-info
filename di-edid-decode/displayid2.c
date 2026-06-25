@@ -1,3 +1,4 @@
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -70,6 +71,27 @@ displayid2_data_block_tag_name(enum di_displayid2_data_block_tag tag)
 }
 
 static void
+print_product_id(const struct di_displayid2_product_id *product_id)
+{
+	printf("    Manufacturer/Vendor OUI: 0x%02X%02X%02X\n",
+	       product_id->vendor[0], product_id->vendor[1],
+	       product_id->vendor[2]);
+	printf("    Product Code: %" PRIu16 "\n", product_id->product);
+	if (product_id->serial)
+		printf("    Serial Number: %" PRIu32 "\n", product_id->serial);
+	if (product_id->model_year) {
+		printf("    Model Year: %d\n", product_id->model_year);
+	} else {
+		printf("    Year of Manufacture: %d", product_id->manufacture_year);
+		if (product_id->manufacture_week)
+			printf(", Week %d", product_id->manufacture_week);
+		printf("\n");
+	}
+	if (product_id->product_name)
+		printf("    Product ID: %s\n", product_id->product_name);
+}
+
+static void
 print_data_block(const struct di_displayid2_data_block *data_block)
 {
 	enum di_displayid2_data_block_tag tag;
@@ -80,6 +102,9 @@ print_data_block(const struct di_displayid2_data_block *data_block)
 	printf("  %s:\n", displayid2_data_block_tag_name(tag));
 
 	switch (tag) {
+	case DI_DISPLAYID2_DATA_BLOCK_PRODUCT_ID:
+		print_product_id(di_displayid2_data_block_get_product_id(data_block));
+		break;
 	case DI_DISPLAYID2_DATA_BLOCK_CTA861:
 		cta_data_blocks = di_displayid2_data_block_get_cta_data_blocks(data_block);
 		for (i = 0; cta_data_blocks[i] != NULL; i++) {
