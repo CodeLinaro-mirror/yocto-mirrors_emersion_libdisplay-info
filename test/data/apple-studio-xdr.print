@@ -11,4 +11,4 @@ default color primaries:
    blue: 0.000, 0.000
 default white: 0.000, 0.000
 default gamma: 0.00
-signal colorimetry:
+signal colorimetry: BT2020_RGB
