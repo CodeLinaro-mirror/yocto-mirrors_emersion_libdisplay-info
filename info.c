@@ -200,15 +200,20 @@ derive_edid_color_primaries(const struct di_edid *edid,
 }
 
 static void
-derive_edid_supported_signal_colorimetry(const struct di_edid *edid,
-					 struct di_supported_signal_colorimetry *ssc)
+derive_supported_signal_colorimetry(const struct di_info *info,
+				    struct di_supported_signal_colorimetry *ssc)
 {
 	const struct di_cta_data_block *block;
 	const struct di_cta_colorimetry_block *cm;
 
 	/* Defaults to all unsupported. */
 
-	block = edid_get_cta_data_block(edid, DI_CTA_DATA_BLOCK_COLORIMETRY);
+	block = NULL;
+	assert(!(info->edid && info->displayid2)); /* only one of these should be populated */
+	if (info->edid)
+		block = edid_get_cta_data_block(info->edid, DI_CTA_DATA_BLOCK_COLORIMETRY);
+	else if (info->displayid2)
+		block = displayid2_get_cta_data_block(info->displayid2, DI_CTA_DATA_BLOCK_COLORIMETRY);
 	if (!block)
 		return;
 
@@ -251,7 +256,7 @@ di_info_parse_edid(const void *data, size_t size)
 
 	derive_hdr_static_metadata(info, &info->derived.hdr_static_metadata);
 	derive_edid_color_primaries(info->edid, &info->derived.color_primaries);
-	derive_edid_supported_signal_colorimetry(info->edid, &info->derived.supported_signal_colorimetry);
+	derive_supported_signal_colorimetry(info, &info->derived.supported_signal_colorimetry);
 
 	return info;
 
@@ -318,6 +323,7 @@ di_info_parse_displayid(const void *data, size_t size)
 		free(failure_msg_str);
 
 	derive_hdr_static_metadata(info, &info->derived.hdr_static_metadata);
+	derive_supported_signal_colorimetry(info, &info->derived.supported_signal_colorimetry);
 
 	return info;
 
