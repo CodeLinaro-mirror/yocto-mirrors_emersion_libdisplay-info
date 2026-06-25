@@ -68,7 +68,7 @@ foreach tc : test_cases
 	)
 endforeach
 
-test_gen = find_program('./edid-decode-diff.sh', native: true)
+test_gen = find_program('./edid-decode-gen.sh', native: true)
 
 gen_targets = []
 foreach tc : test_cases
