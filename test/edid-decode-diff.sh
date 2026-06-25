@@ -4,7 +4,7 @@ REF_EDID_DECODE="${REF_EDID_DECODE:-edid-decode}"
 
 BUILDDIR="${BUILDDIR:-./build}"
 DI_EDID_DECODE="${DI_EDID_DECODE:-${BUILDDIR}/di-edid-decode/di-edid-decode}"
-DI_EDID_PRINT="${DI_EDID_PRINT:-${BUILDDIR}/test/di-edid-print}"
+DI_PRINT="${DI_PRINT:-${BUILDDIR}/test/di-print}"
 
 workdir="$(mktemp -d)"
 cleanup() {
@@ -23,5 +23,5 @@ for edid in "$@"; do
 		rm -f "$diff"
 	fi
 
-	"$DI_EDID_PRINT" <"$edid" >"${edid%.edid}.print"
+	"$DI_PRINT" <"$edid" >"${edid%.edid}.print"
 done

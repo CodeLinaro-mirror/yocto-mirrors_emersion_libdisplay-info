@@ -1,13 +1,13 @@
 test_harness = find_program('./edid-decode-check.sh', native: true)
 
-di_edid_print = executable(
-	'di-edid-print',
-	'di-edid-print.c',
+di_print = executable(
+	'di-print',
+	'di-print.c',
 	dependencies: di_dep,
 	install: false,
 )
 
-print_harness = find_program('./edid-print-check.sh', native: true)
+print_harness = find_program('./di-print-check.sh', native: true)
 
 test_cases = [
 	'acer-p1276',
@@ -48,7 +48,7 @@ test_cases = [
 
 test_env = [
 	'DI_EDID_DECODE=' + di_edid_decode.full_path(),
-	'DI_EDID_PRINT=' + di_edid_print.full_path(),
+	'DI_PRINT=' + di_print.full_path(),
 ]
 
 foreach tc : test_cases
@@ -64,7 +64,7 @@ foreach tc : test_cases
 		print_harness,
 		args: [files('data/' + tc + '.edid')],
 		env: test_env,
-		depends: [di_edid_print],
+		depends: [di_print],
 	)
 endforeach
 
@@ -83,7 +83,7 @@ if ref_edid_decode.found()
 	run_target(
 		'gen-test-data',
 		command: [test_gen] + gen_targets,
-		depends: [di_edid_decode, di_edid_print],
+		depends: [di_edid_decode, di_print],
 		env: test_env,
 	)
 endif
