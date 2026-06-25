@@ -9,7 +9,12 @@ di_print = executable(
 
 print_harness = find_program('./di-print-check.sh', native: true)
 
-test_cases = [
+test_env = [
+	'DI_EDID_DECODE=' + di_edid_decode.full_path(),
+	'DI_PRINT=' + di_print.full_path(),
+]
+
+edid_test_cases = [
 	'acer-p1276',
 	'amazon-fire-tv-48',
 	'apple-xdr-dp',
@@ -46,12 +51,19 @@ test_cases = [
 	'vizio-d40fj09',
 ]
 
-test_env = [
-	'DI_EDID_DECODE=' + di_edid_decode.full_path(),
-	'DI_PRINT=' + di_print.full_path(),
+displayid_test_cases = [
+	'apple-studio-xdr',
 ]
 
-foreach tc : test_cases
+test_cases = []
+foreach tc : edid_test_cases
+	test_cases += [tc + '.edid']
+endforeach
+foreach tc : displayid_test_cases
+	test_cases += [tc + '.displayid']
+endforeach
+
+foreach tc : edid_test_cases
 	test(
 		'decode-' + tc,
 		test_harness,
@@ -59,10 +71,13 @@ foreach tc : test_cases
 		env: test_env,
 		depends: [di_edid_decode],
 	)
+endforeach
+
+foreach tc : test_cases
 	test(
 		'print-' + tc,
 		print_harness,
-		args: [files('data/' + tc + '.edid')],
+		args: [files('data/' + tc)],
 		env: test_env,
 		depends: [di_print],
 	)
@@ -71,10 +86,17 @@ endforeach
 edid_decode_gen_cmd = find_program('./edid-decode-gen.sh', native: true)
 di_print_gen_cmd = find_program('./di-print-gen.sh', native: true)
 
-gen_targets = []
-foreach tc : test_cases
-	gen_targets += files('data/' + tc + '.edid')
+edid_gen_targets = []
+foreach tc : edid_test_cases
+	edid_gen_targets += files('data/' + tc + '.edid')
 endforeach
+
+displayid_gen_targets = []
+foreach tc : displayid_test_cases
+	displayid_gen_targets += files('data/' + tc + '.displayid')
+endforeach
+
+gen_targets = edid_gen_targets + displayid_gen_targets
 
 subproject('v4l-utils', required: false)
 ref_edid_decode = find_program('edid-decode', native: true, required: false)
@@ -83,7 +105,7 @@ if ref_edid_decode.found()
 
 	edid_decode_gen = run_target(
 		'gen-test-data-edid-decode',
-		command: [edid_decode_gen_cmd] + gen_targets,
+		command: [edid_decode_gen_cmd] + edid_gen_targets,
 		depends: [di_edid_decode],
 		env: test_env,
 	)

@@ -10,5 +10,5 @@ cleanup() {
 trap cleanup EXIT
 
 for blob in "$@"; do
-	"$DI_PRINT" <"$blob" >"${blob%.edid}.print"
+	"$DI_PRINT" <"$blob" >"${blob%.*}.print"
 done

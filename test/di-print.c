@@ -117,6 +117,9 @@ main(int argc, char *argv[])
 
 	info = di_info_parse_edid(raw, size);
 	if (!info) {
+		info = di_info_parse_displayid(raw, size);
+	}
+	if (!info) {
 		perror("di_edid_parse failed");
 		return 1;
 	}
