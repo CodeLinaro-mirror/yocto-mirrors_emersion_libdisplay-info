@@ -68,7 +68,8 @@ foreach tc : test_cases
 	)
 endforeach
 
-test_gen = find_program('./edid-decode-gen.sh', native: true)
+edid_decode_gen_cmd = find_program('./edid-decode-gen.sh', native: true)
+di_print_gen_cmd = find_program('./di-print-gen.sh', native: true)
 
 gen_targets = []
 foreach tc : test_cases
@@ -80,10 +81,19 @@ ref_edid_decode = find_program('edid-decode', native: true, required: false)
 if ref_edid_decode.found()
 	test_env += 'REF_EDID_DECODE=' + ref_edid_decode.full_path()
 
-	run_target(
-		'gen-test-data',
-		command: [test_gen] + gen_targets,
-		depends: [di_edid_decode, di_print],
+	edid_decode_gen = run_target(
+		'gen-test-data-edid-decode',
+		command: [edid_decode_gen_cmd] + gen_targets,
+		depends: [di_edid_decode],
 		env: test_env,
 	)
+
+	di_print_gen = run_target(
+		'gen-test-data-di-print',
+		command: [di_print_gen_cmd] + gen_targets,
+		depends: [di_print],
+		env: test_env,
+	)
+
+	alias_target('gen-test-data', edid_decode_gen, di_print_gen)
 endif
