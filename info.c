@@ -113,8 +113,8 @@ edid_get_cta_data_block(const struct di_edid *edid, enum di_cta_data_block_tag t
 }
 
 static void
-derive_edid_hdr_static_metadata(const struct di_edid *edid,
-				struct di_hdr_static_metadata *hsm)
+derive_hdr_static_metadata(const struct di_info *info,
+			   struct di_hdr_static_metadata *hsm)
 {
 	const struct di_cta_data_block *block;
 	const struct di_cta_hdr_static_metadata_block *cta_hsm;
@@ -122,7 +122,11 @@ derive_edid_hdr_static_metadata(const struct di_edid *edid,
 	/* By default, everything unset and only traditional gamma supported. */
 	hsm->traditional_sdr = true;
 
-	block = edid_get_cta_data_block(edid, DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA);
+	block = NULL;
+	if (info->edid)
+		block = edid_get_cta_data_block(info->edid, DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA);
+	else if (info->displayid2)
+		block = displayid2_get_cta_data_block(info->displayid2, DI_CTA_DATA_BLOCK_HDR_STATIC_METADATA);
 	if (!block)
 		return;
 
@@ -244,7 +248,7 @@ di_info_parse_edid(const void *data, size_t size)
 	else
 		free(failure_msg_str);
 
-	derive_edid_hdr_static_metadata(info->edid, &info->derived.hdr_static_metadata);
+	derive_hdr_static_metadata(info, &info->derived.hdr_static_metadata);
 	derive_edid_color_primaries(info->edid, &info->derived.color_primaries);
 	derive_edid_supported_signal_colorimetry(info->edid, &info->derived.supported_signal_colorimetry);
 
@@ -311,6 +315,8 @@ di_info_parse_displayid(const void *data, size_t size)
 		info->failure_msg = failure_msg_str;
 	else
 		free(failure_msg_str);
+
+	derive_hdr_static_metadata(info, &info->derived.hdr_static_metadata);
 
 	return info;
 
